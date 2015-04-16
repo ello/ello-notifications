@@ -1,4 +1,4 @@
-# Ello Notifications Service
+# Ello Notifications Service [![Circle CI](https://circleci.com/gh/ello/ello-notifications.svg?style=svg&circle-token=376793a29ced1c232fe8b82e7499effbfe0bb2ee)](https://circleci.com/gh/ello/ello-notifications)
 
 ## Responsibilities
 
