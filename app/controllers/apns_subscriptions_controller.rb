@@ -2,8 +2,20 @@ class ApnsSubscriptionsController < ApplicationController
   respond_to :json
 
   def create
-    result = APNS::CreateSubscription.call(create_params)
+    result = APNS::CreateSubscription.call(required_params)
 
+    render_result(result)
+  end
+
+  def destroy
+    result = APNS::DeleteSubscription.call(required_params)
+
+    render_result(result)
+  end
+
+  private
+
+  def render_result(result)
     if result.success?
       render json: { }
     else
@@ -11,9 +23,7 @@ class ApnsSubscriptionsController < ApplicationController
     end
   end
 
-  private
-
-  def create_params
+  def required_params
     params.require(:bundle_id)
     params.require(:device_token)
     params.permit(:bundle_id, :device_token)
