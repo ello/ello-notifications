@@ -1,13 +1,30 @@
 FactoryGirl.define do
-  factory :device_subscription do
-    bundle_id 'co.ello.ello'
-    endpoint_arn 'arn::some-string'
-    sequence(:logged_in_user_id)
-    enabled 'true'
+  factory :sns_application do
+    bundle_identifier { FFaker::Ello.bundle_identifier }
+    sequence(:application_arn) { |n| "arn:aws:sns:application-string#{n}" }
 
     trait :apns do
-      platform { DeviceSubscription::PLATFORM_APNS }
+      platform { SnsApplication::PLATFORM_APNS }
+    end
+
+    trait :gcm do
+      platform { SnsApplication::PLATFORM_GCM }
+    end
+  end
+
+  factory :device_subscription do
+    sns_application
+    endpoint_arn 'arn:aws:sns:endpoint-string'
+    sequence(:logged_in_user_id)
+    enabled true
+
+    trait :apns do
+      sns_application { build(:sns_application, :apns) }
       platform_device_identifier { FFaker::Ello.ios_device_token }
+    end
+
+    trait :disabled do
+      enabled false
     end
   end
 end

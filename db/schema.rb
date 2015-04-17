@@ -11,18 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150416203446) do
+ActiveRecord::Schema.define(version: 20150417210723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "device_subscriptions", force: true do |t|
     t.string   "platform_device_identifier"
-    t.string   "bundle_id"
     t.string   "endpoint_arn"
     t.integer  "logged_in_user_id"
     t.string   "platform"
     t.boolean  "enabled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "sns_application_id"
+  end
+
+  add_index "device_subscriptions", ["sns_application_id"], name: "index_device_subscriptions_on_sns_application_id", using: :btree
+
+  create_table "sns_applications", force: true do |t|
+    t.string   "bundle_identifier"
+    t.string   "application_arn"
+    t.string   "platform"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
