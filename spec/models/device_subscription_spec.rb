@@ -26,9 +26,10 @@ describe DeviceSubscription do
 
       it 'adds a validation error for the platform_device_identifier if it is not a Apple device token' do
         not_tokens = []
-        not_tokens << '<12345678 12345678 12345678 12345678 12345678 12345678 12345678 12345678>' # example string returned by device
-        not_tokens << '12345678 12345678 12345678 12345678 12345678 12345678 12345678 12345678' # example string returned by device sans brackets
-        not_tokens << '12345678123456781234567812345678123456781234567812345678123456' # string that is too short
+        not_tokens << '<1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a>' # example string returned by device
+        not_tokens << '1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a 1a3a5a7a' # example string returned by device sans brackets
+        not_tokens << '1z3z5z7z1z3z5z7z1z3z5z7z1z3z5z7z1z3z5z7z1z3z5z7z1z3z5z7z1z3z5z7z' # string that is not valid hexadecimal
+        not_tokens << '1a3a5a7a1a3a5a7a1a3a5a7a1a3a5a7a1a3a5a7a1a3a5a7a1a3a5a7a1a3a5a' # hexadecimal string that is too short
 
         not_tokens.each do |token|
           subject.platform_device_identifier = token

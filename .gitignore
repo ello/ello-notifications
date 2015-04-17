@@ -23,3 +23,6 @@
 
 # Ignore config
 .env
+
+# Ignore tags
+tags
