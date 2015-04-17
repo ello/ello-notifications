@@ -12,6 +12,8 @@ class DeviceSubscription < ActiveRecord::Base
   validates_format_of :bundle_id, with: /\A([^\.]{2,}\.){2,}[^\.]{2,}\z/, message: 'not a valid bundle id'
   validates_format_of :platform_device_identifier, with: /\A[a-z0-9]{64}\z/, message: 'not a valid device token'
 
+  after_initialize :default_to_enabled
+
   def apns?
     platform == PLATFORM_APNS
   end
@@ -22,4 +24,11 @@ class DeviceSubscription < ActiveRecord::Base
     valid? # run validations
     errors.keys == [:endpoint_arn] # ensure valid? except for endpoint_arn
   end
+
+  private
+
+  def default_to_enabled
+    self.enabled = true if self.enabled.nil?
+  end
+
 end

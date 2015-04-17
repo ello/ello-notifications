@@ -2,6 +2,16 @@ require 'rails_helper'
 
 describe DeviceSubscription do
 
+  describe 'default values' do
+    it 'defaults to enabled' do
+      expect(subject).to be_enabled
+    end
+
+    it 'does not override a false value' do
+      expect(described_class.new({enabled: false})).to_not be_enabled
+    end
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:bundle_id) }
     it { is_expected.to validate_presence_of(:endpoint_arn) }
