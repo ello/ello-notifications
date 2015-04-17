@@ -13,6 +13,7 @@ gem 'interactor', '~> 3.0'
 gem 'spring', :group => :development
 
 group :development, :test do
+  gem 'dotenv-rails'
   gem 'factory_girl_rails', '~> 4.0'
   gem 'guard'
   gem 'guard-rspec', require: false

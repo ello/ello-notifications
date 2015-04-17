@@ -33,6 +33,9 @@ GEM
       timers (~> 4.0.0)
     coderay (1.1.0)
     diff-lcs (1.2.5)
+    dotenv (2.0.1)
+    dotenv-rails (2.0.1)
+      dotenv (= 2.0.1)
     erubis (2.7.0)
     factory_girl (4.5.0)
       activesupport (>= 3.0.0)
@@ -150,6 +153,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv-rails
   factory_girl_rails (~> 4.0)
   guard
   guard-rspec

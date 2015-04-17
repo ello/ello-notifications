@@ -10,3 +10,10 @@
 
 - Ruby 2.2.0
 - Postgresql
+
+## Setup
+
+This project uses [dotenv-rails](https://github.com/bkeepers/dotenv) to
+manage application configuration in development.  To get started, you
+need to `cp .env.example .env` to setup the local development
+environment variables.

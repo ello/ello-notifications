@@ -20,3 +20,6 @@
 
 # Ignore cruft
 .DS_Store
+
+# Ignore config
+.env
