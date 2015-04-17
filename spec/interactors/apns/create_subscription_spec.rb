@@ -1,27 +1,9 @@
 require 'rails_helper'
 
 describe APNS::CreateSubscription do
+  it_behaves_like 'a device subscription focused interactor', :apns
 
-  context 'when the provided bundle_identifier is unknown' do
-    it 'fails the result with an error message' do
-      result = described_class.call(bundle_identifier: 'com.some.id')
-
-      expect(result).to_not be_success
-      expect(result.message).to eq 'Unknown bundle_identifier: com.some.id'
-    end
-  end
-
-  context 'when the provided bundle_identifier only registered with another platform' do
-    it 'fails the result with an error message' do
-      create(:sns_application, :gcm, bundle_identifier: 'come.some.id')
-      result = described_class.call(bundle_identifier: 'com.some.id')
-
-      expect(result).to_not be_success
-      expect(result.message).to eq 'Unknown bundle_identifier: com.some.id'
-    end
-  end
-
-  context 'when the provided bundle_identifier is registred with APNS' do
+  context 'when the provided bundle_identifier is registered with APNS' do
     let!(:registered_application) { create(:sns_application, :apns) }
     let(:registered_bundle_identifier) { registered_application.bundle_identifier }
 
@@ -52,7 +34,7 @@ describe APNS::CreateSubscription do
       end
     end
 
-    context 'when a device subscription already exists with the device token and bundle identifier' do
+    context 'when an APNS device subscription already exists with the device token and bundle identifier' do
       let!(:existing_subscription) { create(:device_subscription, :apns, sns_application: registered_application) }
 
       it 'does not create a new subscription' do
@@ -102,7 +84,7 @@ describe APNS::CreateSubscription do
       end
     end
 
-    context 'when a device subscription does not exist with the device token and bundle identifier' do
+    context 'when an APNS device subscription does not exist with the device token and bundle identifier' do
       let!(:sns_client) { Aws::SNS::Client.new }
 
       before do
@@ -195,4 +177,3 @@ describe APNS::CreateSubscription do
   end
 
 end
-
