@@ -40,7 +40,7 @@ describe APNS::CreateSubscription do
       it 'does not create a new subscription' do
         expect {
           described_class.call({
-            current_user_id: existing_subscription.logged_in_user_id,
+            logged_in_user_id: existing_subscription.logged_in_user_id,
             bundle_identifier: registered_bundle_identifier,
             platform_device_identifier: existing_subscription.platform_device_identifier
           })
@@ -51,7 +51,7 @@ describe APNS::CreateSubscription do
         expect(Aws::SNS::Client).to_not receive(:new)
 
         described_class.call({
-          current_user_id: existing_subscription.logged_in_user_id,
+          logged_in_user_id: existing_subscription.logged_in_user_id,
           bundle_identifier: registered_bundle_identifier,
           platform_device_identifier: existing_subscription.platform_device_identifier
         })
@@ -62,7 +62,7 @@ describe APNS::CreateSubscription do
           new_user_id = 2000
           expect {
             described_class.call({
-              current_user_id: new_user_id,
+              logged_in_user_id: new_user_id,
               bundle_identifier: registered_bundle_identifier,
               platform_device_identifier: existing_subscription.platform_device_identifier
             })
@@ -75,7 +75,7 @@ describe APNS::CreateSubscription do
         it 're-enables the subscription' do
           expect {
             described_class.call({
-              current_user_id: existing_subscription.logged_in_user_id,
+              logged_in_user_id: existing_subscription.logged_in_user_id,
               bundle_identifier: registered_bundle_identifier,
               platform_device_identifier: existing_subscription.platform_device_identifier
             })
@@ -102,7 +102,7 @@ describe APNS::CreateSubscription do
         }).and_call_original
 
         described_class.call({
-          current_user_id: 1,
+          logged_in_user_id: 1,
           bundle_identifier: registered_bundle_identifier,
           platform_device_identifier: expected_device_token
         })
@@ -117,7 +117,7 @@ describe APNS::CreateSubscription do
 
         it 'fails the interactor with the SNS error message' do
           result = described_class.call({
-            current_user_id: 1,
+            logged_in_user_id: 1,
             bundle_identifier: registered_bundle_identifier,
             platform_device_identifier: FFaker::Ello.ios_device_token
           })
@@ -129,7 +129,7 @@ describe APNS::CreateSubscription do
         it 'does not create a new device subscription' do
           expect {
             described_class.call({
-              current_user_id: 1,
+              logged_in_user_id: 1,
               bundle_identifier: registered_bundle_identifier,
               platform_device_identifier: FFaker::Ello.ios_device_token
             })
@@ -146,7 +146,7 @@ describe APNS::CreateSubscription do
         it 'creates a new device subscription' do
           expect {
             described_class.call({
-              current_user_id: 1,
+              logged_in_user_id: 1,
               bundle_identifier: registered_bundle_identifier,
               platform_device_identifier: FFaker::Ello.ios_device_token
             })
@@ -155,7 +155,7 @@ describe APNS::CreateSubscription do
 
         it 'exposes the new device subscription on the result' do
           result = described_class.call({
-            current_user_id: 1,
+            logged_in_user_id: 1,
             bundle_identifier: registered_bundle_identifier,
             platform_device_identifier: FFaker::Ello.ios_device_token
           })
@@ -165,7 +165,7 @@ describe APNS::CreateSubscription do
 
         it 'associates the new SNS platform endpoint to the new subscription' do
           described_class.call({
-            current_user_id: 1,
+            logged_in_user_id: 1,
             bundle_identifier: registered_bundle_identifier,
             platform_device_identifier: FFaker::Ello.ios_device_token
           })

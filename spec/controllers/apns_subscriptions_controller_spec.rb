@@ -23,14 +23,15 @@ describe ApnsSubscriptionsController, type: :request do
 
         it 'notifies the client of the missing paramater in the response' do
           error = parse_json(response.body, 'error')
-          expect(error).to eq 'Missing required paramater: bundle_id'
+          expect(error).to eq 'Missing required paramater: bundle_identifier'
         end
       end
 
       context 'with all required params' do
         let(:required_params) do
-          { bundle_id: '1234',
-            device_token: '5678'
+          { bundle_identifier: '1234',
+            platform_device_identifier: '5678',
+            logged_in_user_id: '9012'
           }
         end
 
@@ -44,8 +45,9 @@ describe ApnsSubscriptionsController, type: :request do
 
           it 'passes the device token and bundle id to the interactor' do
             expect(APNS::CreateSubscription).to have_received(:call).with({
-              bundle_id: '1234',
-              device_token: '5678'
+              bundle_identifier: '1234',
+              platform_device_identifier: '5678',
+              logged_in_user_id: '9012'
             })
           end
 
@@ -98,14 +100,17 @@ describe ApnsSubscriptionsController, type: :request do
 
         it 'notifies the client of the missing paramater in the response' do
           error = parse_json(response.body, 'error')
-          expect(error).to eq 'Missing required paramater: bundle_id'
+          expect(error).to eq 'Missing required paramater: bundle_identifier'
         end
       end
 
       context 'with all required params' do
         let(:device_token) { '5678' }
         let(:required_params) do
-          { bundle_id: '1234' }
+          {
+            bundle_identifier: '1234',
+            logged_in_user_id: '9012'
+          }
         end
 
         context 'when the deletion succeeds' do
@@ -118,8 +123,9 @@ describe ApnsSubscriptionsController, type: :request do
 
           it 'passes the device token and bundle id to the interactor' do
             expect(APNS::DeleteSubscription).to have_received(:call).with({
-              bundle_id: '1234',
-              device_token: '5678'
+              bundle_identifier: '1234',
+              platform_device_identifier: '5678',
+              logged_in_user_id: '9012'
             })
           end
 

@@ -37,7 +37,7 @@ module Concerns::DeviceSubscriptionFocused
 
   def subscription_params
     {
-      logged_in_user_id: context[:current_user_id],
+      logged_in_user_id: context[:logged_in_user_id],
       sns_application: sns_application,
       platform_device_identifier: context[:platform_device_identifier],
     }
