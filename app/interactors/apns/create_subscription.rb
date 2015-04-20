@@ -30,11 +30,11 @@ class APNS::CreateSubscription
   end
 
   def logged_in_user_has_changed?(subscription)
-    subscription.logged_in_user_id != context[:current_user_id].to_i
+    subscription.logged_in_user_id != context[:logged_in_user_id].to_i
   end
 
   def update_logged_in_user(subscription)
-    subscription.update_attribute(:logged_in_user_id, context[:current_user_id])
+    subscription.update_attribute(:logged_in_user_id, context[:logged_in_user_id])
   end
 
   def enable_subscription(subscription)
