@@ -27,4 +27,14 @@ FactoryGirl.define do
       enabled false
     end
   end
+
+  factory :notification do
+    title { FFaker::Lorem.words(2).join(' ') }
+    body { FFaker::Lorem.sentence }
+    metadata {
+      {
+        custom_key: '1'
+      }
+    }
+  end
 end
