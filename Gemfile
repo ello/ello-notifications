@@ -14,6 +14,7 @@ gem 'aws-sdk', '~> 2'
 # gem 'spring', :group => :development
 
 group :development, :test do
+  gem 'database_cleaner'
   gem 'dotenv-rails'
   gem 'factory_girl_rails', '~> 4.0'
   gem 'ffaker'
