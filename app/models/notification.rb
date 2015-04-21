@@ -6,7 +6,7 @@ class Notification
                 :metadata
 
   def metadata
-    @metadata || {}
+    @metadata ||= {}
   end
 
 end

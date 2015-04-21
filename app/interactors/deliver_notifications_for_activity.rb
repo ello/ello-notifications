@@ -3,7 +3,7 @@ class DeliverNotificationsForActivity
 
   def call
     if user_subscriptions.any?
-      notification = NotificationFactory.build_from_activity(context[:activity])
+      notification = NotificationFactory.build_from_activity(context[:activity], context[:destination_user_id])
       user_subscriptions.each do |sub|
         deliver_notification(notification, sub)
       end
