@@ -2,6 +2,17 @@ require 'rails_helper'
 
 describe DeviceSubscription do
 
+  describe 'scopes' do
+    describe '.enabled' do
+      it 'does not include disabled subscriptions' do
+        enabled_sub = create(:device_subscription, :apns)
+        create(:device_subscription, :apns, :disabled)
+
+        expect(described_class.enabled).to eq [enabled_sub]
+      end
+    end
+  end
+
   describe 'default values' do
     it 'defaults to enabled' do
       expect(subject).to be_enabled

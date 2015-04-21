@@ -1,6 +1,8 @@
 class DeviceSubscription < ActiveRecord::Base
   belongs_to :sns_application
 
+  scope :enabled, -> { where(enabled: true) }
+
   validates_presence_of :logged_in_user_id,
     :platform_device_identifier,
     :sns_application
