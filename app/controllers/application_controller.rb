@@ -2,6 +2,7 @@ class ApplicationController < ActionController::API
   include ActionController::MimeResponds
   include ActionController::ImplicitRender
 
+  respond_to :json
   before_filter :check_format
 
   # force JSON
@@ -15,4 +16,15 @@ class ApplicationController < ActionController::API
     response = { error: error }
     render json: response, status: :unprocessable_entity
   end
+
+  protected
+
+  def render_interactor_result(result)
+    if result.success?
+      render json: { }
+    else
+      render json: { error: result.message }, status: 403
+    end
+  end
+
 end

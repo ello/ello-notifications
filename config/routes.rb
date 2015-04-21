@@ -6,4 +6,6 @@ Rails.application.routes.draw do
       defaults: { format: :json },
       only: [:create, :destroy]
   end
+
+  post '/notifications/activity' => 'notifications#create_from_activity', as: :activity_notifications
 end
