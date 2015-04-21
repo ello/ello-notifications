@@ -57,6 +57,13 @@ describe DeviceSubscription do
     end
   end
 
+  describe '#platform' do
+    subject { build_stubbed(:device_subscription, :apns) }
+    it 'returns the platform identifier for the linked application' do
+      expect(subject.platform).to eq(SnsApplication::PLATFORM_APNS)
+    end
+  end
+
   describe '#creatable_on_sns?' do
     subject { build(:device_subscription, :apns) }
 

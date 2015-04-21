@@ -11,6 +11,8 @@ class DeviceSubscription < ActiveRecord::Base
 
   after_initialize :default_to_enabled
 
+  delegate :platform, to: :sns_application
+
   def apns?
     sns_application.try(:platform) == SnsApplication::PLATFORM_APNS
   end
