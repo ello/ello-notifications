@@ -17,6 +17,7 @@ FactoryGirl.define do
     endpoint_arn 'arn:aws:sns:endpoint-string'
     sequence(:logged_in_user_id)
     enabled true
+    platform_device_identifier 'someident'
 
     trait :apns do
       sns_application { build(:sns_application, :apns) }
