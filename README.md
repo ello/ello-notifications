@@ -17,3 +17,12 @@ This project uses [dotenv-rails](https://github.com/bkeepers/dotenv) to
 manage application configuration in development.  To get started, you
 need to `cp .env.example .env` to setup the local development
 environment variables.
+
+## Lexicon
+
+- **SNS** - Amazon Simple Notification Service - provider service for
+  platform agnostic push notification delivery and management
+- **APNS** - Apple Push Notification Service - provider service for
+  end-user delivery of iOS push notifications
+- **GCM** - Google Cloud Messaging - provider service for end-user
+  delivery of Android push notifications
