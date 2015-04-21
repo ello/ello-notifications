@@ -14,7 +14,7 @@ FactoryGirl.define do
 
   factory :device_subscription do
     sns_application
-    endpoint_arn 'arn:aws:sns:endpoint-string'
+    endpoint_arn { FFaker::Ello.sns_apns_endpoint_arn }
     sequence(:logged_in_user_id)
     enabled true
     platform_device_identifier 'someident'
