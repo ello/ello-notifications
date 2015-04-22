@@ -92,7 +92,7 @@ describe APNS::CreateSubscription do
       end
 
       it 'creates a new platform endpoint with SNS' do
-        expected_device_token = FFaker::Ello.ios_device_token
+        expected_device_token = Faker::Ello.ios_device_token
         expected_application_arn = registered_application.application_arn
 
         expect(sns_client).to receive(:create_platform_endpoint).with({
@@ -119,7 +119,7 @@ describe APNS::CreateSubscription do
           result = described_class.call({
             logged_in_user_id: 1,
             bundle_identifier: registered_bundle_identifier,
-            platform_device_identifier: FFaker::Ello.ios_device_token
+            platform_device_identifier: Faker::Ello.ios_device_token
           })
 
           expect(result).to_not be_success
@@ -131,7 +131,7 @@ describe APNS::CreateSubscription do
             described_class.call({
               logged_in_user_id: 1,
               bundle_identifier: registered_bundle_identifier,
-              platform_device_identifier: FFaker::Ello.ios_device_token
+              platform_device_identifier: Faker::Ello.ios_device_token
             })
           }.to_not change { DeviceSubscription.count }
         end
@@ -148,7 +148,7 @@ describe APNS::CreateSubscription do
             described_class.call({
               logged_in_user_id: 1,
               bundle_identifier: registered_bundle_identifier,
-              platform_device_identifier: FFaker::Ello.ios_device_token
+              platform_device_identifier: Faker::Ello.ios_device_token
             })
           }.to change { DeviceSubscription.count }.by(1)
         end
@@ -157,7 +157,7 @@ describe APNS::CreateSubscription do
           result = described_class.call({
             logged_in_user_id: 1,
             bundle_identifier: registered_bundle_identifier,
-            platform_device_identifier: FFaker::Ello.ios_device_token
+            platform_device_identifier: Faker::Ello.ios_device_token
           })
 
           expect(result.subscription).to be_instance_of(DeviceSubscription)
@@ -167,7 +167,7 @@ describe APNS::CreateSubscription do
           described_class.call({
             logged_in_user_id: 1,
             bundle_identifier: registered_bundle_identifier,
-            platform_device_identifier: FFaker::Ello.ios_device_token
+            platform_device_identifier: Faker::Ello.ios_device_token
           })
 
           expect(DeviceSubscription.last.endpoint_arn).to eq newly_created_endpoint_arn

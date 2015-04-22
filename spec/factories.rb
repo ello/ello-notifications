@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :sns_application do
-    bundle_identifier { FFaker::Ello.bundle_identifier }
+    bundle_identifier { Faker::Ello.bundle_identifier }
     sequence(:application_arn) { |n| "arn:aws:sns:application-string#{n}" }
 
     trait :apns do
@@ -14,14 +14,14 @@ FactoryGirl.define do
 
   factory :device_subscription do
     sns_application
-    endpoint_arn { FFaker::Ello.sns_apns_endpoint_arn }
+    endpoint_arn { Faker::Ello.sns_apns_endpoint_arn }
     sequence(:logged_in_user_id)
     enabled true
     platform_device_identifier 'someident'
 
     trait :apns do
       sns_application { build(:sns_application, :apns) }
-      platform_device_identifier { FFaker::Ello.ios_device_token }
+      platform_device_identifier { Faker::Ello.ios_device_token }
     end
 
     trait :disabled do
@@ -30,8 +30,8 @@ FactoryGirl.define do
   end
 
   factory :notification do
-    title { FFaker::Lorem.words(2).join(' ') }
-    body { FFaker::Lorem.sentence }
+    title { Faker::Lorem.words(2).join(' ') }
+    body { Faker::Lorem.sentence }
     metadata {
       {
         custom_key: '1'

@@ -73,7 +73,7 @@ describe APNS::DeleteSubscription do
       it 'succeeds with a not found message' do
         result = described_class.call({
           bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: FFaker::Ello.ios_device_token
+          platform_device_identifier: Faker::Ello.ios_device_token
         })
 
         expect(result).to be_success

@@ -17,7 +17,7 @@ group :development, :test do
   gem 'database_cleaner'
   gem 'dotenv-rails'
   gem 'factory_girl_rails', '~> 4.0'
-  gem 'ffaker'
+  gem 'faker'
   gem 'guard'
   gem 'guard-rspec', require: false
   gem 'json_spec'
