@@ -1,4 +1,6 @@
 FactoryGirl.define do
+  sequence(:unique_id)
+
   factory :sns_application do
     bundle_identifier { Faker::Ello.bundle_identifier }
     sequence(:application_arn) { |n| "arn:aws:sns:application-string#{n}" }

@@ -7,13 +7,13 @@ class Faker::Ello
 
   def self.sns_apns_endpoint_arn(sandbox:false)
     platform_key = sandbox ? 'APNS_SANDBOX' : 'APNS'
-    app_ref_id = Random.rand(1000)
-    subscription_ref_id = Random.rand(1000)
+    app_ref_id = FactoryGirl.generate(:unique_id)
+    subscription_ref_id = FactoryGirl.generate(:unique_id)
     app_name = Faker::Lorem.words(2).join
     "arn:aws:sns:us-east-1:#{app_ref_id}:endpoint/#{platform_key}/#{app_name}/#{subscription_ref_id}"
   end
 
   def self.bundle_identifier
-    "co.ello.ello#{Random.rand(1000)}"
+    "co.ello.ello#{FactoryGirl.generate(:unique_id)}"
   end
 end
