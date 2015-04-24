@@ -7,6 +7,7 @@ gem 'rails-api'
 gem 'pg'
 gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2'
+gem 'ello_protobufs', path: 'vendor/gems/ello_protobufs'
 
 # Use unicorn as the app server
 # gem 'unicorn'

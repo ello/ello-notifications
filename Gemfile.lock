@@ -1,3 +1,9 @@
+PATH
+  remote: vendor/gems/ello_protobufs
+  specs:
+    ello_protobufs (0.1.0)
+      protobuf (~> 3.5.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -86,6 +92,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
+    middleware (0.1.0)
     mime-types (2.4.3)
     minitest (5.6.0)
     multi_json (1.11.0)
@@ -94,6 +101,11 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     pg (0.18.1)
+    protobuf (3.5.0)
+      activesupport (>= 3.2)
+      middleware
+      thor
+      thread_safe
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -170,6 +182,7 @@ DEPENDENCIES
   aws-sdk (~> 2)
   database_cleaner
   dotenv-rails
+  ello_protobufs!
   factory_girl_rails (~> 4.0)
   faker
   guard
