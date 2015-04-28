@@ -1,0 +1,10 @@
+package ElloProtobufs.NotificationService;
+
+message CreateNotificationResponse {
+  enum FailureReason {
+    UNSPECIFIED = 0;
+    UNKNOWN_NOTIFICATION_TYPE = 1;
+  }
+  required bool success = 1;
+  optional FailureReason failure_reason = 2 [default = UNSPECIFIED];
+}

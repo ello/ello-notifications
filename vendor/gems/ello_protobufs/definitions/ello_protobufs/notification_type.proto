@@ -1,0 +1,11 @@
+package ElloProtobufs;
+
+enum NotificationType {
+  UNSPECIFIED = 0;
+  COMMENT_MENTION = 1;
+  FOLLOWER = 2;
+  INVITE_REDEMPTION = 3;
+  POST_COMMENT = 4;
+  POST_MENTION = 5;
+  REPOST = 6;
+}

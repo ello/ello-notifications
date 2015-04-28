@@ -1,5 +1,5 @@
 require 'protobuf'
-Dir[File.dirname(__FILE__) + '/ello_protobufs/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/ello_protobufs/**/*.rb'].each {|file| require file }
 
 module ElloProtobufs
   def self.load_protobuf_factories

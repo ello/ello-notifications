@@ -1,0 +1,12 @@
+package ElloProtobufs.NotificationService;
+import 'ello_protobufs/user.proto';
+import 'ello_protobufs/comment.proto';
+import 'ello_protobufs/post.proto';
+import 'ello_protobufs/notification_type.proto';
+
+message CreateNotificationRequest {
+  required NotificationType type = 1 [default = UNSPECIFIED];
+  optional Post post = 2;
+  optional User user = 3;
+  optional Comment comment = 4;
+}
