@@ -1,4 +1,7 @@
 class ApnsSubscriptionsController < ApplicationController
+  before_filter :require_json
+  respond_to :json
+
   def create
     result = APNS::CreateSubscription.call(required_params)
 

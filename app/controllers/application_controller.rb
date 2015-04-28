@@ -2,11 +2,8 @@ class ApplicationController < ActionController::API
   include ActionController::MimeResponds
   include ActionController::ImplicitRender
 
-  respond_to :json
-  before_filter :check_format
-
   # force JSON
-  def check_format
+  def require_json
     render nothing: true, status: 406 unless params[:format] == 'json' || request.headers["Accept"] =~ /json/
   end
 
