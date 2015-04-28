@@ -28,12 +28,11 @@ describe APNS::DeliverNotification do
 
     it 'delivers the notification with SNS' do
       endpoint_arn = Faker::Ello.sns_apns_endpoint_arn
-      expect(sns_client).to receive(:publish)
-      # expect(sns_client).to receive(:publish).with({
-        # target_arn: endpoint_arn,
-        # message_structure: 'json',
-        # message: kind_of(String)
-      # })
+      expect(sns_client).to receive(:publish).with({
+        target_arn: endpoint_arn,
+        message_structure: 'json',
+        message: kind_of(String)
+      })
 
       described_class.call({
         endpoint_arn: endpoint_arn,
