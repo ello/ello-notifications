@@ -25,15 +25,16 @@ task :console do
   ::Pry.start
 end
 
+config = {
+  plugin: 'ruby',
+  destination: 'lib',
+  source: 'definitions',
+  package: 'ello_protobufs'
+}
+
 desc 'Compile Ello protocol buffers'
 namespace :ello_protobufs do
   task :compile do
-    config = {
-      plugin: 'ruby',
-      destination: 'lib',
-      source: 'definitions',
-      package: 'ello_protobufs'
-    }
     command = []
     command << "protoc"
     command << "--#{config[:plugin]}_out=#{config[:destination]}"
@@ -43,5 +44,12 @@ namespace :ello_protobufs do
 
     puts full_command
     exec(full_command)
+  end
+
+  task :clean do
+    files_to_clean = ::File.join(config[:destination], config[:package], '**', "*.pb.rb")
+    ::Dir.glob(files_to_clean).each do |file|
+      ::FileUtils.rm(file)
+    end
   end
 end
