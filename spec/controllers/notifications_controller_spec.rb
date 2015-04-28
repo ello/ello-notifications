@@ -5,65 +5,37 @@ describe NotificationsController, type: :request do
   describe 'POST #create' do
     context 'with content-type HTML' do
       it 'fails with status code 406' do
-        post activity_notifications_path
+        post user_notifications_path(destination_user_id: '1234', notification_type: 'some_type')
 
         expect(response.code).to eq '406'
       end
     end
 
     context 'using content-type JSON' do
-      let(:headers) { { 'CONTENT_TYPE' => 'application/json', 'ACCEPT' => 'application/json' } }
-
-      context 'when missing the activity' do
-        before { post(activity_notifications_path, { destination_user_id: '1234' }.to_json, headers) }
-
-        it 'fails with status code 422' do
-          expect(response.code).to eq '422'
-        end
-
-        it 'notifies the client of the missing paramater in the response' do
-          error = parse_json(response.body, 'error')
-          expect(error).to eq 'Missing required paramater: activity'
-        end
-      end
-
-      context 'when missing the destination_user_id' do
-        before { post(activity_notifications_path, { activity: { id: '5678' } }.to_json, headers) }
-
-        it 'fails with status code 422' do
-          expect(response.code).to eq '422'
-        end
-
-        it 'notifies the client of the missing paramater in the response' do
-          error = parse_json(response.body, 'error')
-          expect(error).to eq 'Missing required paramater: destination_user_id'
-        end
-      end
+      let(:headers) { { 'CONTENT_TYPE' => 'application/octet-stream', 'ACCEPT' => 'application/json' } }
 
       context 'with all required params' do
         let(:required_params) do
           {
             destination_user_id: '1234',
-            activity: {
-              id: '5678'
-            }
+            notification_type: 'follower'
           }
         end
 
         context 'when the creation succeeds' do
+          let(:request_body) { create(:protobuf_user).encode }
           before do
             successful_context = double('Context', success?: true)
-            allow(DeliverNotificationsForActivity).to receive(:call).and_return(successful_context)
+            allow(NotifyUser).to receive(:call).and_return(successful_context)
 
-            post activity_notifications_path, required_params.to_json, headers
+            post user_notifications_path(required_params), request_body, headers
           end
 
-          it 'passes the device token and bundle id to the interactor' do
-            expect(DeliverNotificationsForActivity).to have_received(:call).with({
+          it 'passes the required params and request body to the interactor' do
+            expect(NotifyUser).to have_received(:call).with({
               destination_user_id: '1234',
-              activity: {
-                id: '5678'
-              }
+              notification_type: 'follower',
+              request_body: request.body
             })
           end
 
@@ -77,9 +49,9 @@ describe NotificationsController, type: :request do
 
           before do
             failed_context = double('Context', success?: false, message: expected_error)
-            allow(DeliverNotificationsForActivity).to receive(:call).and_return(failed_context)
+            allow(NotifyUser).to receive(:call).and_return(failed_context)
 
-            post activity_notifications_path, required_params.to_json, headers
+            post user_notifications_path(required_params), nil, headers
           end
 
           it 'fails with status code 403' do

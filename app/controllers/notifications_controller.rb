@@ -1,17 +1,21 @@
 class NotificationsController < ApplicationController
-  def create_from_activity
-    result = DeliverNotificationsForActivity.call(create_from_activity_params)
+  before_filter :require_binary_with_return_json
+  respond_to :json
+
+  def create
+    result = NotifyUser.call({
+      destination_user_id: params.require(:destination_user_id),
+      notification_type: params.require(:notification_type),
+      request_body: request.body
+    })
 
     render_interactor_result(result)
   end
 
   private
 
-  def create_from_activity_params
-    {
-      activity: params.require(:activity).permit!,
-      destination_user_id: params.require(:destination_user_id)
-    }
+  def require_binary_with_return_json
+    render nothing: true, status: 406 unless request.content_type == 'application/octet-stream' || request.headers["Accept"] =~ /json/
   end
 
 end
