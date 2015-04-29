@@ -8,7 +8,7 @@
 
 ## Requirements
 
-- Ruby 2.2.0 -- specified using `.ruby-version`
+- Ruby 2.2.2 -- specified using `.ruby-version`
 - Postgresql -- `brew install postgresql`
 - Protobuf -- reference installation requirements in `ElloProtobufs` gem
 
