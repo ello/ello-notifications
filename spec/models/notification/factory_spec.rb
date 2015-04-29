@@ -6,7 +6,7 @@ describe Notification::Factory do
 
     subject { described_class.build(ElloProtobufs::NotificationType::REPOST, 2, repost) }
 
-    it_behaves_like 'a notification with' do
+    it_behaves_like 'a notification with', focus: true do
       let(:destination_user_id) { 2 }
       let(:type) { 'repost' }
       let(:title) { 'New Repost' }

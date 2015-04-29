@@ -1,12 +1,15 @@
 class Notification::Factory
-  @@type_decorators = []
+  @type_decorators = []
+  class << self
+    attr_reader :type_decorators
+  end
 
   def self.build(*args)
     new(*args).build
   end
 
   def self.register_type(type, readable_type, &evaluator)
-    @@type_decorators << TypeDecorator.new(type, readable_type, evaluator)
+    self.type_decorators << TypeDecorator.new(type, readable_type, evaluator)
   end
 
   register_type ElloProtobufs::NotificationType::REPOST, 'repost' do |related_object|
@@ -60,7 +63,7 @@ class Notification::Factory
   private
 
   def decorator_for_type(desired_type)
-    @@type_decorators.find{ |decorator| decorator.type == desired_type }
+    self.class.type_decorators.find{ |decorator| decorator.type == desired_type }
   end
 
   def common_metadata
