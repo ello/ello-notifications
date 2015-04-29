@@ -1,0 +1,7 @@
+package ElloProtobufs.NotificationService;
+import 'ello_protobufs/notification_service/create_notification_failure_reason.proto';
+
+message CreateNotificationResponse {
+  required bool success = 1;
+  optional CreateNotificationFailureReason failure_reason = 2 [default = UNSPECIFIED];
+}

@@ -44,6 +44,12 @@ After checking out the repo, run `bin/setup` to install dependencies.
 Then run `bundle exec console` for an interactive prompt that will allow
 you to experiment.
 
+To regenerate definitions, run `rake ello_protobufs:compile`.  Sometimes
+you need to clean the definitions, especially when prototyping new
+messages that you rename multiple times.  To clean all definitions run
+`rake ello_protobufs::clean`.  **NOTE:** Be sure to re-compile after a
+clean as the clean deletes all defintions.
+
 ## Definition Organization
 
 Protocol buffers are often used in tandem with a rich RPC server for
