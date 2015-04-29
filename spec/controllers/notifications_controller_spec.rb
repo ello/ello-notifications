@@ -3,68 +3,77 @@ require 'rails_helper'
 describe NotificationsController, type: :request do
 
   describe 'POST #create' do
-    context 'with content-type HTML' do
+    context 'with default content-type' do
       it 'fails with status code 406' do
-        post user_notifications_path(destination_user_id: '1234', notification_type: 'some_type')
+        post notifications_path
 
         expect(response.code).to eq '406'
       end
     end
 
-    context 'using content-type JSON' do
-      let(:headers) { { 'CONTENT_TYPE' => 'application/octet-stream', 'ACCEPT' => 'application/json' } }
+    context 'using binary content-type' do
+      before do
+        # short-hand aliases for test readability purposes
+        stub_const('CreateNotificationFailureReason', ElloProtobufs::NotificationService::CreateNotificationFailureReason)
+        stub_const('CreateNotificationRequest', ElloProtobufs::NotificationService::CreateNotificationRequest)
+        stub_const('CreateNotificationResponse', ElloProtobufs::NotificationService::CreateNotificationResponse)
+        stub_const('NotificationType', ElloProtobufs::NotificationType)
+      end
 
-      context 'with all required params' do
-        let(:required_params) do
-          {
-            destination_user_id: '1234',
-            notification_type: 'follower'
-          }
+      let(:headers) { { 'CONTENT_TYPE' => 'application/octet-stream', 'ACCEPT' => 'application/octet-stream' } }
+
+      let(:create_notification_request) do
+        CreateNotificationRequest.new({
+          type: ElloProtobufs::NotificationType::FOLLOWER,
+          destination_user_id: 2,
+          user: create(:protobuf_user)
+        })
+      end
+
+      context 'when the creation succeeds' do
+        before do
+          successful_context = double('Context', success?: true, failure?: false)
+          allow(CreateNotification).to receive(:call).and_return(successful_context)
+
+          post notifications_path, create_notification_request.encode, headers
         end
 
-        context 'when the creation succeeds' do
-          let(:request_body) { create(:protobuf_user).encode }
-          before do
-            successful_context = double('Context', success?: true)
-            allow(NotifyUser).to receive(:call).and_return(successful_context)
-
-            post user_notifications_path(required_params), request_body, headers
-          end
-
-          it 'passes the required params and request body to the interactor' do
-            expect(NotifyUser).to have_received(:call).with({
-              destination_user_id: '1234',
-              notification_type: 'follower',
-              request_body: request.body
-            })
-          end
-
-          it 'succeeds with status code 200' do
-            expect(response.code).to eq '200'
-          end
+        it 'passes the required params and request body to the interactor' do
+          expect(CreateNotification).to have_received(:call).with({
+            request: create_notification_request
+          })
         end
 
-        context 'when the creation fails' do
-          let(:expected_error) { 'An error occurred' }
+        it 'succeeds with status code 200' do
+          expect(response.code).to eq '200'
+        end
 
-          before do
-            failed_context = double('Context', success?: false, message: expected_error)
-            allow(NotifyUser).to receive(:call).and_return(failed_context)
+        it 'responds with a successful response object' do
+          resp = CreateNotificationResponse.decode(response.body)
+          expect(resp).to be_success
+        end
+      end
 
-            post user_notifications_path(required_params), nil, headers
-          end
+      context 'when the creation fails' do
+        let(:expected_failure_reason) { CreateNotificationFailureReason::UNKNOWN_NOTIFICATION_TYPE }
 
-          it 'fails with status code 403' do
-            expect(response.code).to eq '403'
-          end
+        before do
+          failed_context = double('Context', success?: false, failure?: true, failure_reason: expected_failure_reason)
+          allow(CreateNotification).to receive(:call).and_return(failed_context)
 
-          it 'renders the creation error message in the response' do
-            error = parse_json(response.body, 'error')
-            expect(error).to eq expected_error
-          end
+          post notifications_path, create_notification_request.encode, headers
+        end
+
+        it 'fails with status code 403' do
+          expect(response.code).to eq '403'
+        end
+
+        it 'includes the correct failure reason in the response' do
+          resp = CreateNotificationResponse.decode(response.body)
+          expect(resp.failure_reason).to eq(expected_failure_reason)
         end
       end
     end
-  end
 
+  end
 end

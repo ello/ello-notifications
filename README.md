@@ -39,15 +39,24 @@ backslashes rather than escaping characters for multi-byte characters.
 As a result, testing with curl is recommended:
 
 ```bash
-curl http://lvh.me:3000/users/2/notifications/follower --data-binary @./relative/path/to/binaryfile -H "Content-Type: application/octet-stream" -H "Accept: application/json"
+curl http://lvh.me:3000/notifications --data-binary @./relative/path/to/request_object -H "Content-Type: application/octet-stream" -H "Accept: application/octet-stream"
 ```
 
-In the example above, the encoded data for a user record has been saved
-to a test file, which is sent as binary by curl.  You can easily encode
+In the example above, the encoded data for a notification creation has
+been saved to a test file, which is sent as binary by curl.  You can easily encode
 test objects from the Rails console:
 
 ```ruby
-f = File.open('./binaryfile', 'w:ASCII-8BIT')
-FactoryGirl.create(:protobuf_user, id: 4).encode_to(f)
+f = File.open('./request_object', 'w:ASCII-8BIT')
+ElloProtobufs::SomeService::CreateResourceRequest.new({ object_param: 'value' }).encode_to(f)
+f.close
+```
+
+The response from the server will also be binary information, and in
+order to decode it, you will have to decode it into a response object:
+
+```ruby
+f = File.open('./response_object', 'r:ASCII-8BIT')
+response = ElloProtobufs::SomeService::CreateResourceResponse.decode_from(f)
 f.close
 ```

@@ -18,7 +18,9 @@ gem 'ello_protobufs'
 
 And then execute:
 
-    $ bundle
+```bash
+$ bundle
+```
 
 ## Usage
 
@@ -41,3 +43,29 @@ or `rails_helper.rb`.
 After checking out the repo, run `bin/setup` to install dependencies.
 Then run `bundle exec console` for an interactive prompt that will allow
 you to experiment.
+
+## Definition Organization
+
+Protocol buffers are often used in tandem with a rich RPC server for
+cross-service communication.  We have decided to opt-out of a generated
+RPC server and instead have Rails operate as the server while still
+having request/response objects for RPC calls.
+
+The code organization convention that we're going with is:
+
+```ruby
+# parent namespace: contains primary domain objects, shared enums -- things used by multiple services
+ElloProtobufs
+
+# service namespace: contains service specific messages/enums and RPC request/response objects
+ElloProtobufs::SomeSpecialService
+
+# RPC request object to create a car using SomeSpecialService
+ElloProtobufs::SomeSpecialService::CreateCarRequest
+
+# RPC response object containing information about the creation of a car using SomeSpecialService
+ElloProtobufs::SomeSpecialService::CreateCarResponse
+
+# service specific enum to specify the status of the car creation operation -- NOTE: this is preferable to text error messages as it's more discrete and doesn't require parsing
+ElloProtobufs::SomeSpecialService::CreateCarErrorReason
+```

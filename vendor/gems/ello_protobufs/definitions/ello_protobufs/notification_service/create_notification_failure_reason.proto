@@ -1,0 +1,6 @@
+package ElloProtobufs.NotificationService;
+
+enum CreateNotificationFailureReason {
+  UNSPECIFIED = 0;
+  UNKNOWN_NOTIFICATION_TYPE = 1;
+}

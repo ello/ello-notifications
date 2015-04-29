@@ -7,5 +7,5 @@ Rails.application.routes.draw do
       only: [:create, :destroy]
   end
 
-  post '/users/:destination_user_id/notifications/:notification_type' => 'notifications#create', as: :user_notifications
+  post '/notifications' => 'notifications#create', as: :notifications
 end

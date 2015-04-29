@@ -4,8 +4,6 @@ RSpec.shared_examples 'a notification with' do
   # shared example expects that a number of params are defined as lets
   # in the calling spec -  e.g. `let(:title) { 'expected title' }`
 
-  it { is_expected.to be_an_instance_of(Notification) }
-
   it 'has the correct title' do
     expect(subject.title).to eq(title)
   end

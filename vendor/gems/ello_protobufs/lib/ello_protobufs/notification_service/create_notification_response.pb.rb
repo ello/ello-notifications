@@ -5,20 +5,19 @@
 #
 require 'protobuf/message'
 
+
+##
+# Imports
+#
+require 'ello_protobufs/notification_service/create_notification_failure_reason.pb'
+
 module ElloProtobufs
   module NotificationService
 
     ##
     # Message Classes
     #
-    class CreateNotificationResponse < ::Protobuf::Message
-      class FailureReason < ::Protobuf::Enum
-        define :UNSPECIFIED, 0
-        define :UNKNOWN_NOTIFICATION_TYPE, 1
-      end
-
-    end
-
+    class CreateNotificationResponse < ::Protobuf::Message; end
 
 
     ##
@@ -26,7 +25,7 @@ module ElloProtobufs
     #
     class CreateNotificationResponse
       required :bool, :success, 1
-      optional ::ElloProtobufs::NotificationService::CreateNotificationResponse::FailureReason, :failure_reason, 2, :default => ::ElloProtobufs::NotificationService::CreateNotificationResponse::FailureReason::UNSPECIFIED
+      optional ::ElloProtobufs::NotificationService::CreateNotificationFailureReason, :failure_reason, 2, :default => ::ElloProtobufs::NotificationService::CreateNotificationFailureReason::UNSPECIFIED
     end
 
   end

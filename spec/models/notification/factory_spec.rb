@@ -4,7 +4,7 @@ describe Notification::Factory do
   describe 'building a repost notification' do
     let(:repost) { create(:protobuf_post, :repost) }
 
-    subject { described_class.build('repost', 2, repost) }
+    subject { described_class.build(ElloProtobufs::NotificationType::REPOST, 2, repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { 2 }
@@ -18,7 +18,7 @@ describe Notification::Factory do
   describe 'building a post_comment notification' do
     let(:comment) { create(:protobuf_comment) }
 
-    subject { described_class.build('post_comment', 2, comment) }
+    subject { described_class.build(ElloProtobufs::NotificationType::POST_COMMENT, 2, comment) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { 2 }
@@ -32,7 +32,7 @@ describe Notification::Factory do
   describe 'building a post_mention notification' do
     let(:post) { create(:protobuf_post) }
 
-    subject { described_class.build('post_mention', 2, post) }
+    subject { described_class.build(ElloProtobufs::NotificationType::POST_MENTION, 2, post) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { 2 }
@@ -46,7 +46,7 @@ describe Notification::Factory do
   describe 'building a comment_mention notification' do
     let(:comment) { create(:protobuf_comment) }
 
-    subject { described_class.build('comment_mention', 2, comment) }
+    subject { described_class.build(ElloProtobufs::NotificationType::COMMENT_MENTION, 2, comment) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { 2 }
@@ -60,7 +60,7 @@ describe Notification::Factory do
   describe 'building a follower notification' do
     let(:user) { create(:protobuf_user) }
 
-    subject { described_class.build('follower', 2, user) }
+    subject { described_class.build(ElloProtobufs::NotificationType::FOLLOWER, 2, user) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { 2 }
@@ -74,7 +74,7 @@ describe Notification::Factory do
   describe 'building a follower notification' do
     let(:user) { create(:protobuf_user) }
 
-    subject { described_class.build('invite_redemption', 2, user) }
+    subject { described_class.build(ElloProtobufs::NotificationType::INVITE_REDEMPTION, 2, user) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { 2 }
