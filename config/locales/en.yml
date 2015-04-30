@@ -3,3 +3,22 @@ en:
     attributes:
       device_subscription:
         logged_in_user_id: "Logged in user id"
+  notification_factory:
+    repost:
+      title: 'New Repost'
+      body: "%{username} has reposted one of your posts"
+    post_comment:
+      title: 'New Comment'
+      body: "%{username} commented on your post"
+    post_mention:
+      title: 'New Post Mention'
+      body: "%{username} mentioned you in a post"
+    comment_mention:
+      title: 'New Comment Mention'
+      body: "%{username} mentioned you in a comment"
+    follower:
+      title: 'New Follower'
+      body: "%{username} is now following you"
+    invite_redemption:
+      title: 'New Friends on Ello'
+      body: "%{username} has accepted your invitation to join Ello"

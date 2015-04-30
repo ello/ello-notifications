@@ -13,38 +13,38 @@ class Notification::Factory
   end
 
   register_type ElloProtobufs::NotificationType::REPOST, 'repost' do |related_object|
-    title { 'New Repost' }
-    body { "#{related_object.author.username} has reposted one of your posts" }
+    title { I18n.t('notification_factory.repost.title') }
+    body { I18n.t('notification_factory.repost.body', username: related_object.author.username) }
     application_target { "posts/#{related_object.id}" }
   end
 
   register_type ElloProtobufs::NotificationType::POST_COMMENT, 'post_comment' do |related_object|
-    title { 'New Comment' }
-    body { "#{related_object.author.username} commented on your post" }
+    title { I18n.t('notification_factory.post_comment.title') }
+    body { I18n.t('notification_factory.post_comment.body', username: related_object.author.username) }
     application_target { "posts/#{related_object.parent_post_id}/comments/#{related_object.id}" }
   end
 
   register_type ElloProtobufs::NotificationType::POST_MENTION, 'post_mention' do |related_object|
-    title { 'New Post Mention' }
-    body { "#{related_object.author.username} mentioned you in a post" }
+    title { I18n.t('notification_factory.post_mention.title') }
+    body { I18n.t('notification_factory.post_mention.body', username: related_object.author.username) }
     application_target { "posts/#{related_object.id}" }
   end
 
   register_type ElloProtobufs::NotificationType::COMMENT_MENTION, 'comment_mention' do |related_object|
-    title { 'New Comment Mention' }
-    body { "#{related_object.author.username} mentioned you in a comment" }
+    title { I18n.t('notification_factory.comment_mention.title') }
+    body { I18n.t('notification_factory.comment_mention.body', username: related_object.author.username) }
     application_target { "posts/#{related_object.parent_post_id}/comments/#{related_object.id}" }
   end
 
   register_type ElloProtobufs::NotificationType::FOLLOWER, 'follower' do |related_object|
-    title { 'New Follower' }
-    body { "#{related_object.username} is now following you" }
+    title { I18n.t('notification_factory.follower.title') }
+    body { I18n.t('notification_factory.follower.body', username: related_object.username) }
     application_target { "users/#{related_object.id}" }
   end
 
   register_type ElloProtobufs::NotificationType::INVITE_REDEMPTION, 'invite_redemption' do |related_object|
-    title { 'New Friends on Ello' }
-    body { "#{related_object.username} has accepted your invitation to join Ello" }
+    title { I18n.t('notification_factory.invite_redemption.title') }
+    body { I18n.t('notification_factory.invite_redemption.body', username: related_object.username) }
     application_target { "users/#{related_object.id}" }
   end
 
