@@ -7,33 +7,6 @@ describe APNS::CreateSubscription do
     let!(:registered_application) { create(:sns_application, :apns) }
     let(:registered_bundle_identifier) { registered_application.bundle_identifier }
 
-    context 'when the interactor is called with missing required attributes' do
-      it 'fails the result' do
-        result = described_class.call(bundle_identifier: registered_bundle_identifier)
-        expect(result).to_not be_success
-      end
-
-      it 'assigns the first validation error messages from the device subscription as the message on the result' do
-        device_sub = DeviceSubscription.new
-        device_sub.valid?
-        message = "Cannot create device subscription: " + device_sub.errors.full_messages.first
-
-        result = described_class.call(bundle_identifier: registered_bundle_identifier)
-        expect(result.message).to eq message
-      end
-
-      it 'does not create a subscription' do
-        expect {
-          described_class.call(bundle_identifier: registered_bundle_identifier)
-        }.to_not change { DeviceSubscription.count }
-      end
-
-      it 'does not create a new platform endpoint with SNS' do
-        expect(Aws::SNS::Client).to_not receive(:new)
-        described_class.call(bundle_identifier: registered_bundle_identifier)
-      end
-    end
-
     context 'when an APNS device subscription already exists with the device token and bundle identifier' do
       let!(:existing_subscription) { create(:device_subscription, :apns, sns_application: registered_application) }
 
@@ -48,7 +21,7 @@ describe APNS::CreateSubscription do
       end
 
       it 'does not create a new platform endpoint on SNS' do
-        expect(Aws::SNS::Client).to_not receive(:new)
+        expect(SnsEndpointService).to_not receive(:create_subscription_endpoint)
 
         described_class.call({
           logged_in_user_id: existing_subscription.logged_in_user_id,
@@ -111,11 +84,11 @@ describe APNS::CreateSubscription do
       context 'and the SNS platform endpoint creation fails' do
         let(:expected_error_message) { 'Original exception error message' }
         before do
-          exception = Aws::SNS::Errors::InvalidParameterException.new(nil, expected_error_message)
-          sns_client.stub_responses(:create_platform_endpoint, exception)
+          exception = SnsEndpointService::ServiceError.new(expected_error_message)
+          allow(SnsEndpointService).to receive(:create_subscription_endpoint).and_raise(exception)
         end
 
-        it 'fails the interactor with the SNS error message' do
+        it 'fails the interactor with the error message' do
           result = described_class.call({
             logged_in_user_id: 1,
             bundle_identifier: registered_bundle_identifier,
@@ -140,7 +113,7 @@ describe APNS::CreateSubscription do
       context 'and the SNS platform endpoint creation succeeds' do
         let(:newly_created_endpoint_arn) { 'arn.from.create' }
         before do
-          sns_client.stub_responses(:create_platform_endpoint, endpoint_arn: newly_created_endpoint_arn)
+          allow(SnsEndpointService).to receive(:create_subscription_endpoint).and_return(newly_created_endpoint_arn)
         end
 
         it 'creates a new device subscription' do

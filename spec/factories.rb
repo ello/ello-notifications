@@ -21,6 +21,10 @@ FactoryGirl.define do
     enabled true
     platform_device_identifier 'someident'
 
+    trait :creatable_on_sns do
+      endpoint_arn nil
+    end
+
     trait :apns do
       sns_application { build(:sns_application, :apns) }
       platform_device_identifier { Faker::Ello.ios_device_token }
