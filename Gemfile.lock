@@ -1,6 +1,6 @@
 GIT
   remote: https://d2875f16aaedb1581039f5da38bf53250aadf4e2@github.com/ello/ello_protobufs.git
-  revision: b588514b99bc45c1bb7a7b6bc24351e6a5542759
+  revision: 30740cb821ccf58d42e2c1eb71076a037349d4cb
   branch: bb-initial-pass
   specs:
     ello_protobufs (0.1.0)
@@ -96,7 +96,7 @@ GEM
     method_source (0.8.2)
     middleware (0.1.0)
     mime-types (2.4.3)
-    minitest (5.6.0)
+    minitest (5.6.1)
     multi_json (1.11.0)
     nenv (0.2.0)
     notiffany (0.0.6)
