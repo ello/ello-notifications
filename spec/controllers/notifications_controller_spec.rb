@@ -5,7 +5,7 @@ describe NotificationsController, type: :request do
   describe 'POST #create' do
     context 'with default content-type' do
       it 'fails with status code 406' do
-        post notifications_path
+        post create_notification_path
 
         expect(response.code).to eq '406'
       end
@@ -14,9 +14,9 @@ describe NotificationsController, type: :request do
     context 'using binary content-type' do
       before do
         # short-hand aliases for test readability purposes
-        stub_const('CreateNotificationFailureReason', ElloProtobufs::NotificationService::CreateNotificationFailureReason)
+        stub_const('ServiceFailureReason', ElloProtobufs::NotificationService::ServiceFailureReason)
         stub_const('CreateNotificationRequest', ElloProtobufs::NotificationService::CreateNotificationRequest)
-        stub_const('CreateNotificationResponse', ElloProtobufs::NotificationService::CreateNotificationResponse)
+        stub_const('ServiceResponse', ElloProtobufs::NotificationService::ServiceResponse)
         stub_const('NotificationType', ElloProtobufs::NotificationType)
       end
 
@@ -35,7 +35,7 @@ describe NotificationsController, type: :request do
           successful_context = double('Context', success?: true, failure?: false)
           allow(CreateNotification).to receive(:call).and_return(successful_context)
 
-          post notifications_path, create_notification_request.encode, headers
+          post create_notification_path, create_notification_request.encode, headers
         end
 
         it 'passes the required params and request body to the interactor' do
@@ -49,19 +49,19 @@ describe NotificationsController, type: :request do
         end
 
         it 'responds with a successful response object' do
-          resp = CreateNotificationResponse.decode(response.body)
+          resp = ServiceResponse.decode(response.body)
           expect(resp).to be_success
         end
       end
 
       context 'when the creation fails' do
-        let(:expected_failure_reason) { CreateNotificationFailureReason::UNKNOWN_NOTIFICATION_TYPE }
+        let(:expected_failure_reason) { ServiceFailureReason::UNKNOWN_NOTIFICATION_TYPE }
 
         before do
           failed_context = double('Context', success?: false, failure?: true, failure_reason: expected_failure_reason)
           allow(CreateNotification).to receive(:call).and_return(failed_context)
 
-          post notifications_path, create_notification_request.encode, headers
+          post create_notification_path, create_notification_request.encode, headers
         end
 
         it 'fails with status code 403' do
@@ -69,7 +69,7 @@ describe NotificationsController, type: :request do
         end
 
         it 'includes the correct failure reason in the response' do
-          resp = CreateNotificationResponse.decode(response.body)
+          resp = ServiceResponse.decode(response.body)
           expect(resp.failure_reason).to eq(expected_failure_reason)
         end
       end

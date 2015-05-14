@@ -13,7 +13,7 @@ class CreateNotification
         end
       end
     else
-      reason = ElloProtobufs::NotificationService::CreateNotificationFailureReason::UNKNOWN_NOTIFICATION_TYPE
+      reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_TYPE
       context.fail!(failure_reason: reason)
     end
   end
@@ -21,7 +21,7 @@ class CreateNotification
   private
 
   def valid_notification_type?
-    context[:request].type != ElloProtobufs::NotificationType::UNSPECIFIED
+    context[:request].type != ElloProtobufs::NotificationType::UNSPECIFIED_TYPE
   end
 
   def user_subscriptions

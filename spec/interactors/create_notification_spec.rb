@@ -5,7 +5,7 @@ describe CreateNotification do
   context 'when called with the required parameters' do
     before do
       # short-hand aliases for test readability purposes
-      stub_const('CreateNotificationFailureReason', ElloProtobufs::NotificationService::CreateNotificationFailureReason)
+      stub_const('ServiceFailureReason', ElloProtobufs::NotificationService::ServiceFailureReason)
       stub_const('CreateNotificationRequest', ElloProtobufs::NotificationService::CreateNotificationRequest)
       stub_const('NotificationType', ElloProtobufs::NotificationType)
     end
@@ -25,12 +25,12 @@ describe CreateNotification do
     end
 
     context 'when the notification type is unknown' do
-      let(:notification_type) { NotificationType::UNSPECIFIED }
+      let(:notification_type) { NotificationType::UNSPECIFIED_TYPE }
 
       it 'fails the context with an error reason' do
         result = call_interactor
         expect(result).to_not be_success
-        expect(result.failure_reason).to eq(CreateNotificationFailureReason::UNKNOWN_NOTIFICATION_TYPE)
+        expect(result.failure_reason).to eq(ServiceFailureReason::UNKNOWN_NOTIFICATION_TYPE)
       end
     end
 
