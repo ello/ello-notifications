@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe SnsEndpointService do
+describe SnsService do
   let!(:sns_client) { Aws::SNS::Client.new }
   before { allow(Aws::SNS::Client).to receive(:new).and_return(sns_client) }
 
@@ -30,7 +30,7 @@ describe SnsEndpointService do
         expect {
           described_class.create_subscription_endpoint(uncreatable_subscription)
         }.to raise_error { |error|
-          expect(error).to be_a(SnsEndpointService::ServiceError)
+          expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq message
         }
       end
@@ -39,7 +39,7 @@ describe SnsEndpointService do
         expect(sns_client).to_not receive(:create_platform_endpoint)
         begin
           described_class.create_subscription_endpoint(uncreatable_subscription)
-        rescue SnsEndpointService::ServiceError => _
+        rescue SnsService::ServiceError => _
           # noop
         end
       end
@@ -55,7 +55,7 @@ describe SnsEndpointService do
         expect {
           described_class.create_subscription_endpoint(new_subscription)
         }.to raise_error { |error|
-          expect(error).to be_a(SnsEndpointService::ServiceError)
+          expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq original_error_message
           expect(error.original_exception).to eq original_exception
         }
@@ -94,7 +94,7 @@ describe SnsEndpointService do
         expect {
           described_class.delete_subscription_endpoint(existing_subscription)
         }.to raise_error { |error|
-          expect(error).to be_a(SnsEndpointService::ServiceError)
+          expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq original_error_message
           expect(error.original_exception).to eq original_exception
         }

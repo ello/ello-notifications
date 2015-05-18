@@ -5,9 +5,9 @@ class APNS::DeleteSubscription
   def call
     if subscription = find_subscription_from_context
       begin
-        SnsEndpointService.delete_subscription_endpoint(subscription)
+        SnsService.delete_subscription_endpoint(subscription)
         subscription.destroy
-      rescue SnsEndpointService::ServiceError => e
+      rescue SnsService::ServiceError => e
         context.fail!(message: e.message)
       end
     else

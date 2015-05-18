@@ -21,7 +21,7 @@ describe APNS::CreateSubscription do
       end
 
       it 'does not create a new platform endpoint on SNS' do
-        expect(SnsEndpointService).to_not receive(:create_subscription_endpoint)
+        expect(SnsService).to_not receive(:create_subscription_endpoint)
 
         described_class.call({
           logged_in_user_id: existing_subscription.logged_in_user_id,
@@ -84,8 +84,8 @@ describe APNS::CreateSubscription do
       context 'and the SNS platform endpoint creation fails' do
         let(:expected_error_message) { 'Original exception error message' }
         before do
-          exception = SnsEndpointService::ServiceError.new(expected_error_message)
-          allow(SnsEndpointService).to receive(:create_subscription_endpoint).and_raise(exception)
+          exception = SnsService::ServiceError.new(expected_error_message)
+          allow(SnsService).to receive(:create_subscription_endpoint).and_raise(exception)
         end
 
         it 'fails the interactor with the error message' do
@@ -113,7 +113,7 @@ describe APNS::CreateSubscription do
       context 'and the SNS platform endpoint creation succeeds' do
         let(:newly_created_endpoint_arn) { 'arn.from.create' }
         before do
-          allow(SnsEndpointService).to receive(:create_subscription_endpoint).and_return(newly_created_endpoint_arn)
+          allow(SnsService).to receive(:create_subscription_endpoint).and_return(newly_created_endpoint_arn)
         end
 
         it 'creates a new device subscription' do

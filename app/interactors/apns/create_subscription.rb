@@ -13,10 +13,10 @@ class APNS::CreateSubscription
     else
       begin
         subscription = build_subscription_from_context
-        subscription.endpoint_arn = SnsEndpointService.create_subscription_endpoint(subscription)
+        subscription.endpoint_arn = SnsService.create_subscription_endpoint(subscription)
         subscription.save
         context[:subscription] = subscription
-      rescue SnsEndpointService::ServiceError => e
+      rescue SnsService::ServiceError => e
         context.fail!(message: e.message)
       end
     end

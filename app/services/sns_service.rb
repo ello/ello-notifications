@@ -1,4 +1,4 @@
-class SnsEndpointService
+class SnsService
   class ServiceError < StandardError
     attr_reader :original_exception
     def initialize(message, original_exception=nil)
