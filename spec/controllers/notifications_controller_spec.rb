@@ -32,7 +32,7 @@ describe NotificationsController, type: :request do
 
       context 'when the creation succeeds' do
         before do
-          successful_context = double('Context', success?: true, failure?: false)
+          successful_context = build_successful_context
           allow(CreateNotification).to receive(:call).and_return(successful_context)
 
           post create_notification_path, create_notification_request.encode, headers
@@ -58,7 +58,7 @@ describe NotificationsController, type: :request do
         let(:expected_failure_reason) { ServiceFailureReason::UNKNOWN_NOTIFICATION_TYPE }
 
         before do
-          failed_context = double('Context', success?: false, failure?: true, failure_reason: expected_failure_reason)
+          failed_context = build_failed_context(failure_reason: expected_failure_reason)
           allow(CreateNotification).to receive(:call).and_return(failed_context)
 
           post create_notification_path, create_notification_request.encode, headers

@@ -131,14 +131,45 @@ describe CreateNotification do
     end
 
     context 'when the destination user has multiple enabled subscriptions' do
-      it 'delivers the notification to all subscriptions' do
-        request.post = create(:protobuf_post, :repost)
-        user_subscriptions = create_list(:device_subscription, 2, :apns, logged_in_user_id: user_id)
+      let!(:user_subscriptions) { create_list(:device_subscription, 2, :apns, logged_in_user_id: user_id) }
+      before { request.post = create(:protobuf_post, :repost) }
 
+      it 'delivers the notification to all subscriptions' do
         call_interactor
         user_subscriptions.each do |sub|
           expect(APNS::DeliverNotification).to have_received(:call).
             with(hash_including(endpoint_arn: sub.endpoint_arn))
+        end
+      end
+
+      context 'when the first subscription delivery fails' do
+        let(:failed_context) do
+          build_failed_context(endpoint_arn: user_subscriptions.first.endpoint_arn,
+                               notification: instance_double(Notification),
+                               message: 'some error')
+        end
+
+        before do
+          allow(APNS::DeliverNotification).to receive(:call).
+            and_return(failed_context, build_successful_context)
+        end
+
+        it 'logs the failure' do
+          error_message = "Failed to send notification to ARN: #{failed_context.endpoint_arn}.  Error received: #{failed_context.message}.  Given request: #{request}"
+          expect(Rails.logger).to receive(:warn).with(error_message)
+
+          call_interactor
+        end
+
+        it 'continues sending after the first failure' do
+          call_interactor
+
+          expect(APNS::DeliverNotification).to have_received(:call).twice
+        end
+
+        it 'does not fail externally when a notification fails to deliver' do
+          result = call_interactor
+          expect(result).to be_success
         end
       end
     end

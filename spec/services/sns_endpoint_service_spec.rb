@@ -46,7 +46,7 @@ describe SnsService do
     end
 
     context 'when the SNS platform endpoint creation fails' do
-      it 'fails the interactor with the SNS error message' do
+      it 'raises a service error with the original exception and exception message' do
         original_error_message = 'Original exception error message'
         original_exception = Aws::SNS::Errors::InvalidParameterException.new(nil, original_error_message)
 
@@ -93,6 +93,38 @@ describe SnsService do
 
         expect {
           described_class.delete_subscription_endpoint(existing_subscription)
+        }.to raise_error { |error|
+          expect(error).to be_a(SnsService::ServiceError)
+          expect(error.message).to eq original_error_message
+          expect(error.original_exception).to eq original_exception
+        }
+      end
+    end
+  end
+
+  describe '.deliver_notification' do
+    it 'delivers a notification payload with SNS' do
+      endpoint_arn = Faker::Ello.sns_apns_endpoint_arn
+      notification = { foo: 'bar' }
+
+      expect(sns_client).to receive(:publish).with({
+        target_arn: endpoint_arn,
+        message_structure: 'json',
+        message: notification.to_json
+      }).and_call_original
+
+      described_class.deliver_notification(endpoint_arn, notification)
+    end
+
+    context 'when the SNS platform publish fails' do
+      it 'raises a service error with the original exception and exception message' do
+        original_error_message = 'Original exception error message'
+        original_exception = Aws::SNS::Errors::InvalidParameterException.new(nil, original_error_message)
+
+        sns_client.stub_responses(:publish, original_exception)
+
+        expect {
+          described_class.deliver_notification('endpoint', {})
         }.to raise_error { |error|
           expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq original_error_message

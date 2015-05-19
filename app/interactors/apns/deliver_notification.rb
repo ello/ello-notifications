@@ -6,21 +6,19 @@ class APNS::DeliverNotification
   end
 
   def call
-    sns = Aws::SNS::Client.new
-    sns.publish({
-      target_arn: context[:endpoint_arn],
-      message_structure: 'json',
-      message: {
-        platform_key => {
-          aps: {
-            alert: {
-              title: context[:notification].title,
-              body: context[:notification].body
-            }
+    SnsService.deliver_notification(
+      context[:endpoint_arn], {
+      platform_key => {
+        aps: {
+          alert: {
+            title: context[:notification].title,
+            body: context[:notification].body
           }
-        }.merge(context[:notification].metadata).to_json
-      }.to_json
+        }
+      }.merge(context[:notification].metadata).to_json
     })
+  rescue SnsService::ServiceError => e
+    context.fail!(message: e.message)
   end
 
   private

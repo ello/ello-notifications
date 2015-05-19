@@ -26,14 +26,9 @@ describe APNS::DeliverNotification do
 
     before { allow(Aws::SNS::Client).to receive(:new).and_return(sns_client) }
 
-    it 'delivers the notification with SNS' do
+    it 'delivers the notification to the desired endpoint via the SNS service' do
       endpoint_arn = Faker::Ello.sns_apns_endpoint_arn
-      expect(sns_client).to receive(:publish).with({
-        target_arn: endpoint_arn,
-        message_structure: 'json',
-        message: kind_of(String)
-      })
-
+      expect(SnsService).to receive(:deliver_notification).with(endpoint_arn, anything)
       described_class.call({
         endpoint_arn: endpoint_arn,
         notification: Notification.new
@@ -46,7 +41,7 @@ describe APNS::DeliverNotification do
       it 'nests the notification data inside the sandbox message container' do
         notification = build(:notification, metadata: { some_key: 'value' })
         expected_message = {
-          APNS_SANDBOX: {
+          'APNS_SANDBOX' => {
             aps: {
               alert: {
                 title: notification.title,
@@ -55,11 +50,9 @@ describe APNS::DeliverNotification do
             },
             some_key: 'value'
           }.to_json
-        }.to_json
+        }
 
-        expect(sns_client).to receive(:publish).with(hash_including({
-          message: expected_message
-        }))
+        expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
 
         described_class.call({
           endpoint_arn: sandbox_endpoint_arn,
@@ -74,7 +67,7 @@ describe APNS::DeliverNotification do
       it 'nests the notification data inside the production message container' do
         notification = build(:notification, metadata: { some_key: 'value' })
         expected_message = {
-          APNS: {
+          'APNS' => {
             aps: {
               alert: {
                 title: notification.title,
@@ -83,11 +76,9 @@ describe APNS::DeliverNotification do
             },
             some_key: 'value'
           }.to_json
-        }.to_json
+        }
 
-        expect(sns_client).to receive(:publish).with(hash_including({
-          message: expected_message
-        }))
+        expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
 
         described_class.call({
           endpoint_arn: production_endpoint_arn,

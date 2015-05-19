@@ -26,17 +26,14 @@ describe CreateDeviceSubscription do
 
     context 'when the dispatched interactor fails' do
       it 'bubbles up the failure with the appropriate reason' do
-        mock_result = double('Result', {
-          success?: false,
-          failure?: true,
-          failure_reason: ElloProtobufs::NotificationService::ServiceFailureReason::UNSPECIFIED_REASON
-        })
+        failure_reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNSPECIFIED_REASON
+        mock_result = build_failed_context(failure_reason: failure_reason)
         expect(APNS::CreateSubscription).to receive(:call).and_return(mock_result)
 
         result = described_class.call(request: request)
 
         expect(result).to_not be_success
-        expect(result.failure_reason).to eq mock_result.failure_reason
+        expect(result.message).to eq mock_result.message
       end
     end
   end

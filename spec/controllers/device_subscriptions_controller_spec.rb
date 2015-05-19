@@ -26,7 +26,7 @@ describe DeviceSubscriptionsController, type: :request do
 
       context 'when the creation succeeds' do
         before do
-          successful_context = double('Context', success?: true, failure?: false)
+          successful_context = build_successful_context
           allow(CreateDeviceSubscription).to receive(:call).and_return(successful_context)
 
           post create_device_subscription_path, create_device_subscription_request.encode, headers
@@ -50,9 +50,11 @@ describe DeviceSubscriptionsController, type: :request do
 
       context 'when the creation fails' do
         let(:expected_failure_reason) { ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_PLATFORM }
+        let(:expected_failure_details) { 'some more detailed text error' }
 
         before do
-          failed_context = double('Context', success?: false, failure?: true, failure_reason: expected_failure_reason)
+          failed_context = build_failed_context(failure_reason: expected_failure_reason,
+                                                message: expected_failure_details)
           allow(CreateDeviceSubscription).to receive(:call).and_return(failed_context)
 
           post create_device_subscription_path, create_device_subscription_request.encode, headers
@@ -62,9 +64,10 @@ describe DeviceSubscriptionsController, type: :request do
           expect(response.code).to eq '403'
         end
 
-        it 'includes the correct failure reason in the response' do
+        it 'includes the correct failure reason and details in the response' do
           resp = ElloProtobufs::NotificationService::ServiceResponse.decode(response.body)
           expect(resp.failure_reason).to eq(expected_failure_reason)
+          expect(resp.failure_details).to eq(expected_failure_details)
         end
       end
     end
@@ -94,7 +97,7 @@ describe DeviceSubscriptionsController, type: :request do
 
       context 'when the deletion succeeds' do
         before do
-          successful_context = double('Context', success?: true, failure?: false)
+          successful_context = build_successful_context
           allow(DeleteDeviceSubscription).to receive(:call).and_return(successful_context)
 
           post delete_device_subscription_path, delete_device_subscription_request.encode, headers
@@ -118,9 +121,11 @@ describe DeviceSubscriptionsController, type: :request do
 
       context 'when the deletion fails' do
         let(:expected_failure_reason) { ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_PLATFORM }
+        let(:expected_failure_details) { 'some more detailed text error' }
 
         before do
-          failed_context = double('Context', success?: false, failure?: true, failure_reason: expected_failure_reason)
+          failed_context = build_failed_context(failure_reason: expected_failure_reason,
+                                                message: expected_failure_details)
           allow(DeleteDeviceSubscription).to receive(:call).and_return(failed_context)
 
           post delete_device_subscription_path, delete_device_subscription_request.encode, headers
@@ -133,6 +138,7 @@ describe DeviceSubscriptionsController, type: :request do
         it 'includes the correct failure reason in the response' do
           resp = ElloProtobufs::NotificationService::ServiceResponse.decode(response.body)
           expect(resp.failure_reason).to eq(expected_failure_reason)
+          expect(resp.failure_details).to eq(expected_failure_details)
         end
       end
     end

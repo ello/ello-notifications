@@ -9,12 +9,14 @@ class CreateNotification
                                                    context[:request].destination_user_id,
                                                    related_object)
         user_subscriptions.each do |sub|
-          deliver_notification(notification, sub)
+          result = deliver_notification(notification, sub)
+          log_failure(result) if result && result.failure?
         end
       end
     else
       reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_TYPE
-      context.fail!(failure_reason: reason)
+      context.fail!(failure_reason: reason,
+                    message: "Notification type (#{context[:request].type}) is not handled")
     end
   end
 
@@ -33,6 +35,10 @@ class CreateNotification
     when SnsApplication::PLATFORM_APNS
       APNS::DeliverNotification.call(notification: notification, endpoint_arn: subscription.endpoint_arn)
     end
+  end
+
+  def log_failure(result)
+    Rails.logger.warn("Failed to send notification to ARN: #{result.endpoint_arn}.  Error received: #{result.message}.  Given request: #{context[:request]}")
   end
 
   def pluck_related_object

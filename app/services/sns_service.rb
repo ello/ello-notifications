@@ -33,5 +33,16 @@ class SnsService
     rescue Aws::Errors::ServiceError => e
       raise ServiceError.new(e.message, e)
     end
+
+    def deliver_notification(target_arn, message)
+      sns = Aws::SNS::Client.new
+      sns.publish({
+        target_arn: target_arn,
+        message_structure: 'json',
+        message: message.to_json
+      })
+    rescue Aws::Errors::ServiceError => e
+      raise ServiceError.new(e.message, e)
+    end
   end
 end

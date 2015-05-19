@@ -25,7 +25,10 @@ class ApplicationController < ActionController::API
 
   def service_response(result)
     resp = ElloProtobufs::NotificationService::ServiceResponse.new(success: result.success?)
-    resp.failure_reason = result.failure_reason if result.failure?
+    if result.failure?
+      resp.failure_reason = result.failure_reason
+      resp.failure_details = result.message
+    end
 
     resp
   end
