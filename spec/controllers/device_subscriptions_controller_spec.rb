@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 describe DeviceSubscriptionsController, type: :request do
+  let(:valid_headers) do
+    {
+      'CONTENT_TYPE' => 'application/octet-stream',
+      'ACCEPT' => 'application/octet-stream'
+    }.merge(basic_auth_env)
+  end
 
   describe 'POST #create' do
     context 'with content-type HTML' do
@@ -12,7 +18,6 @@ describe DeviceSubscriptionsController, type: :request do
     end
 
     context 'using binary content-type' do
-      let(:headers) { { 'CONTENT_TYPE' => 'application/octet-stream', 'ACCEPT' => 'application/octet-stream' } }
 
       let(:create_device_subscription_request) do
         ElloProtobufs::NotificationService::CreateDeviceSubscriptionRequest.new({
@@ -29,7 +34,7 @@ describe DeviceSubscriptionsController, type: :request do
           successful_context = build_successful_context
           allow(CreateDeviceSubscription).to receive(:call).and_return(successful_context)
 
-          post create_device_subscription_path, create_device_subscription_request.encode, headers
+          post create_device_subscription_path, create_device_subscription_request.encode, valid_headers
         end
 
         it 'passes the required params and request body to the interactor' do
@@ -57,7 +62,7 @@ describe DeviceSubscriptionsController, type: :request do
                                                 message: expected_failure_details)
           allow(CreateDeviceSubscription).to receive(:call).and_return(failed_context)
 
-          post create_device_subscription_path, create_device_subscription_request.encode, headers
+          post create_device_subscription_path, create_device_subscription_request.encode, valid_headers
         end
 
         it 'fails with status code 403' do
@@ -83,7 +88,6 @@ describe DeviceSubscriptionsController, type: :request do
     end
 
     context 'using binary content-type' do
-      let(:headers) { { 'CONTENT_TYPE' => 'application/octet-stream', 'ACCEPT' => 'application/octet-stream' } }
 
       let(:delete_device_subscription_request) do
         ElloProtobufs::NotificationService::DeleteDeviceSubscriptionRequest.new({
@@ -100,7 +104,7 @@ describe DeviceSubscriptionsController, type: :request do
           successful_context = build_successful_context
           allow(DeleteDeviceSubscription).to receive(:call).and_return(successful_context)
 
-          post delete_device_subscription_path, delete_device_subscription_request.encode, headers
+          post delete_device_subscription_path, delete_device_subscription_request.encode, valid_headers
         end
 
         it 'passes the required params and request body to the interactor' do
@@ -128,7 +132,7 @@ describe DeviceSubscriptionsController, type: :request do
                                                 message: expected_failure_details)
           allow(DeleteDeviceSubscription).to receive(:call).and_return(failed_context)
 
-          post delete_device_subscription_path, delete_device_subscription_request.encode, headers
+          post delete_device_subscription_path, delete_device_subscription_request.encode, valid_headers
         end
 
         it 'fails with status code 403' do

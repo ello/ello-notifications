@@ -28,6 +28,21 @@ environment variables.
 - **GCM** - Google Cloud Messaging - provider service for end-user
   delivery of Android push notifications
 
+## Service Authentication
+
+We are using basic auth for service authentication.  It's not a robost
+enough solution once we have multiple services in play, but it will
+suffice for now without making things overly complicated.  Check the
+`.env` file for the proper environment variables related to basic auth.
+The same values will need to be used by clients that communicate with
+the service.
+
+## AWS Configuration
+
+In order to communicate with SNS, the notifications service needs to be
+configured with an access key, secret, and specified region.  The key
+pair only needs access to SNS, not other AWS components.
+
 ## Testing Locally
 
 Since protocol buffers are a binary communication format, you have to
@@ -39,7 +54,7 @@ backslashes rather than escaping characters for multi-byte characters.
 As a result, testing with curl is recommended:
 
 ```bash
-curl http://lvh.me:3000/notifications --data-binary @./relative/path/to/request_object -H "Content-Type: application/octet-stream" -H "Accept: application/octet-stream"
+curl http://lvh.me:3000/notifications/create --data-binary @./relative/path/to/request_object -H "Content-Type: application/octet-stream" -H "Accept: application/octet-stream"
 ```
 
 In the example above, the encoded data for a notification creation has

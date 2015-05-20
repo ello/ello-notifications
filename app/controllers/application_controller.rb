@@ -1,8 +1,11 @@
 class ApplicationController < ActionController::API
   include ActionController::MimeResponds
   include ActionController::ImplicitRender
+  include ActionController::HttpAuthentication::Basic::ControllerMethods
 
   before_filter :require_binary_request
+
+  http_basic_authenticate_with name: ENV['BASIC_AUTH_USER'], password: ENV['BASIC_AUTH_PASSWORD']
 
   # custom error message from strong paramaters
   rescue_from(ActionController::ParameterMissing) do |parameter_missing_exception|

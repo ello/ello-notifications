@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 describe NotificationsController, type: :request do
+  let(:valid_headers) do
+    {
+      'CONTENT_TYPE' => 'application/octet-stream',
+      'ACCEPT' => 'application/octet-stream'
+    }.merge(basic_auth_env)
+  end
 
   describe 'POST #create' do
     context 'with default content-type' do
@@ -20,8 +26,6 @@ describe NotificationsController, type: :request do
         stub_const('NotificationType', ElloProtobufs::NotificationType)
       end
 
-      let(:headers) { { 'CONTENT_TYPE' => 'application/octet-stream', 'ACCEPT' => 'application/octet-stream' } }
-
       let(:create_notification_request) do
         CreateNotificationRequest.new({
           type: ElloProtobufs::NotificationType::FOLLOWER,
@@ -35,7 +39,7 @@ describe NotificationsController, type: :request do
           successful_context = build_successful_context
           allow(CreateNotification).to receive(:call).and_return(successful_context)
 
-          post create_notification_path, create_notification_request.encode, headers
+          post create_notification_path, create_notification_request.encode, valid_headers
         end
 
         it 'passes the required params and request body to the interactor' do
@@ -61,7 +65,7 @@ describe NotificationsController, type: :request do
           failed_context = build_failed_context(failure_reason: expected_failure_reason)
           allow(CreateNotification).to receive(:call).and_return(failed_context)
 
-          post create_notification_path, create_notification_request.encode, headers
+          post create_notification_path, create_notification_request.encode, valid_headers
         end
 
         it 'fails with status code 403' do
