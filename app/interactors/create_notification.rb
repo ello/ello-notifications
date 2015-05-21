@@ -57,7 +57,10 @@ class CreateNotification
   end
 
   def comment_related_types
-    [ ElloProtobufs::NotificationType::POST_COMMENT, ElloProtobufs::NotificationType::COMMENT_MENTION ]
+    [ ElloProtobufs::NotificationType::POST_COMMENT, ElloProtobufs::NotificationType::COMMENT_MENTION,
+      ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR,
+      ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR
+    ]
   end
 
   def user_related_types

@@ -25,7 +25,37 @@ describe Notification::Factory do
       let(:type) { 'post_comment' }
       let(:title) { 'New Comment' }
       let(:body) { "#{comment.author.username} commented on your post" }
-      let(:application_target) { comment_target(comment.parent_post_id, comment.id) }
+      let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
+    end
+  end
+
+  describe 'building a repost_comment_to_repost_author notification' do
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:comment) { create(:protobuf_comment, parent_post: repost) }
+
+    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR, 2, comment) }
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { 2 }
+      let(:type) { 'repost_comment_to_repost_author' }
+      let(:title) { 'New Comment on Your Repost' }
+      let(:body) { "#{comment.author.username} commented on your repost" }
+      let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
+    end
+  end
+
+  describe 'building a repost_comment_to_original_author notification' do
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:comment) { create(:protobuf_comment, parent_post: repost) }
+
+    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR, 2, comment) }
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { 2 }
+      let(:type) { 'repost_comment_to_original_author' }
+      let(:title) { 'New Comment on a Repost of Your Post' }
+      let(:body) { "#{comment.author.username} commented on #{comment.parent_post.author.username}'s repost of your post" }
+      let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
     end
   end
 
@@ -53,7 +83,7 @@ describe Notification::Factory do
       let(:type) { 'comment_mention' }
       let(:title) { 'New Comment Mention' }
       let(:body) { "#{comment.author.username} mentioned you in a comment" }
-      let(:application_target) { comment_target(comment.parent_post_id, comment.id) }
+      let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
     end
   end
 

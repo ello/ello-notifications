@@ -86,7 +86,8 @@ describe CreateNotification do
           end
         end
 
-        ['POST_COMMENT', 'COMMENT_MENTION'].each do |comment_related_type|
+        ['POST_COMMENT', 'COMMENT_MENTION', 'REPOST_COMMENT_TO_REPOST_AUTHOR',
+         'REPOST_COMMENT_TO_ORIGINAL_AUTHOR'].each do |comment_related_type|
           context "when the notification is a #{comment_related_type}" do
             let(:notification_type) { Object.const_get("NotificationType::#{comment_related_type}") }
             let(:comment) { create(:protobuf_comment) }

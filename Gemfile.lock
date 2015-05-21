@@ -1,6 +1,6 @@
 GIT
   remote: https://d2875f16aaedb1581039f5da38bf53250aadf4e2@github.com/ello/ello_protobufs.git
-  revision: 30740cb821ccf58d42e2c1eb71076a037349d4cb
+  revision: 536963d51d408c5c033c0ce6f601407506b5e244
   branch: bb-initial-pass
   specs:
     ello_protobufs (0.1.0)
