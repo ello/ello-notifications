@@ -1,0 +1,13 @@
+machine:
+  ruby:
+    version:
+      2.2.2
+
+dependencies:
+  bundler:
+    without: [production]
+
+checkout:
+  post:
+    # setup application .env configuration
+    - cp .env.example .env
