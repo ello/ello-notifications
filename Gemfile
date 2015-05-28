@@ -9,6 +9,8 @@ gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2'
 gem 'ello_protobufs', git: 'https://d2875f16aaedb1581039f5da38bf53250aadf4e2@github.com/ello/ello_protobufs.git'
 
+gem 'rails_12factor', group: :production
+
 # Use unicorn as the app server
 # gem 'unicorn'
 
