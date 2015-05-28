@@ -68,8 +68,8 @@ describe NotificationsController, type: :request do
           post create_notification_path, create_notification_request.encode, valid_headers
         end
 
-        it 'fails with status code 403' do
-          expect(response.code).to eq '403'
+        it 'succeeds with status code 200' do
+          expect(response.code).to eq '200'
         end
 
         it 'includes the correct failure reason in the response' do

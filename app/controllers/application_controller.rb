@@ -21,9 +21,7 @@ class ApplicationController < ActionController::API
   end
 
   def render_protobuf_response(resp)
-    send_data resp.encode,
-      type: 'application/octet-stream',
-      status: resp.success ? 200 : 403
+    send_data resp.encode, type: 'application/octet-stream'
   end
 
   def service_response(result)
@@ -35,5 +33,4 @@ class ApplicationController < ActionController::API
 
     resp
   end
-
 end

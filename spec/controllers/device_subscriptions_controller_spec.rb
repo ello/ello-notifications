@@ -65,8 +65,8 @@ describe DeviceSubscriptionsController, type: :request do
           post create_device_subscription_path, create_device_subscription_request.encode, valid_headers
         end
 
-        it 'fails with status code 403' do
-          expect(response.code).to eq '403'
+        it 'succeeds with status code 200' do
+          expect(response.code).to eq '200'
         end
 
         it 'includes the correct failure reason and details in the response' do
@@ -135,8 +135,8 @@ describe DeviceSubscriptionsController, type: :request do
           post delete_device_subscription_path, delete_device_subscription_request.encode, valid_headers
         end
 
-        it 'fails with status code 403' do
-          expect(response.code).to eq '403'
+        it 'succeeds with status code 200' do
+          expect(response.code).to eq '200'
         end
 
         it 'includes the correct failure reason in the response' do
