@@ -23,7 +23,7 @@ class CreateDeviceSubscription
       logged_in_user_id: request.logged_in_user_id
     })
 
-    context.fail!(failure_reason: result.failure_reason) if result.failure?
+    context.fail!(message: result.message, failure_reason: result.failure_reason) if result.failure?
   end
 
   def fail_as_unknown

@@ -27,7 +27,8 @@ describe DeleteDeviceSubscription do
     context 'when the dispatched interactor fails' do
       it 'bubbles up the failure with the appropriate reason' do
         failure_reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNSPECIFIED_REASON
-        mock_result = build_failed_context(failure_reason: failure_reason)
+        message = 'some message'
+        mock_result = build_failed_context(failure_reason: failure_reason, message: message)
         expect(APNS::DeleteSubscription).to receive(:call).and_return(mock_result)
 
         result = described_class.call(request: request)
