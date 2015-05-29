@@ -10,7 +10,7 @@ class Notification::Factory::TypeDecorator
     end
 
     def application_target
-      @application_target = "ello://" + yield
+      @application_target = yield
     end
   end
 

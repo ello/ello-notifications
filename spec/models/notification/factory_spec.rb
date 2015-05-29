@@ -116,7 +116,7 @@ describe Notification::Factory do
   end
 
   def post_target(id, full_target=true)
-    "ello://notifications/posts/#{id}"
+    "notifications/posts/#{id}"
   end
 
   def comment_target(parent_post_id, id)
@@ -124,6 +124,6 @@ describe Notification::Factory do
   end
 
   def user_target(id)
-    "ello://notifications/users/#{id}"
+    "notifications/users/#{id}"
   end
 end
