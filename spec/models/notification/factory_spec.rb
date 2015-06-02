@@ -59,6 +59,50 @@ describe Notification::Factory do
     end
   end
 
+  describe 'building a post_love notification' do
+    let(:love) { create(:protobuf_love) }
+
+    subject { described_class.build(ElloProtobufs::NotificationType::POST_LOVE, 2, love) }
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { 2 }
+      let(:type) { 'post_love' }
+      let(:title) { 'New Love' }
+      let(:body) { "#{love.user.username} loved your post" }
+      let(:application_target) { post_target(love.post.id) }
+    end
+  end
+
+  describe 'building a repost_love_to_repost_author notification' do
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:love) { create(:protobuf_love, post: repost) }
+
+    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR, 2, love) }
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { 2 }
+      let(:type) { 'repost_love_to_repost_author' }
+      let(:title) { 'New Love on Your Repost' }
+      let(:body) { "#{love.user.username} loved your repost" }
+      let(:application_target) { post_target(love.post.id) }
+    end
+  end
+
+  describe 'building a repost_love_to_original_author notification' do
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:love) { create(:protobuf_love, post: repost) }
+
+    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR, 2, love) }
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { 2 }
+      let(:type) { 'repost_love_to_original_author' }
+      let(:title) { 'New Love on a Repost of Your Post' }
+      let(:body) { "#{love.user.username} loved #{love.post.author.username}'s repost of your post" }
+      let(:application_target) { post_target(love.post.id) }
+    end
+  end
+
   describe 'building a post_mention notification' do
     let(:post) { create(:protobuf_post) }
 

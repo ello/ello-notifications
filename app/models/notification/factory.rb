@@ -40,6 +40,28 @@ class Notification::Factory
     application_target { "notifications/posts/#{related_object.parent_post.id}/comments/#{related_object.id}" }
   end
 
+  register_type ElloProtobufs::NotificationType::POST_LOVE, 'post_love' do |related_object|
+    title { I18n.t('notification_factory.post_love.title') }
+    body { I18n.t('notification_factory.post_love.body', username: related_object.user.username) }
+    application_target { "notifications/posts/#{related_object.post.id}" }
+  end
+
+  register_type ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR, 'repost_love_to_repost_author' do |related_object|
+    title { I18n.t('notification_factory.repost_love_to_repost_author.title') }
+    body { I18n.t('notification_factory.repost_love_to_repost_author.body', username: related_object.user.username) }
+    application_target { "notifications/posts/#{related_object.post.id}" }
+  end
+
+  register_type ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR, 'repost_love_to_original_author' do |related_object|
+    title { I18n.t('notification_factory.repost_love_to_original_author.title') }
+    body do
+      I18n.t('notification_factory.repost_love_to_original_author.body',
+             username: related_object.user.username,
+             reposter_username: related_object.post.author.username)
+    end
+    application_target { "notifications/posts/#{related_object.post.id}" }
+  end
+
   register_type ElloProtobufs::NotificationType::POST_MENTION, 'post_mention' do |related_object|
     title { I18n.t('notification_factory.post_mention.title') }
     body { I18n.t('notification_factory.post_mention.body', username: related_object.author.username) }
