@@ -49,6 +49,8 @@ class CreateNotification
       context[:request].comment
     when *user_related_types
       context[:request].user
+    when *love_related_types
+      context[:request].love
     end
   end
 
@@ -60,6 +62,13 @@ class CreateNotification
     [ ElloProtobufs::NotificationType::POST_COMMENT, ElloProtobufs::NotificationType::COMMENT_MENTION,
       ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR,
       ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR
+    ]
+  end
+
+  def love_related_types
+    [ ElloProtobufs::NotificationType::POST_LOVE, ElloProtobufs::NotificationType::POST_LOVE,
+      ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR,
+      ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR
     ]
   end
 

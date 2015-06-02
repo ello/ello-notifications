@@ -16,6 +16,15 @@ en:
     repost_comment_to_original_author:
       title: 'New Comment on a Repost of Your Post'
       body: "%{username} commented on %{reposter_username}'s repost of your post"
+    post_love:
+      title: 'New Love'
+      body: "%{username} loved your post"
+    repost_love_to_repost_author:
+      title: 'New Love on Your Repost'
+      body: "%{username} loved your repost"
+    repost_love_to_original_author:
+      title: 'New Love on a Repost of Your Post'
+      body: "%{username} loved %{reposter_username}'s repost of your post"
     post_mention:
       title: 'New Post Mention'
       body: "%{username} mentioned you in a post"

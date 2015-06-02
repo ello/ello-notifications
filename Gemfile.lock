@@ -1,6 +1,6 @@
 GIT
   remote: https://d2875f16aaedb1581039f5da38bf53250aadf4e2@github.com/ello/ello_protobufs.git
-  revision: 536e6d3e8432f7d6e2458cef90a7171470982f3c
+  revision: db374be96b2d37a59715133e8fe4eb5b7871f3ea
   specs:
     ello_protobufs (0.1.0)
       protobuf (~> 3.5.0)
@@ -81,7 +81,7 @@ GEM
     interactor (3.1.0)
     jmespath (1.0.2)
       multi_json (~> 1.0)
-    json (1.8.2)
+    json (1.8.3)
     json_spec (1.1.4)
       multi_json (~> 1.0)
       rspec (>= 2.0, < 4.0)
@@ -95,7 +95,7 @@ GEM
     method_source (0.8.2)
     middleware (0.1.0)
     mime-types (2.4.3)
-    minitest (5.6.1)
+    minitest (5.7.0)
     multi_json (1.11.0)
     nenv (0.2.0)
     notiffany (0.0.6)
