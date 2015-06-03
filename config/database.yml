@@ -15,4 +15,4 @@ test:
 
 production:
   url:  <%= ENV["DATABASE_URL"] %>
-  pool: <%= ENV["DB_POOL"] || ENV['MAX_THREADS'] || 5 %>production:
+  pool: <%= ENV["DB_POOL"] || ENV['MAX_THREADS'] || 5 %>
