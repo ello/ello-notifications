@@ -93,7 +93,8 @@ class Notification::Factory
   def build
     notification = Notification.new(metadata: common_metadata)
 
-    decorator_for_type(@type).decorate(notification, @related_object)
+    # clone the decorator to prevent thread-safety issues
+    decorator_for_type(@type).clone.decorate(notification, @related_object)
 
     notification
   end
