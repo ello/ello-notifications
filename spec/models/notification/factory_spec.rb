@@ -1,12 +1,27 @@
 require 'rails_helper'
 
 describe Notification::Factory do
+  describe '.build' do
+    describe 'for thread safety reasons' do
+      it 'clones the decorator before using it to decorate the notification' do
+        comment = create(:protobuf_comment)
+        cloned_decorator = instance_spy(Notification::Factory::TypeDecorator)
+        allow_any_instance_of(Notification::Factory::TypeDecorator).to receive(:clone).
+          and_return(cloned_decorator)
+
+        described_class.build(ElloProtobufs::NotificationType::POST_COMMENT, 2, comment)
+
+        expect(cloned_decorator).to have_received(:decorate)
+      end
+    end
+  end
+
   describe 'building a repost notification' do
     let(:repost) { create(:protobuf_post, :repost) }
 
     subject { described_class.build(ElloProtobufs::NotificationType::REPOST, 2, repost) }
 
-    it_behaves_like 'a notification with', focus: true do
+    it_behaves_like 'a notification with' do
       let(:destination_user_id) { 2 }
       let(:type) { 'repost' }
       let(:title) { 'New Repost' }
