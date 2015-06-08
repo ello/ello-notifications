@@ -4,3 +4,13 @@
 common: &default_settings
   license_key: '<%= ENV["NEW_RELIC_LICENSE_KEY"] %>'
   app_name: <%= ENV["NEW_RELIC_APP_NAME"] %>
+development:
+  <<: *default_settings
+  monitor_mode: false
+  developer_mode: true
+production:
+  <<: *default_settings
+  monitor_mode: true
+test:
+  <<: *default_settings
+  monitor_mode: false
