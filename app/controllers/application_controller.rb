@@ -5,7 +5,7 @@ class ApplicationController < ActionController::API
 
   before_filter :require_binary_request
 
-  http_basic_authenticate_with name: ENV['BASIC_AUTH_USER'], password: ENV['BASIC_AUTH_PASSWORD']
+  http_basic_authenticate_with name: ENV['BASIC_AUTH_USER'], password: ENV['BASIC_AUTH_PASSWORD'], if: :require_auth?
 
   # custom error message from strong paramaters
   rescue_from(ActionController::ParameterMissing) do |parameter_missing_exception|
@@ -15,6 +15,10 @@ class ApplicationController < ActionController::API
   end
 
   protected
+
+  def require_auth?
+    true
+  end
 
   def require_binary_request
     render nothing: true, status: 406 unless request.content_type == 'application/octet-stream' || request.headers["Accept"] =~ /octet-stream/

@@ -13,4 +13,6 @@ Rails.application.routes.draw do
   end
 
   post '/notifications/create' => 'notifications#create', as: :create_notification
+
+  get '/health_check' => 'status#health_check'
 end
