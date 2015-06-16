@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150421175138) do
+ActiveRecord::Schema.define(version: 20150616145321) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20150421175138) do
     t.integer  "sns_application_id"
   end
 
+  add_index "device_subscriptions", ["platform_device_identifier", "sns_application_id"], name: "index_device_subscriptions_on_unique_keys", unique: true, using: :btree
   add_index "device_subscriptions", ["sns_application_id"], name: "index_device_subscriptions_on_sns_application_id", using: :btree
 
   create_table "sns_applications", force: true do |t|

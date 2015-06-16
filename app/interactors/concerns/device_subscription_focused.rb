@@ -31,13 +31,15 @@ module Concerns::DeviceSubscriptionFocused
   end
 
   def find_subscription_from_context
-    find_params = subscription_params.reject { |key,_| key == :logged_in_user_id }
-    DeviceSubscription.where(find_params).first
+    DeviceSubscription.where(lookup_params).first
   end
 
   def subscription_params
+    lookup_params.merge(logged_in_user_id: context[:logged_in_user_id])
+  end
+
+  def lookup_params
     {
-      logged_in_user_id: context[:logged_in_user_id],
       sns_application: sns_application,
       platform_device_identifier: context[:platform_device_identifier],
     }
