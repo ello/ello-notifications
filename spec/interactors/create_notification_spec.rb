@@ -144,11 +144,12 @@ describe CreateNotification do
       end
 
       context 'when the first subscription delivery fails' do
+        let(:error_message) { 'some error' }
         let(:failing_subscription) { user_subscriptions.first }
         let(:failed_context) do
           build_failed_context(endpoint_arn: failing_subscription.endpoint_arn,
                                notification: instance_double(Notification),
-                               message: 'some error')
+                               message: error_message)
         end
 
         before do
@@ -163,10 +164,22 @@ describe CreateNotification do
           call_interactor
         end
 
-        it 'disables the subscription locally' do
-          expect {
-            call_interactor
-          }.to change { failing_subscription.reload.enabled }.to(false)
+        context 'and the failure reason is that the SNS endpoint is disabled' do
+          let(:error_message) { 'Endpoint is disabled' }
+
+          it 'disables the subscription locally' do
+            expect {
+              call_interactor
+            }.to change { failing_subscription.reload.enabled }.to(false)
+          end
+        end
+
+        context 'and the failure reason is anything else' do
+          it 'does not disable the subscription locally' do
+            expect {
+              call_interactor
+            }.to_not change { failing_subscription.reload.enabled }
+          end
         end
 
         it 'continues sending after the first failure' do
