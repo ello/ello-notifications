@@ -144,8 +144,9 @@ describe CreateNotification do
       end
 
       context 'when the first subscription delivery fails' do
+        let(:failing_subscription) { user_subscriptions.first }
         let(:failed_context) do
-          build_failed_context(endpoint_arn: user_subscriptions.first.endpoint_arn,
+          build_failed_context(endpoint_arn: failing_subscription.endpoint_arn,
                                notification: instance_double(Notification),
                                message: 'some error')
         end
@@ -160,6 +161,12 @@ describe CreateNotification do
           expect(Rails.logger).to receive(:warn).with(error_message)
 
           call_interactor
+        end
+
+        it 'disables the subscription locally' do
+          expect {
+            call_interactor
+          }.to change { failing_subscription.reload.enabled }.to(false)
         end
 
         it 'continues sending after the first failure' do

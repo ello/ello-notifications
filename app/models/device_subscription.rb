@@ -23,6 +23,14 @@ class DeviceSubscription < ActiveRecord::Base
     !enabled?
   end
 
+  def disable
+    update_attribute(:enabled, false)
+  end
+
+  def enable
+    update_attribute(:enabled, true)
+  end
+
   def creatable_on_sns?
     if endpoint_arn.present?
       errors.add(:endpoint_arn, 'SNS endpoint has already been created')
