@@ -73,6 +73,36 @@ describe SnsService do
     end
   end
 
+  describe '.enable_subscription_endpoint' do
+    let!(:existing_subscription) { build_stubbed(:device_subscription, :apns) }
+
+    it 'updates the attributes of the platform endpoint on SNS' do
+      expect(sns_client).to receive(:set_endpoint_attributes).with({
+        endpoint_arn: existing_subscription.endpoint_arn,
+        attributes: { 'Enabled' => 'true' }
+      }).and_call_original
+
+      described_class.enable_subscription_endpoint(existing_subscription)
+    end
+
+    context 'when the SNS endpoint deletion fails' do
+      it 'raises a service error with the original exception and exception message' do
+        original_error_message = 'Original exception error message'
+        original_exception = Aws::SNS::Errors::InvalidParameterException.new(nil, original_error_message)
+
+        sns_client.stub_responses(:set_endpoint_attributes, original_exception)
+
+        expect {
+          described_class.enable_subscription_endpoint(existing_subscription)
+        }.to raise_error { |error|
+          expect(error).to be_a(SnsService::ServiceError)
+          expect(error.message).to eq original_error_message
+          expect(error.original_exception).to eq original_exception
+        }
+      end
+    end
+  end
+
   describe '.delete_subscription_endpoint' do
     let!(:existing_subscription) { build_stubbed(:device_subscription, :apns) }
 

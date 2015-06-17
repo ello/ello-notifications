@@ -34,6 +34,16 @@ class SnsService
       raise ServiceError.new(e.message, e)
     end
 
+    def enable_subscription_endpoint(subscription)
+      sns = Aws::SNS::Client.new
+      sns.set_endpoint_attributes(
+        endpoint_arn: subscription.endpoint_arn,
+        attributes: { 'Enabled' => 'true' }
+      )
+    rescue Aws::Errors::ServiceError => e
+      raise ServiceError.new(e.message, e)
+    end
+
     def deliver_notification(target_arn, message)
       sns = Aws::SNS::Client.new
       sns.publish({
