@@ -10,7 +10,10 @@ class CreateNotification
                                                    related_object)
         user_subscriptions.each do |sub|
           result = deliver_notification(notification, sub)
-          log_failure(result) if result && result.failure?
+          if result && result.failure?
+            sub.disable if result.message.match(/Endpoint is disabled/)
+            log_failure(result)
+          end
         end
       end
     else

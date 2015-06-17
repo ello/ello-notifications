@@ -105,4 +105,22 @@ describe DeviceSubscription do
     end
   end
 
+  describe '#disable' do
+    it 'sets the enabled flag to false' do
+      record = create(:device_subscription, :apns)
+      expect {
+        record.disable
+      }.to change { record.enabled }.to(false)
+    end
+  end
+
+  describe '#enable' do
+    it 'sets the enabled flag to true' do
+      record = create(:device_subscription, :apns, :disabled)
+      expect {
+        record.enable
+      }.to change { record.enabled }.to(true)
+    end
+  end
+
 end
