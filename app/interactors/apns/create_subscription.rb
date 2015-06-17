@@ -11,15 +11,13 @@ class APNS::CreateSubscription
         enable_subscription(subscription)
       end
     else
-      begin
-        subscription = build_subscription_from_context
-        subscription.endpoint_arn = SnsService.create_subscription_endpoint(subscription)
-        subscription.save
-        context[:subscription] = subscription
-      rescue SnsService::ServiceError => e
-        context.fail!(message: e.message)
-      end
+      subscription = build_subscription_from_context
+      subscription.endpoint_arn = SnsService.create_subscription_endpoint(subscription)
+      subscription.save
+      context[:subscription] = subscription
     end
+  rescue SnsService::ServiceError => e
+    context.fail!(message: e.message)
   end
 
   private
@@ -37,6 +35,7 @@ class APNS::CreateSubscription
   end
 
   def enable_subscription(subscription)
+    SnsService.enable_subscription_endpoint(subscription)
     subscription.update_attribute(:enabled, true)
   end
 end
