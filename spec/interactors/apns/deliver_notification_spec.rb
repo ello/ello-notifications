@@ -87,6 +87,45 @@ describe APNS::DeliverNotification do
         })
       end
     end
+
+    context 'when the delivery fails' do
+      let(:exception) { SnsService::ServiceError.new('error') }
+      before { allow(SnsService).to receive(:deliver_notification).and_raise(exception) }
+
+      it 'tracks the failure' do
+        expect(ApnsDeliveryMetric).to receive(:track_delivery_failure)
+        expect(ApnsDeliveryMetric).to_not receive(:track_delivery_success)
+
+        described_class.call(
+          endpoint_arn: Faker::Ello.sns_apns_endpoint_arn,
+          notification: Notification.new
+        )
+      end
+
+      it 'fails the interactor' do
+        result = described_class.call(
+          endpoint_arn: Faker::Ello.sns_apns_endpoint_arn,
+          notification: Notification.new
+        )
+
+        expect(result).to be_failure
+        expect(result.message).to eq exception.message
+      end
+    end
+
+    context 'when the delivery succeeds' do
+      before { allow(SnsService).to receive(:deliver_notification) }
+
+      it 'tracks the success' do
+        expect(ApnsDeliveryMetric).to receive(:track_delivery_success)
+        expect(ApnsDeliveryMetric).to_not receive(:track_delivery_failure)
+
+        described_class.call(
+          endpoint_arn: Faker::Ello.sns_apns_endpoint_arn,
+          notification: Notification.new
+        )
+      end
+    end
   end
 
 end

@@ -34,6 +34,7 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
+    aggregate (0.2.2)
     arel (5.0.1.20140414130214)
     aws-sdk (2.0.39)
       aws-sdk-resources (= 2.0.39)
@@ -60,6 +61,8 @@ GEM
       railties (>= 3.0.0)
     faker (1.4.3)
       i18n (~> 0.5)
+    faraday (0.9.1)
+      multipart-post (>= 1.2, < 3)
     ffi (1.9.8)
     formatador (0.2.5)
     guard (2.12.5)
@@ -86,6 +89,16 @@ GEM
     json_spec (1.1.4)
       multi_json (~> 1.0)
       rspec (>= 2.0, < 4.0)
+    librato-metrics (1.5.1)
+      aggregate (~> 0.2.2)
+      faraday (~> 0.7)
+      multi_json
+    librato-rack (0.4.5)
+      librato-metrics (~> 1.1)
+    librato-rails (0.11.1)
+      activesupport (>= 3.0)
+      librato-rack (~> 0.4.2)
+      railties (>= 3.0)
     listen (2.10.0)
       celluloid (~> 0.16.0)
       rb-fsevent (>= 0.9.3)
@@ -98,6 +111,7 @@ GEM
     mime-types (2.4.3)
     minitest (5.7.0)
     multi_json (1.11.0)
+    multipart-post (2.0.0)
     nenv (0.2.0)
     newrelic_rpm (3.12.0.288)
     notiffany (0.0.6)
@@ -200,6 +214,7 @@ DEPENDENCIES
   honeybadger (~> 2.1.0)
   interactor (~> 3.0)
   json_spec
+  librato-rails (~> 0.11.1)
   newrelic_rpm (~> 3.12.0)
   pg
   pry-rails
@@ -209,3 +224,6 @@ DEPENDENCIES
   rails_12factor
   rspec-rails (~> 3.0)
   shoulda-matchers
+
+BUNDLED WITH
+   1.10.4

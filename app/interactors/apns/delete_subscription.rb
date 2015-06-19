@@ -7,7 +7,9 @@ class APNS::DeleteSubscription
       begin
         SnsService.delete_subscription_endpoint(subscription)
         subscription.destroy
+        ApnsSubscriptionMetric.track_deletion_success
       rescue SnsService::ServiceError => e
+        ApnsSubscriptionMetric.track_deletion_failure
         context.fail!(message: e.message)
       end
     else

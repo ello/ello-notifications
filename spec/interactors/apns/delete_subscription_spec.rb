@@ -11,6 +11,14 @@ describe APNS::DeleteSubscription do
       let!(:sns_client) { Aws::SNS::Client.new }
       let!(:existing_subscription) { create(:device_subscription, :apns, sns_application: registered_application) }
 
+      let(:call_interactor) do
+        described_class.call({
+          current_user_id: 1,
+          bundle_identifier: registered_bundle_identifier,
+          platform_device_identifier: existing_subscription.platform_device_identifier
+        })
+      end
+
       before do
         allow(Aws::SNS::Client).to receive(:new).and_return(sns_client)
       end
@@ -20,11 +28,7 @@ describe APNS::DeleteSubscription do
           endpoint_arn: existing_subscription.endpoint_arn
         }).and_call_original
 
-        described_class.call({
-          current_user_id: 1,
-          bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: existing_subscription.platform_device_identifier
-        })
+        call_interactor
       end
 
       context 'and the SNS endpoint deletion fails' do
@@ -35,11 +39,7 @@ describe APNS::DeleteSubscription do
         end
 
         it 'fails the interactor with the SNS error message' do
-          result = described_class.call({
-            current_user_id: 1,
-            bundle_identifier: registered_bundle_identifier,
-            platform_device_identifier: existing_subscription.platform_device_identifier
-          })
+          result = call_interactor
 
           expect(result).to_not be_success
           expect(result.message).to eq expected_error_message
@@ -47,24 +47,28 @@ describe APNS::DeleteSubscription do
 
         it 'does not delete the device subscription' do
           expect {
-            described_class.call({
-              current_user_id: 1,
-              bundle_identifier: registered_bundle_identifier,
-              platform_device_identifier: existing_subscription.platform_device_identifier
-            })
+            call_interactor
           }.to_not change { DeviceSubscription.count }
+        end
+
+        it 'tracks the failure' do
+          expect(ApnsSubscriptionMetric).to receive(:track_deletion_failure)
+          expect(ApnsSubscriptionMetric).to_not receive(:track_deletion_success)
+          call_interactor
         end
       end
 
       context 'and the SNS endpoint deletion succeeds' do
         it 'deletes the device subscription' do
           expect {
-            described_class.call({
-              current_user_id: 1,
-              bundle_identifier: registered_bundle_identifier,
-              platform_device_identifier: existing_subscription.platform_device_identifier
-            })
+            call_interactor
           }.to change { DeviceSubscription.count }.by(-1)
+        end
+
+        it 'tracks the success' do
+          expect(ApnsSubscriptionMetric).to receive(:track_deletion_success)
+          expect(ApnsSubscriptionMetric).to_not receive(:track_deletion_failure)
+          call_interactor
         end
       end
     end

@@ -17,7 +17,9 @@ class APNS::DeliverNotification
         }
       }.merge(context[:notification].metadata).to_json
     })
+    ApnsDeliveryMetric.track_delivery_success
   rescue SnsService::ServiceError => e
+    ApnsDeliveryMetric.track_delivery_failure
     context.fail!(message: e.message)
   end
 
