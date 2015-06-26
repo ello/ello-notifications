@@ -1,6 +1,11 @@
 class Notification::Factory::TypeDecorator
 
   module DSL
+    def include_alert(value=nil)
+      # allowing for block or direct value since this is a boolean
+      @include_alert = ( block_given? ? yield : value )
+    end
+
     def title
       @title = yield
     end
@@ -23,6 +28,7 @@ class Notification::Factory::TypeDecorator
   def decorate(notification, related_object)
     instance_exec(related_object, &@dsl_block)
 
+    notification.include_alert = @include_alert unless @include_alert.nil?
     notification.title = @title
     notification.body = @body
     notification.metadata[:type] = @human_readable_type

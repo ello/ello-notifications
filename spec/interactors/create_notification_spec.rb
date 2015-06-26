@@ -12,10 +12,11 @@ describe CreateNotification do
 
     before { allow(APNS::DeliverNotification).to receive(:call) }
 
-    let(:user_id) { 1234 }
+    let(:destination_user) { create(:user) }
+    let(:destination_user_id) { destination_user.id }
     let(:request) do
       CreateNotificationRequest.new(type: notification_type,
-                                    destination_user_id: user_id)
+                                    destination_user_id: destination_user.id)
     end
 
     let(:notification_type) { NotificationType::REPOST }
@@ -50,7 +51,7 @@ describe CreateNotification do
         request.post = create(:protobuf_post, :repost)
         application = build(:sns_application, platform: 'unknown')
         application.save(validate: false)
-        create(:device_subscription, logged_in_user_id: user_id, sns_application: application)
+        create(:device_subscription, logged_in_user_id: destination_user.id, sns_application: application)
 
         result = call_interactor
         expect(result).to be_success
@@ -59,7 +60,7 @@ describe CreateNotification do
 
     context 'when the destination user only has a disabled subscription' do
       it 'does not deliver any notifications' do
-        create(:device_subscription, :apns, :disabled, logged_in_user_id: user_id)
+        create(:device_subscription, :apns, :disabled, logged_in_user_id: destination_user.id)
 
         result = call_interactor
         expect(APNS::DeliverNotification).to_not have_received(:call)
@@ -68,7 +69,7 @@ describe CreateNotification do
     end
 
     context 'when the destination user has an enabled subscription' do
-      before { create(:device_subscription, :apns, logged_in_user_id: user_id) }
+      before { create(:device_subscription, :apns, logged_in_user_id: destination_user.id) }
 
       describe 'protobuf decoding' do
         ['REPOST', 'POST_MENTION'].each do |post_related_type|
@@ -80,7 +81,7 @@ describe CreateNotification do
 
             it 'plucks the post from the request and passes it into the notification factory' do
               expect(Notification::Factory).to receive(:build)
-                .with(notification_type, user_id, post)
+                .with(notification_type, destination_user, post)
               call_interactor
             end
           end
@@ -96,7 +97,7 @@ describe CreateNotification do
 
             it 'plucks the comment from the request and passes it into the notification factory' do
               expect(Notification::Factory).to receive(:build)
-                .with(notification_type, user_id, comment)
+                .with(notification_type, destination_user, comment)
               call_interactor
             end
           end
@@ -111,10 +112,37 @@ describe CreateNotification do
 
             it 'plucks the user from the request and passes it into the notification factory' do
               expect(Notification::Factory).to receive(:build)
-                .with(notification_type, user_id, user)
+                .with(notification_type, destination_user, user)
               call_interactor
             end
 
+          end
+        end
+      end
+
+      context 'notification count handling' do
+        before do
+          allow(User).to receive(:find_or_create_by).
+            with(id: destination_user.id).
+            and_return(destination_user)
+        end
+
+        context 'when the notification is a reset badge count notification' do
+          let(:notification_type) { NotificationType::RESET_BADGE_COUNT }
+
+          it "resets the user's notification count" do
+            expect(destination_user).to receive(:reset_notification_count)
+            call_interactor
+          end
+        end
+
+        context 'when the notification is not a reset badge count notification' do
+          let(:notification_type) { NotificationType::POST_MENTION }
+          before { request.post = create(:protobuf_post) }
+
+          it "increments the user's notification count" do
+            expect(destination_user).to receive(:increment_notification_count)
+            call_interactor
           end
         end
       end
@@ -132,7 +160,7 @@ describe CreateNotification do
     end
 
     context 'when the destination user has multiple enabled subscriptions' do
-      let!(:user_subscriptions) { create_list(:device_subscription, 2, :apns, logged_in_user_id: user_id) }
+      let!(:user_subscriptions) { create_list(:device_subscription, 2, :apns, logged_in_user_id: destination_user.id) }
       before { request.post = create(:protobuf_post, :repost) }
 
       it 'delivers the notification to all subscriptions' do
@@ -141,6 +169,12 @@ describe CreateNotification do
           expect(APNS::DeliverNotification).to have_received(:call).
             with(hash_including(endpoint_arn: sub.endpoint_arn))
         end
+      end
+
+      it "only increments the user's notification count by one" do
+        expect {
+          call_interactor
+        }.to change { destination_user.reload.notification_count }.by(1)
       end
 
       context 'when the first subscription delivery fails' do
