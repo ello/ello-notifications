@@ -24,7 +24,9 @@ describe DeviceSubscriptionsController, type: :request do
           platform: ElloProtobufs::NotificationPlatform::APNS,
           bundle_identifier: 'co.ello.ellodev',
           platform_device_identifier: '12345',
-          logged_in_user_id: 1
+          logged_in_user_id: 1,
+          marketing_version: '6.6.6',
+          build_version: '1234567'
         })
       end
 
@@ -94,7 +96,9 @@ describe DeviceSubscriptionsController, type: :request do
           platform: ElloProtobufs::NotificationPlatform::APNS,
           bundle_identifier: 'co.ello.ellodev',
           platform_device_identifier: '12345',
-          logged_in_user_id: 1
+          logged_in_user_id: 1,
+          marketing_version: '6.6.6',
+          build_version: '1234567'
         })
       end
 

@@ -6,7 +6,9 @@ describe CreateDeviceSubscription do
       platform: ElloProtobufs::NotificationPlatform::APNS,
       platform_device_identifier: '12345',
       bundle_identifier: 'co.ello.ElloDev',
-      logged_in_user_id: 1
+      logged_in_user_id: 1,
+      marketing_version: '6.6.6',
+      build_version: '1234567'
     })
   end
 
@@ -16,7 +18,9 @@ describe CreateDeviceSubscription do
       expect(APNS::CreateSubscription).to receive(:call).with({
         platform_device_identifier: request.platform_device_identifier,
         bundle_identifier: request.bundle_identifier,
-        logged_in_user_id: request.logged_in_user_id
+        logged_in_user_id: request.logged_in_user_id,
+        marketing_version: request.marketing_version,
+        build_version: request.build_version
       }).and_return(mock_result)
 
       result = described_class.call(request: request)
