@@ -15,7 +15,7 @@ gem 'puma', '2.11.3'
 gem 'pg'
 gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2'
-gem 'ello_protobufs', git: 'https://d2875f16aaedb1581039f5da38bf53250aadf4e2@github.com/ello/ello_protobufs.git'
+gem 'ello_protobufs', git: 'https://2ff2cae345bc7f056ddc07f2b54317b71ba29ebb@github.com/ello/ello_protobufs.git'
 
 gem 'newrelic_rpm', '~> 3.12.0'
 gem 'librato-rails', '~> 0.11.1'

@@ -1,6 +1,6 @@
 GIT
-  remote: https://d2875f16aaedb1581039f5da38bf53250aadf4e2@github.com/ello/ello_protobufs.git
-  revision: db374be96b2d37a59715133e8fe4eb5b7871f3ea
+  remote: https://2ff2cae345bc7f056ddc07f2b54317b71ba29ebb@github.com/ello/ello_protobufs.git
+  revision: 654d28f8175550283020c8191b93257876adb556
   specs:
     ello_protobufs (0.1.0)
       protobuf (~> 3.5.0)
@@ -118,7 +118,7 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     pg (0.18.1)
-    protobuf (3.5.0)
+    protobuf (3.5.1)
       activesupport (>= 3.2)
       middleware
       thor
