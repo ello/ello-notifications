@@ -4,8 +4,8 @@ class DeviceSubscription < ActiveRecord::Base
   scope :enabled, -> { where(enabled: true) }
 
   validates_presence_of :logged_in_user_id,
-    :platform_device_identifier,
-    :sns_application
+                        :platform_device_identifier,
+                        :sns_application
 
   validates_format_of :platform_device_identifier,
     with: /\A[a-f0-9]{64}\z/, message: 'not a valid device token',
