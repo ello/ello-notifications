@@ -1,4 +1,5 @@
 module Concerns::DeviceSubscriptionFocused
+
   extend ActiveSupport::Concern
 
   included do
@@ -35,7 +36,9 @@ module Concerns::DeviceSubscriptionFocused
   end
 
   def subscription_params
-    lookup_params.merge(logged_in_user_id: context[:logged_in_user_id])
+    lookup_params.merge(logged_in_user_id: context[:logged_in_user_id],
+                        build_version: context[:build_version],
+                        marketing_version: context[:marketing_version])
   end
 
   def lookup_params

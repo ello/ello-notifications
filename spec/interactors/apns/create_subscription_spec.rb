@@ -6,6 +6,8 @@ describe APNS::CreateSubscription do
   context 'when the provided bundle_identifier is registered with APNS' do
     let!(:registered_application) { create(:sns_application, :apns) }
     let(:registered_bundle_identifier) { registered_application.bundle_identifier }
+    let(:marketing_version) { '6.6.6' }
+    let(:build_version) { '1234567' }
 
     context 'when an APNS device subscription already exists with the device token and bundle identifier' do
       let!(:existing_subscription) { create(:device_subscription, :apns, sns_application: registered_application) }
@@ -14,7 +16,9 @@ describe APNS::CreateSubscription do
         described_class.call({
           logged_in_user_id: existing_subscription.logged_in_user_id,
           bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: existing_subscription.platform_device_identifier
+          platform_device_identifier: existing_subscription.platform_device_identifier,
+          marketing_version: marketing_version,
+          build_version: build_version
         })
       end
 
@@ -28,6 +32,18 @@ describe APNS::CreateSubscription do
         expect(SnsService).to_not receive(:create_subscription_endpoint)
 
         call_interactor
+      end
+
+      it 'updates the marketing version field to the supplied value' do
+        expect {
+          call_interactor
+        }.to change { existing_subscription.reload.marketing_version }.to(marketing_version)
+      end
+
+      it 'updates the build version field to the supplied value' do
+        expect {
+          call_interactor
+        }.to change { existing_subscription.reload.build_version }.to(build_version)
       end
 
       context 'and the currently logged in user has changed' do
@@ -103,7 +119,9 @@ describe APNS::CreateSubscription do
         described_class.call({
           logged_in_user_id: user_id,
           bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: device_token
+          platform_device_identifier: device_token,
+          marketing_version: marketing_version,
+          build_version: build_version
         })
       end
 
@@ -167,6 +185,8 @@ describe APNS::CreateSubscription do
           expect(sub.platform_device_identifier).to eq(device_token)
           expect(sub.endpoint_arn).to eq newly_created_endpoint_arn
           expect(sub.sns_application).to eq(registered_application)
+          expect(sub.marketing_version).to eq(marketing_version)
+          expect(sub.build_version).to eq(build_version)
         end
 
         it 'tracks the success' do
