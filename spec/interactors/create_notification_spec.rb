@@ -159,6 +159,28 @@ describe CreateNotification do
       end
     end
 
+    context "when the user's subscription does not handle blank pushes" do
+      let!(:subscription) do
+        create(:device_subscription,
+               :apns,
+               logged_in_user_id: destination_user.id,
+               marketing_version: '',
+               build_version: '')
+      end
+
+      context 'and the notification type is RESET_BADGE_COUNT' do
+        let(:notification_type) { NotificationType::RESET_BADGE_COUNT }
+
+        it 'does not deliver the notification to the subscription' do
+          notification = instance_double('Notification')
+          allow(Notification::Factory).to receive(:build).and_return(notification)
+
+          call_interactor
+          expect(APNS::DeliverNotification).not_to have_received(:call)
+        end
+      end
+    end
+
     context 'when the destination user has multiple enabled subscriptions' do
       let!(:user_subscriptions) { create_list(:device_subscription, 2, :apns, logged_in_user_id: destination_user.id) }
       before { request.post = create(:protobuf_post, :repost) }
