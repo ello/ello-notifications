@@ -12,6 +12,10 @@ RSpec.shared_examples 'a notification with' do
     expect(subject.body).to eq(body)
   end
 
+  it 'sets the correct include_alert flag' do
+    expect(subject.include_alert).to eq(include_alert)
+  end
+
   it 'has the correct destination_user_id' do
     expect(subject.metadata[:destination_user_id]).to eq(destination_user_id)
   end

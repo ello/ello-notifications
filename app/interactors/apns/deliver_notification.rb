@@ -8,14 +8,7 @@ class APNS::DeliverNotification
   def call
     SnsService.deliver_notification(
       context[:endpoint_arn], {
-      platform_key => {
-        aps: {
-          alert: {
-            title: context[:notification].title,
-            body: context[:notification].body
-          }
-        }
-      }.merge(context[:notification].metadata).to_json
+      platform_key => { aps: aps_options }.merge(context[:notification].metadata).to_json
     })
     ApnsDeliveryMetric.track_delivery_success
   rescue SnsService::ServiceError => e
@@ -28,6 +21,15 @@ class APNS::DeliverNotification
   def require_arguments!(*args)
     args.each do |argument|
       context.fail!(message: "Missing required argument: #{argument}") if context[argument].nil?
+    end
+  end
+
+  def aps_options
+    { badge: context[:notification].badge_count }.tap do |opts|
+      opts[:alert] = {
+        title: context[:notification].title,
+        body: context[:notification].body
+      } if context[:notification].include_alert?
     end
   end
 

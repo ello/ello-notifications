@@ -37,38 +37,21 @@ describe APNS::DeliverNotification do
 
     context 'when configured to use the sandbox' do
       let(:sandbox_endpoint_arn) { Faker::Ello.sns_apns_endpoint_arn(sandbox: true) }
+      let(:notification) { build(:notification, metadata: { some_key: 'value' }) }
 
-      it 'nests the notification data inside the sandbox message container' do
-        notification = build(:notification, metadata: { some_key: 'value' })
-        expected_message = {
-          'APNS_SANDBOX' => {
-            aps: {
-              alert: {
-                title: notification.title,
-                body: notification.body
-              }
-            },
-            some_key: 'value'
-          }.to_json
-        }
-
-        expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
-
+      let(:call_interactor) do
         described_class.call({
           endpoint_arn: sandbox_endpoint_arn,
           notification: notification,
           use_sandbox: true
         })
       end
-    end
 
-    context 'when configured not to use the sandbox' do
-      let(:production_endpoint_arn) { Faker::Ello.sns_apns_endpoint_arn(sandbox: false) }
-      it 'nests the notification data inside the production message container' do
-        notification = build(:notification, metadata: { some_key: 'value' })
+      it 'nests the notification data inside the sandbox message container' do
         expected_message = {
-          'APNS' => {
+          'APNS_SANDBOX' => {
             aps: {
+              badge: notification.badge_count,
               alert: {
                 title: notification.title,
                 body: notification.body
@@ -79,12 +62,68 @@ describe APNS::DeliverNotification do
         }
 
         expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
+        call_interactor
+      end
 
+      context 'and the notification should not include an alert' do
+        let(:notification) { build(:notification, :badge_count_only) }
+
+        it 'does not include the alert in the payload' do
+          expected_message = {
+            'APNS_SANDBOX' => {
+              aps: { badge: notification.badge_count }
+            }.to_json
+          }
+
+          expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
+          call_interactor
+        end
+      end
+    end
+
+    context 'when configured not to use the sandbox' do
+      let(:production_endpoint_arn) { Faker::Ello.sns_apns_endpoint_arn(sandbox: false) }
+      let(:notification) { build(:notification, metadata: { some_key: 'value' }) }
+
+      let(:call_interactor) do
         described_class.call({
           endpoint_arn: production_endpoint_arn,
           notification: notification,
           use_sandbox: false
         })
+      end
+
+      it 'nests the notification data inside the production message container' do
+        expected_message = {
+          'APNS' => {
+            aps: {
+              badge: notification.badge_count,
+              alert: {
+                title: notification.title,
+                body: notification.body
+              }
+            },
+            some_key: 'value'
+          }.to_json
+        }
+
+        expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
+        call_interactor
+      end
+
+      context 'and the notification should not include an alert' do
+        let(:notification) { build(:notification, :badge_count_only) }
+
+        it 'does not include the alert in the payload' do
+          expected_message = {
+            'APNS' => {
+              aps: { badge: notification.badge_count }
+            }.to_json
+          }
+
+          expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
+          call_interactor
+        end
       end
     end
 

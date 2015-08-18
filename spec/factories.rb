@@ -1,6 +1,10 @@
 FactoryGirl.define do
   sequence(:unique_id)
 
+  factory :user do
+    notification_count 0
+  end
+
   factory :sns_application do
     bundle_identifier { Faker::Ello.bundle_identifier }
     sequence(:application_arn) { |n| "arn:aws:sns:application-string#{n}" }
@@ -38,10 +42,14 @@ FactoryGirl.define do
   factory :notification do
     title { Faker::Lorem.words(2).join(' ') }
     body { Faker::Lorem.sentence }
+    badge_count { Random.rand(10) }
     metadata {
-      {
-        custom_key: '1'
-      }
+      { custom_key: '1' }
     }
+
+    trait :badge_count_only do
+      include_alert false
+      metadata { {} }
+    end
   end
 end

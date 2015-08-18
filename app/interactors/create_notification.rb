@@ -5,14 +5,24 @@ class CreateNotification
     if valid_notification_type?
       if user_subscriptions.any?
         related_object = pluck_related_object
+        user = User.find_or_create_by(id: context[:request].destination_user_id)
+
+        if context[:request].type == ElloProtobufs::NotificationType::RESET_BADGE_COUNT
+          user.reset_notification_count
+        else
+          user.increment_notification_count
+        end
+
         notification = Notification::Factory.build(context[:request].type,
-                                                   context[:request].destination_user_id,
+                                                   user,
                                                    related_object)
         user_subscriptions.each do |sub|
-          result = deliver_notification(notification, sub)
-          if result && result.failure?
-            sub.disable if result.message.match(/Endpoint is disabled/)
-            log_failure(result)
+          if should_deliver_notification?(context[:request], notification, sub)
+            result = deliver_notification(notification, sub)
+            if result && result.failure?
+              sub.disable if result.message.match(/Endpoint is disabled/)
+              log_failure(result)
+            end
           end
         end
       end
@@ -27,6 +37,14 @@ class CreateNotification
 
   def valid_notification_type?
     context[:request].type != ElloProtobufs::NotificationType::UNSPECIFIED_TYPE
+  end
+
+  def should_deliver_notification?(request, notification, subscription)
+    if request.type == ElloProtobufs::NotificationType::RESET_BADGE_COUNT
+      subscription.can_handle_blank_pushes?
+    else
+      true
+    end
   end
 
   def user_subscriptions

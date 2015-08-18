@@ -39,4 +39,10 @@ ActiveRecord::Schema.define(version: 20150715045530) do
     t.datetime "updated_at"
   end
 
+  create_table "users", force: true do |t|
+    t.integer  "notification_count", default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
 end

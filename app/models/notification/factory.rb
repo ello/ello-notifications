@@ -86,12 +86,17 @@ class Notification::Factory
     application_target { "notifications/users/#{related_object.id}" }
   end
 
-  def initialize(type, destination_user_id, related_object=nil)
-    @type, @destination_user_id, @related_object = type, destination_user_id, related_object
+  register_type ElloProtobufs::NotificationType::RESET_BADGE_COUNT, 'reset_badge_count' do |_|
+    include_alert false
+  end
+
+  def initialize(type, destination_user, related_object=nil)
+    @type, @destination_user, @related_object = type, destination_user, related_object
   end
 
   def build
-    notification = Notification.new(metadata: common_metadata)
+    notification = Notification.new(badge_count: @destination_user.notification_count,
+                                    metadata: common_metadata)
 
     # clone the decorator to prevent thread-safety issues
     decorator_for_type(@type).clone.decorate(notification, @related_object)
@@ -106,6 +111,6 @@ class Notification::Factory
   end
 
   def common_metadata
-    { destination_user_id: @destination_user_id }
+    { destination_user_id: @destination_user.id }
   end
 end
