@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
 
   def increment_notification_count
-    self.notification_count += 1
+    # TODO fix this soon (it should increment by one)
+    self.notification_count = 0
     self.save
   end
 
