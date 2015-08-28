@@ -6,7 +6,7 @@ class APNS::DeliverNotification
   end
 
   def call
-    Rails.logger.debug "Delivering notification: #{context[:notification]}"
+    Rails.logger.debug "Delivering notification: #{context[:notification].inspect}"
     SnsService.deliver_notification(
       context[:endpoint_arn], {
       platform_key => { aps: aps_options }.merge(context[:notification].metadata).to_json

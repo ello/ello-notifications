@@ -46,7 +46,7 @@ class Metric
   private
 
   def trace_metric(kind, name, *info)
-    Rails.logger.debug("METRIC: #{kind} #{name} #{info.inspect}") if ENV['LOG_LEVEL'] == 'debug'
+    Rails.logger.debug("METRIC: #{kind} #{name} #{info.inspect}")
   end
 
   def build_key(name)
