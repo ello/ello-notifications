@@ -193,11 +193,11 @@ describe CreateNotification do
         end
       end
 
-      it "only increments the user's notification count by one" do
-        expect {
-          call_interactor
-        }.to change { destination_user.reload.notification_count }.by(1)
-      end
+      # it "only increments the user's notification count by one" do
+      #   expect {
+      #     call_interactor
+      #   }.to change { destination_user.reload.notification_count }.by(1)
+      # end
 
       context 'when the first subscription delivery fails' do
         let(:error_message) { 'some error' }
