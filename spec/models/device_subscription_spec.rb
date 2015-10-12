@@ -124,12 +124,12 @@ describe DeviceSubscription do
   end
 
   describe '#can_handle_blank_pushes?' do
-    it 'returns true when build_version is >= 2681' do
-      expect(described_class.new(build_version: '2681').can_handle_blank_pushes?).to be_truthy
+    it 'returns true when build_version is >= 3216' do
+      expect(described_class.new(build_version: '3216').can_handle_blank_pushes?).to be_truthy
     end
 
-    it 'returns false when build_version is before 2681' do
-      expect(described_class.new(build_version: '2600').can_handle_blank_pushes?).to be_falsy
+    it 'returns false when build_version is before 3216' do
+      expect(described_class.new(build_version: '3200').can_handle_blank_pushes?).to be_falsy
     end
 
     it 'returns false when build_version is blank' do
