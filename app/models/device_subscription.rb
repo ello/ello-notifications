@@ -16,7 +16,7 @@ class DeviceSubscription < ActiveRecord::Base
   delegate :platform, to: :sns_application
 
   def can_handle_blank_pushes?
-    build_version.to_i >= 2681
+    build_version.to_i >= 3216
   end
 
   def apns?
