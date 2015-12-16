@@ -11,9 +11,9 @@ class APNS::DeliverNotification
       context[:endpoint_arn], {
       platform_key => { aps: aps_options }.merge(context[:notification].metadata).to_json
     })
-    ApnsDeliveryMetric.track_delivery_success(context[:endpoint_arn])
+    ApnsDeliveryMetric.track_delivery_success
   rescue SnsService::ServiceError => e
-    ApnsDeliveryMetric.track_delivery_failure(context[:endpoint_arn])
+    ApnsDeliveryMetric.track_delivery_failure
     context.fail!(message: e.message)
   end
 
