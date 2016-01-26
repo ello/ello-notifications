@@ -122,8 +122,7 @@ describe CreateNotification do
 
       context 'notification count handling' do
         before do
-          allow(User).to receive(:find_or_create_by).
-            with(id: destination_user.id).
+          allow(User).to receive_message_chain(:where, :first_or_create).
             and_return(destination_user)
         end
 

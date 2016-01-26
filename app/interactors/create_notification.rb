@@ -5,7 +5,7 @@ class CreateNotification
     if valid_notification_type?
       if user_subscriptions.any?
         related_object = pluck_related_object
-        user = User.find_or_create_by(id: context[:request].destination_user_id)
+        user = User.where(id: context[:request].destination_user_id).first_or_create
 
         if context[:request].type == ElloProtobufs::NotificationType::RESET_BADGE_COUNT
           user.reset_notification_count
