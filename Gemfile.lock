@@ -1,6 +1,6 @@
 GIT
   remote: https://adc746d8c8aa3ca7b00678db211aae5557de54ce:x-oauth-basic@github.com/ello/ello_protobufs.git
-  revision: 654d28f8175550283020c8191b93257876adb556
+  revision: 77e8dad0d384cf764ab0c07909ff2211eb8cd25c
   specs:
     ello_protobufs (0.1.0)
       protobuf (~> 3.5.0)
