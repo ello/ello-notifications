@@ -19,7 +19,7 @@ gem 'ello_protobufs', git: 'https://adc746d8c8aa3ca7b00678db211aae5557de54ce:x-o
 
 gem 'newrelic_rpm', '~> 3.12.0'
 gem 'librato-rails', '~> 0.11.1'
-gem 'honeybadger', '~> 2.1.0'
+gem 'honeybadger', '~> 2.1'
 
 group :production do
   gem 'rails_12factor'
