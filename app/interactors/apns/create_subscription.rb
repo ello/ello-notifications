@@ -4,7 +4,7 @@ class APNS::CreateSubscription
   include Concerns::DeviceSubscriptionFocused
 
   def call
-    with_retries(max_tries: 5, rescue: ActiveRecord::RecordNotUnique) do
+    ActiveRecord::Base.transaction(isolation: :serializable) do
       if subscription = find_subscription_from_context
         update_logged_in_user(subscription) if logged_in_user_has_changed?(subscription)
         update_app_versions(subscription) if app_versions_have_changed?(subscription)

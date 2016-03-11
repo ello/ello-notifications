@@ -5,7 +5,7 @@ class CreateNotification
     if valid_notification_type?
       if user_subscriptions.any?
         related_object = pluck_related_object
-        user = with_retries(max_tries: 5, rescue: ActiveRecord::RecordNotUnique) do
+        user = ActiveRecord::Base.transaction(isolation: :serializable) do
           User.where(id: context[:request].destination_user_id).first_or_create
         end
 

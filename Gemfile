@@ -16,7 +16,6 @@ gem 'pg'
 gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2'
 gem 'ello_protobufs', git: 'https://adc746d8c8aa3ca7b00678db211aae5557de54ce:x-oauth-basic@github.com/ello/ello_protobufs.git'
-gem 'retries'
 
 gem 'newrelic_rpm', '~> 3.12.0'
 gem 'librato-rails', '~> 0.11.1'
