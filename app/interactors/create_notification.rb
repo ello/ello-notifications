@@ -5,7 +5,9 @@ class CreateNotification
     if valid_notification_type?
       if user_subscriptions.any?
         related_object = pluck_related_object
-        user = User.where(id: context[:request].destination_user_id).first_or_create
+        user = ActiveRecord::Base.transaction(isolation: :serializable) do
+          User.where(id: context[:request].destination_user_id).first_or_create
+        end
 
         if context[:request].type == ElloProtobufs::NotificationType::RESET_BADGE_COUNT
           user.reset_notification_count
