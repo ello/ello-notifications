@@ -23,6 +23,10 @@ class DeviceSubscription < ActiveRecord::Base
     sns_application.try(:platform) == SnsApplication::PLATFORM_APNS
   end
 
+  def gcm?
+    sns_application.try(:platform) == SnsApplication::PLATFORM_GCM
+  end
+
   def disabled?
     !enabled?
   end
