@@ -76,7 +76,7 @@ describe DeviceSubscription do
     end
 
     it 'returns false when the linked application platform is not GCM' do
-      ['GCM', 'SMS', nil].each do |platform|
+      ['APNS', 'SMS', nil].each do |platform|
         subject.sns_application = build(:sns_application, platform: platform)
 
         expect(subject).to_not be_gcm
@@ -85,14 +85,14 @@ describe DeviceSubscription do
   end
 
   describe '#platform' do
-    subject { build_stubbed(:device_subscription, :apns) }
     it 'returns the platform identifier for the linked application' do
-      expect(subject.platform).to eq(SnsApplication::PLATFORM_APNS)
+      apns = build_stubbed(:device_subscription, :apns)
+      expect(apns.platform).to eq(SnsApplication::PLATFORM_APNS)
     end
 
-    subject { build_stubbed(:device_subscription, :gcm) }
     it 'returns the platform identifier for the linked application' do
-      expect(subject.platform).to eq(SnsApplication::PLATFORM_GCM)
+      gcm = build_stubbed(:device_subscription, :gcm)
+      expect(gcm.platform).to eq(SnsApplication::PLATFORM_GCM)
     end
   end
 

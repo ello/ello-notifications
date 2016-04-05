@@ -14,12 +14,12 @@ describe GCM::CreateSubscription do
 
       let(:call_interactor) do
         described_class.call({
-                                 logged_in_user_id: existing_subscription.logged_in_user_id,
-                                 bundle_identifier: registered_bundle_identifier,
-                                 platform_device_identifier: existing_subscription.platform_device_identifier,
-                                 marketing_version: marketing_version,
-                                 build_version: build_version
-                             })
+          logged_in_user_id: existing_subscription.logged_in_user_id,
+          bundle_identifier: registered_bundle_identifier,
+          platform_device_identifier: existing_subscription.platform_device_identifier,
+          marketing_version: marketing_version,
+          build_version: build_version
+        })
       end
 
       it 'does not create a new subscription' do
@@ -90,8 +90,8 @@ describe GCM::CreateSubscription do
           end
 
           it 'tracks the failure' do
-            expect(ApnsSubscriptionMetric).to receive(:track_creation_failure)
-            expect(ApnsSubscriptionMetric).to_not receive(:track_creation_success)
+            expect(GcmSubscriptionMetric).to receive(:track_creation_failure)
+            expect(GcmSubscriptionMetric).to_not receive(:track_creation_success)
             call_interactor
           end
         end
@@ -104,8 +104,8 @@ describe GCM::CreateSubscription do
           end
 
           it 'tracks the success' do
-            expect(ApnsSubscriptionMetric).to receive(:track_creation_success).with('reused')
-            expect(ApnsSubscriptionMetric).to_not receive(:track_creation_failure)
+            expect(GcmSubscriptionMetric).to receive(:track_creation_success).with('reused')
+            expect(GcmSubscriptionMetric).to_not receive(:track_creation_failure)
             call_interactor
           end
         end

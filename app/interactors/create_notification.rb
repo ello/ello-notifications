@@ -57,6 +57,8 @@ class CreateNotification
     case subscription.platform
     when SnsApplication::PLATFORM_APNS
       APNS::DeliverNotification.call(notification: notification, endpoint_arn: subscription.endpoint_arn)
+    when SnsApplication::PLATFORM_GCM
+      GCM::DeliverNotification.call(notification: notification, endpoint_arn: subscription.endpoint_arn)
     end
   end
 

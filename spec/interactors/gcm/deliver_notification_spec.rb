@@ -49,7 +49,7 @@ describe GCM::DeliverNotification do
 
       it 'nests the notification data inside the production message container' do
         expected_message = {
-            'APNS' => {
+            'GCM' => {
                 aps: {
                     badge: notification.badge_count,
                     alert: {
@@ -70,7 +70,7 @@ describe GCM::DeliverNotification do
 
         it 'does not include the alert in the payload' do
           expected_message = {
-              'APNS' => {
+              'GCM' => {
                   aps: { badge: notification.badge_count }
               }.to_json
           }

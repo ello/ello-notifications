@@ -81,7 +81,7 @@ describe APNS::DeleteSubscription do
         })
 
         expect(result).to be_success
-        expect(result.message).to eq 'Subscription could not be found with the input paramaters'
+        expect(result.message).to eq 'Subscription could not be found with the input parameters'
       end
     end
   end

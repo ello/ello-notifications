@@ -76,12 +76,12 @@ describe GCM::DeleteSubscription do
     context 'when a GCM device subscription does not exist for the device token and bundle identifier' do
       it 'succeeds with a not found message' do
         result = described_class.call({
-                                          bundle_identifier: registered_bundle_identifier,
-                                          platform_device_identifier: Faker::Ello.android_registration_id
-                                      })
+          bundle_identifier: registered_bundle_identifier,
+          platform_device_identifier: Faker::Ello.android_registration_id
+        })
 
         expect(result).to be_success
-        expect(result.message).to eq 'Subscription could not be found with the input paramaters'
+        expect(result.message).to eq 'Subscription could not be found with the input parameters'
       end
     end
   end
