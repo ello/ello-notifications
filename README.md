@@ -1,4 +1,11 @@
-# Ello Notifications Service [![Circle CI](https://circleci.com/gh/ello/ello-notifications.svg?style=svg&circle-token=376793a29ced1c232fe8b82e7499effbfe0bb2ee)](https://circleci.com/gh/ello/ello-notifications)
+<img src="http://d324imu86q1bqn.cloudfront.net/uploads/user/avatar/641/large_Ello.1000x1000.png" width="200px" height="200px" />
+
+# Ello Notifications Service
+
+[![Build Status](https://travis-ci.org/ello/ello-notifications.svg?branch=master)](https://travis-ci.org/ello/ello-notifications)
+[![Code Climate](https://codeclimate.com/github/ello/ello-notifications/badges/gpa.svg)](https://codeclimate.com/github/ello/ello-notifications)
+[![Security](https://hakiri.io/github/ello/ello-notifications/master.svg)](https://hakiri.io/github/ello/ello-notifications/master)
+[![Dependencies](https://img.shields.io/gemnasium/ello/ello-notifications.svg)](https://gemnasium.com/ello/ello-notifications)
 
 ## Responsibilities
 
@@ -75,3 +82,9 @@ f = File.open('./response_object', 'r:ASCII-8BIT')
 response = ElloProtobufs::SomeService::CreateResourceResponse.decode_from(f)
 f.close
 ```
+
+## License
+Ello Notifications is released under the [MIT License](blob/master/LICENSE.txt)
+
+## Code of Conduct
+Ello was created by idealists who believe that the essential nature of all human beings is to be kind, considerate, helpful, intelligent, responsible, and respectful of others. To that end, we will be enforcing [the Ello rules](https://ello.co/wtf/policies/rules/) within all of our open source projects. If you don’t follow the rules, you risk being ignored, banned, or reported for abuse.
