@@ -1,6 +1,6 @@
 GIT
-  remote: https://adc746d8c8aa3ca7b00678db211aae5557de54ce:x-oauth-basic@github.com/ello/ello_protobufs.git
-  revision: 77e8dad0d384cf764ab0c07909ff2211eb8cd25c
+  remote: git://github.com/ello/ello_protobufs.git
+  revision: 2f9ad8270f2cd60d523fb4b6381dd4ebfea12429
   specs:
     ello_protobufs (0.1.0)
       protobuf (~> 3.5.0)
@@ -253,6 +253,3 @@ DEPENDENCIES
   retries
   rspec-rails (~> 3.0)
   shoulda-matchers
-
-BUNDLED WITH
-   1.11.2
