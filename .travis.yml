@@ -1,0 +1,18 @@
+language: ruby
+cache:
+- bundler
+bundler_args: "--without staging,production"
+addons:
+  postgresql: '9.3'
+rvm: 2.2.2
+before_script:
+- cp .env.example .env
+script:
+- bundle exec rake db:drop:all db:create:all db:schema:load
+- bundle exec rake
+notifications:
+  email: false
+  slack:
+    secure: If9kP8Jz+ruQLRczTmTvQyc+qat/XqygwJyqau4zl1rovX4o5J3BUQkL1jYQjFCYcXKLWFBbFN4HQim/bgjDOXsrew5MV7/kAz7rQ327yexHAhhsCR0KNgnmNw6arzmHcHM5/Z3q7a3txTiM/qFbPp8pWv+BvghZ/syko3ke8QY=
+    rooms:
+      secure: lq0ghQe4KuEHrPGxN0W7jNvr8TOT8GKfdUH43lWm+EnrnUdDLi7Yn87omRxHa808JccUZkqMBU10YnsbhVuRmqcRAj56h3q7xRr3bu6JbdpOYW/TAt8e2YER8EEpV6bVf3QU1YLau7efs2OQ3lhRXSEX/w80q3mlWCpdmKf7AZa6dgRj/uiMKmBB/36jvZvdi8juNz+w9vF3LdptKo6kBeMq0muvlrGljo3n1trv8P3DNRaQJjqkQS4Z9c+sFGsFpIdg6Y43FGTXu3GsLk6d8mbmWeU6SHqbfxqO++ZzWkdvDFcbc2Lk9tWgQ4mO0Qwk5D4A7PbgF9iRD1NhF8GrUR3b3Mh+r7ufshvCHZoh9aGuJMOtKCDpm+6B7yReFwWBqxtLOaGX/lW9wG1W/e4sG/KAJmxfD+/GgIRWj8eomezBvekspK5knpeJg1b9OSe1AXEVJnS4iUHqeb7UlMNzAqRO7McvcEVXMJG5a4bmpachk1WrWSCJ/CNygw2SkIgHGe2vqp8OZ0BEfjlPQEzmFjdVxq1u+Ye1fMMrQAlvE5m4GN8vJRpjIJB4OFP9Rw0VX7ZXoZKog8yupUt89Dk9PwyK91feI5AMzgwd+s3JOKOuO+8gB+0yJBZrVJ0TApgtkp5jNj0FdHu7a+B0MELJS9qaHrrFiY+YturGovr1Bjg=
