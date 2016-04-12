@@ -15,7 +15,7 @@ gem 'puma', '2.11.3'
 gem 'pg'
 gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2'
-gem 'ello_protobufs', git: 'https://adc746d8c8aa3ca7b00678db211aae5557de54ce:x-oauth-basic@github.com/ello/ello_protobufs.git'
+gem 'ello_protobufs', github: 'ello/ello_protobufs'
 gem 'retries'
 
 gem 'newrelic_rpm', '~> 3.12.0'
