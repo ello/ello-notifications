@@ -1,0 +1,16 @@
+db:
+  image: postgres:9.3
+  ports:
+    - "5432:5432"
+
+rails:
+  build: .
+  command: foreman start -f Procfile -p 3000
+  volumes:
+    - .:/app
+  ports:
+    - "3000:3000"
+  environment:
+    DATABASE_URL: postgres://postgres@db:5432/postgres
+  links:
+    - db
