@@ -30,8 +30,15 @@ FactoryGirl.define do
     end
 
     trait :apns do
+      endpoint_arn { Faker::Ello.sns_apns_endpoint_arn }
       sns_application { build(:sns_application, :apns) }
       platform_device_identifier { Faker::Ello.ios_device_token }
+    end
+
+    trait :gcm do
+      endpoint_arn { Faker::Ello.sns_gcm_endpoint_arn }
+      sns_application { build(:sns_application, :gcm) }
+      platform_device_identifier { Faker::Ello.android_registration_id }
     end
 
     trait :disabled do

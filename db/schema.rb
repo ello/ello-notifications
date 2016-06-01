@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20150715045530) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "device_subscriptions", force: true do |t|
+  create_table "device_subscriptions", force: :cascade do |t|
     t.string   "platform_device_identifier"
     t.string   "endpoint_arn"
     t.integer  "logged_in_user_id"
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(version: 20150715045530) do
   add_index "device_subscriptions", ["platform_device_identifier", "sns_application_id"], name: "index_device_subscriptions_on_unique_keys", unique: true, using: :btree
   add_index "device_subscriptions", ["sns_application_id"], name: "index_device_subscriptions_on_sns_application_id", using: :btree
 
-  create_table "sns_applications", force: true do |t|
+  create_table "sns_applications", force: :cascade do |t|
     t.string   "bundle_identifier"
     t.string   "application_arn"
     t.string   "platform"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20150715045530) do
     t.datetime "updated_at"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.integer  "notification_count", default: 0
     t.datetime "created_at"
     t.datetime "updated_at"

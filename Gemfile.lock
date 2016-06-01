@@ -255,6 +255,3 @@ DEPENDENCIES
   retries
   rspec-rails (~> 3.0)
   shoulda-matchers
-
-BUNDLED WITH
-   1.11.2

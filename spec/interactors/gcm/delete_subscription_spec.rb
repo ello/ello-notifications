@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-describe APNS::DeleteSubscription do
-  it_behaves_like 'a device subscription focused interactor', :apns
+describe GCM::DeleteSubscription do
+  it_behaves_like 'a device subscription focused interactor', :gcm
 
-  context 'when the provided bundle_identifier is registered with APNS' do
-    let!(:registered_application) { create(:sns_application, :apns) }
+  context 'when the provided bundle_identifier is registered with GCM' do
+    let!(:registered_application) { create(:sns_application, :gcm) }
     let(:registered_bundle_identifier) { registered_application.bundle_identifier }
 
-    context 'when an APNS device subscription exists for the device token and bundle identifier' do
+    context 'when a GCM device subscription exists for the device token and bundle identifier' do
       let!(:sns_client) { Aws::SNS::Client.new }
-      let!(:existing_subscription) { create(:device_subscription, :apns, sns_application: registered_application) }
+      let!(:existing_subscription) { create(:device_subscription, :gcm, sns_application: registered_application) }
 
       let(:call_interactor) do
         described_class.call({
@@ -52,8 +52,8 @@ describe APNS::DeleteSubscription do
         end
 
         it 'tracks the failure' do
-          expect(ApnsSubscriptionMetric).to receive(:track_deletion_failure)
-          expect(ApnsSubscriptionMetric).to_not receive(:track_deletion_success)
+          expect(GcmSubscriptionMetric).to receive(:track_deletion_failure)
+          expect(GcmSubscriptionMetric).to_not receive(:track_deletion_success)
           call_interactor
         end
       end
@@ -66,18 +66,18 @@ describe APNS::DeleteSubscription do
         end
 
         it 'tracks the success' do
-          expect(ApnsSubscriptionMetric).to receive(:track_deletion_success)
-          expect(ApnsSubscriptionMetric).to_not receive(:track_deletion_failure)
+          expect(GcmSubscriptionMetric).to receive(:track_deletion_success)
+          expect(GcmSubscriptionMetric).to_not receive(:track_deletion_failure)
           call_interactor
         end
       end
     end
 
-    context 'when an APNS device subscription does not exist for the device token and bundle identifier' do
+    context 'when a GCM device subscription does not exist for the device token and bundle identifier' do
       it 'succeeds with a not found message' do
         result = described_class.call({
           bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: Faker::Ello.ios_device_token
+          platform_device_identifier: Faker::Ello.android_registration_id
         })
 
         expect(result).to be_success

@@ -8,8 +8,8 @@ class DeviceSubscription < ActiveRecord::Base
                         :sns_application
 
   validates_format_of :platform_device_identifier,
-    with: /\A[a-f0-9]{64}\z/, message: 'not a valid device token',
-    if: :apns?
+                      with: /\A[a-f0-9]{64}\z/, message: 'not a valid device token',
+                      if: :apns?
 
   after_initialize :default_to_enabled
 
@@ -21,6 +21,10 @@ class DeviceSubscription < ActiveRecord::Base
 
   def apns?
     sns_application.try(:platform) == SnsApplication::PLATFORM_APNS
+  end
+
+  def gcm?
+    sns_application.try(:platform) == SnsApplication::PLATFORM_GCM
   end
 
   def disabled?

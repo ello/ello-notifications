@@ -1,4 +1,4 @@
-class APNS::DeleteSubscription
+class GCM::DeleteSubscription
   include Interactor
   include Concerns::DeviceSubscriptionFocused
 
@@ -7,9 +7,9 @@ class APNS::DeleteSubscription
       begin
         SnsService.delete_subscription_endpoint(subscription)
         subscription.destroy
-        ApnsSubscriptionMetric.track_deletion_success
+        GcmSubscriptionMetric.track_deletion_success
       rescue SnsService::ServiceError => e
-        ApnsSubscriptionMetric.track_deletion_failure
+        GcmSubscriptionMetric.track_deletion_failure
         context.fail!(message: e.message)
       end
     else
@@ -20,6 +20,6 @@ class APNS::DeleteSubscription
   private
 
   def platform
-    SnsApplication::PLATFORM_APNS
+    SnsApplication::PLATFORM_GCM
   end
 end
