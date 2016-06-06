@@ -49,16 +49,15 @@ describe GCM::DeliverNotification do
 
       it 'nests the notification data inside the production message container' do
         expected_message = {
-            'GCM' => {
-                aps: {
-                    badge: notification.badge_count,
-                    alert: {
-                        title: notification.title,
-                        body: notification.body
-                    }
-                },
+          'GCM' => {
+              data: {
                 some_key: 'value'
-            }.to_json
+              },
+              notification: {
+                title: notification.title,
+                body: notification.body
+              }
+          }.to_json
         }
 
         expect(SnsService).to receive(:deliver_notification).with(anything, expected_message)
@@ -71,7 +70,7 @@ describe GCM::DeliverNotification do
         it 'does not include the alert in the payload' do
           expected_message = {
               'GCM' => {
-                  aps: { badge: notification.badge_count }
+                data: { }
               }.to_json
           }
 

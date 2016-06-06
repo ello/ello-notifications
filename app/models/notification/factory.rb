@@ -16,18 +16,21 @@ class Notification::Factory
     title { I18n.t('notification_factory.repost.title') }
     body { I18n.t('notification_factory.repost.body', username: related_object.author.username) }
     application_target { "notifications/posts/#{related_object.id}" }
+    web_url { related_object.href }
   end
 
   register_type ElloProtobufs::NotificationType::POST_COMMENT, 'post_comment' do |related_object|
     title { I18n.t('notification_factory.post_comment.title') }
     body { I18n.t('notification_factory.post_comment.body', username: related_object.author.username) }
     application_target { "notifications/posts/#{related_object.parent_post.id}/comments/#{related_object.id}" }
+    web_url { related_object.parent_post.href }
   end
 
   register_type ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR, 'repost_comment_to_repost_author' do |related_object|
     title { I18n.t('notification_factory.repost_comment_to_repost_author.title') }
     body { I18n.t('notification_factory.repost_comment_to_repost_author.body', username: related_object.author.username) }
     application_target { "notifications/posts/#{related_object.parent_post.id}/comments/#{related_object.id}" }
+    web_url { related_object.parent_post.href }
   end
 
   register_type ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR, 'repost_comment_to_original_author' do |related_object|
@@ -38,18 +41,21 @@ class Notification::Factory
              reposter_username: related_object.parent_post.author.username)
     end
     application_target { "notifications/posts/#{related_object.parent_post.id}/comments/#{related_object.id}" }
+    web_url { related_object.parent_post.href }
   end
 
   register_type ElloProtobufs::NotificationType::POST_LOVE, 'post_love' do |related_object|
     title { I18n.t('notification_factory.post_love.title') }
     body { I18n.t('notification_factory.post_love.body', username: related_object.user.username) }
     application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
   end
 
   register_type ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR, 'repost_love_to_repost_author' do |related_object|
     title { I18n.t('notification_factory.repost_love_to_repost_author.title') }
     body { I18n.t('notification_factory.repost_love_to_repost_author.body', username: related_object.user.username) }
     application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
   end
 
   register_type ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR, 'repost_love_to_original_author' do |related_object|
@@ -60,30 +66,35 @@ class Notification::Factory
              reposter_username: related_object.post.author.username)
     end
     application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
   end
 
   register_type ElloProtobufs::NotificationType::POST_MENTION, 'post_mention' do |related_object|
     title { I18n.t('notification_factory.post_mention.title') }
     body { I18n.t('notification_factory.post_mention.body', username: related_object.author.username) }
     application_target { "notifications/posts/#{related_object.id}" }
+    web_url { related_object.href }
   end
 
   register_type ElloProtobufs::NotificationType::COMMENT_MENTION, 'comment_mention' do |related_object|
     title { I18n.t('notification_factory.comment_mention.title') }
     body { I18n.t('notification_factory.comment_mention.body', username: related_object.author.username) }
     application_target { "notifications/posts/#{related_object.parent_post.id}/comments/#{related_object.id}" }
+    web_url { related_object.parent_post.href }
   end
 
   register_type ElloProtobufs::NotificationType::FOLLOWER, 'follower' do |related_object|
     title { I18n.t('notification_factory.follower.title') }
     body { I18n.t('notification_factory.follower.body', username: related_object.username) }
     application_target { "notifications/users/#{related_object.id}" }
+    web_url { related_object.href }
   end
 
   register_type ElloProtobufs::NotificationType::INVITE_REDEMPTION, 'invite_redemption' do |related_object|
     title { I18n.t('notification_factory.invite_redemption.title') }
     body { I18n.t('notification_factory.invite_redemption.body', username: related_object.username) }
     application_target { "notifications/users/#{related_object.id}" }
+    web_url { related_object.href }
   end
 
   register_type ElloProtobufs::NotificationType::RESET_BADGE_COUNT, 'reset_badge_count' do |_|

@@ -30,6 +30,7 @@ describe Notification::Factory do
       let(:title) { 'New Repost' }
       let(:body) { "#{repost.author.username} has reposted one of your posts" }
       let(:application_target) { post_target(repost.id) }
+      let(:web_url) { repost.href }
     end
   end
 
@@ -45,6 +46,7 @@ describe Notification::Factory do
       let(:title) { 'New Comment' }
       let(:body) { "#{comment.author.username} commented on your post" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
+      let(:web_url) { comment.parent_post.href }
     end
   end
 
@@ -61,6 +63,7 @@ describe Notification::Factory do
       let(:title) { 'New Comment on Your Repost' }
       let(:body) { "#{comment.author.username} commented on your repost" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
+      let(:web_url) { repost.href }
     end
   end
 
@@ -77,6 +80,7 @@ describe Notification::Factory do
       let(:title) { 'New Comment on a Repost of Your Post' }
       let(:body) { "#{comment.author.username} commented on #{comment.parent_post.author.username}'s repost of your post" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
+      let(:web_url) { repost.href }
     end
   end
 
@@ -92,6 +96,7 @@ describe Notification::Factory do
       let(:title) { 'New Love' }
       let(:body) { "#{love.user.username} loved your post" }
       let(:application_target) { post_target(love.post.id) }
+      let(:web_url) { love.post.href }
     end
   end
 
@@ -108,6 +113,7 @@ describe Notification::Factory do
       let(:title) { 'New Love on Your Repost' }
       let(:body) { "#{love.user.username} loved your repost" }
       let(:application_target) { post_target(love.post.id) }
+      let(:web_url) { love.post.href }
     end
   end
 
@@ -124,6 +130,7 @@ describe Notification::Factory do
       let(:title) { 'New Love on a Repost of Your Post' }
       let(:body) { "#{love.user.username} loved #{love.post.author.username}'s repost of your post" }
       let(:application_target) { post_target(love.post.id) }
+      let(:web_url) { love.post.href }
     end
   end
 
@@ -139,6 +146,7 @@ describe Notification::Factory do
       let(:title) { 'New Post Mention' }
       let(:body) { "#{post.author.username} mentioned you in a post" }
       let(:application_target) { post_target(post.id) }
+      let(:web_url) { post.href }
     end
   end
 
@@ -154,6 +162,7 @@ describe Notification::Factory do
       let(:title) { 'New Comment Mention' }
       let(:body) { "#{comment.author.username} mentioned you in a comment" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
+      let(:web_url) { comment.parent_post.href }
     end
   end
 
@@ -169,10 +178,11 @@ describe Notification::Factory do
       let(:title) { 'New Follower' }
       let(:body) { "#{user.username} is now following you" }
       let(:application_target) { user_target(user.id) }
+      let(:web_url) { user.href }
     end
   end
 
-  describe 'building a follower notification' do
+  describe 'building an invite redemption notification' do
     let(:user) { create(:protobuf_user) }
 
     subject { described_class.build(ElloProtobufs::NotificationType::INVITE_REDEMPTION, destination_user, user) }
@@ -184,6 +194,7 @@ describe Notification::Factory do
       let(:title) { 'New Friends on Ello' }
       let(:body) { "#{user.username} has accepted your invitation to join Ello" }
       let(:application_target) { user_target(user.id) }
+      let(:web_url) { user.href }
     end
   end
 
@@ -197,6 +208,7 @@ describe Notification::Factory do
       let(:title) { nil }
       let(:body) { nil }
       let(:application_target) { nil }
+      let(:web_url) { nil }
     end
   end
 

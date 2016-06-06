@@ -27,5 +27,9 @@ RSpec.shared_examples 'a notification with' do
   it 'sets the correct application_target' do
     expect(subject.metadata[:application_target]).to eq(application_target)
   end
+
+  it 'sets the correct web_url' do
+    expect(subject.metadata[:web_url]).to eq(web_url)
+  end
 end
 

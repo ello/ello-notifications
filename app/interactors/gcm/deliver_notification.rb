@@ -6,11 +6,14 @@ class GCM::DeliverNotification
   end
 
   def call
-    Rails.logger.debug "Delivering notification: #{context[:notification].inspect}, #{aps_options.inspect}"
+    Rails.logger.debug "Delivering notification: #{context[:notification].inspect}, #{data_options.inspect}, #{notification_options.inspect}"
+    payload = { data: data_options }
+    payload[:notification] = notification_options if context[:notification].include_alert?
     SnsService.deliver_notification(
-        context[:endpoint_arn], {
-        platform_key => { aps: aps_options }.merge(context[:notification].metadata).to_json
-    })
+      context[:endpoint_arn], {
+        platform_key => payload.to_json
+      }
+    )
     GcmDeliveryMetric.track_delivery_success
   rescue SnsService::ServiceError => e
     GcmDeliveryMetric.track_delivery_failure
@@ -25,13 +28,15 @@ class GCM::DeliverNotification
     end
   end
 
-  def aps_options
-    { badge: context[:notification].badge_count }.tap do |opts|
-      opts[:alert] = {
-          title: context[:notification].title,
-          body: context[:notification].body
-      } if context[:notification].include_alert?
-    end
+  def data_options
+    context[:notification].metadata
+  end
+
+  def notification_options
+    {
+      title: context[:notification].title,
+      body: context[:notification].body
+    }
   end
 
   def platform_key
