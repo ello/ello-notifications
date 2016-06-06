@@ -17,6 +17,10 @@ class Notification::Factory::TypeDecorator
     def application_target
       @application_target = yield
     end
+
+    def web_url
+      @web_url = yield
+    end
   end
 
   def initialize(type, human_readable_type, dsl_block)
@@ -33,6 +37,7 @@ class Notification::Factory::TypeDecorator
     notification.body = @body
     notification.metadata[:type] = @human_readable_type
     notification.metadata[:application_target] = @application_target
+    notification.metadata[:web_url] = @web_url
 
     reset
   end
