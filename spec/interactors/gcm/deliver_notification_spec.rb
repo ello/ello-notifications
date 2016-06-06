@@ -50,13 +50,13 @@ describe GCM::DeliverNotification do
       it 'nests the notification data inside the production message container' do
         expected_message = {
           'GCM' => {
-              data: {
-                some_key: 'value'
-              },
+            data: {
+              some_key: 'value',
               notification: {
                 title: notification.title,
                 body: notification.body
               }
+            }
           }.to_json
         }
 
