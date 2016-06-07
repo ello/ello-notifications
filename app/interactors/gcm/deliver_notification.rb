@@ -8,7 +8,7 @@ class GCM::DeliverNotification
   def call
     Rails.logger.debug "Delivering notification: #{context[:notification].inspect}, #{data_options.inspect}, #{notification_options.inspect}"
     payload = { data: data_options }
-    payload[:data][:notification] = notification_options if context[:notification].include_alert?
+    payload[:data].merge!(notification_options) if context[:notification].include_alert?
     SnsService.deliver_notification(
       context[:endpoint_arn], {
         platform_key => payload.to_json

@@ -52,10 +52,8 @@ describe GCM::DeliverNotification do
           'GCM' => {
             data: {
               some_key: 'value',
-              notification: {
-                title: notification.title,
-                body: notification.body
-              }
+              title: notification.title,
+              body: notification.body
             }
           }.to_json
         }
