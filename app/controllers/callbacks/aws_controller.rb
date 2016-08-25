@@ -7,21 +7,29 @@ class Callbacks::AWSController < ApplicationController
   before_action :log_incoming_message
 
   def push_failed
-    return render json: {} unless aws_message.authentic?
 
-    if type != 'Notification' || status != 'FAILURE'
+    if !aws_message.authentic?
+      Rails.logger.info "Not an authentic SNS message - exiting"
+      return render json: {}
+    end
+
+    if !is_failure_notification?
       Rails.logger.info "Not a Failure Notification - exiting"
       return render json: {}
     end
 
     if subscription = DeviceSubscription.where({platform_device_identifier: token}).first
-        subscription.destroy
+      subscription.destroy
     end
 
     render json: {}
   end
 
-  protected
+  private
+
+  def is_failure_notification?
+    type == 'Notification' && status == 'FAILURE'
+  end
 
   def aws_message
     @aws_message ||= AWS::SNS::Message.new request.raw_post
