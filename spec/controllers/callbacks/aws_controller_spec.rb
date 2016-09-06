@@ -12,7 +12,7 @@ describe Callbacks::AwsController, type: :request do
 
   describe 'POST #push_failed' do
 
-    context "when verifying subscription" do
+    context 'when verifying subscription' do
 
       before do
         allow_any_instance_of(Aws::SNS::Client).to receive(:confirm_subscription).and_return(confirmation_response)
@@ -27,36 +27,36 @@ describe Callbacks::AwsController, type: :request do
         }
       end
 
-      context "when the verification is successful" do
+      context 'when the verification is successful' do
         let(:confirmation_response) {
-          instance_double("Seahorse::Client::Response", successful?: true)
+          instance_double('Seahorse::Client::Response', successful?: true)
         }
 
-        it "returns a 200" do
+        it 'returns a 200' do
           post '/callbacks/aws/push_failed', body.to_json, headers
           expect(response.status).to be(200)
         end
       end
 
-      context "when the verification is unsuccessful" do
+      context 'when the verification is unsuccessful' do
         let(:confirmation_response) {
-          instance_double("Seahorse::Client::Response", successful?: false)
+          instance_double('Seahorse::Client::Response', successful?: false)
         }
 
-        it "returns a 406" do
+        it 'returns a 406' do
           post '/callbacks/aws/push_failed', body.to_json, headers
           expect(response.status).to be(406)
         end
       end
     end
 
-    context "with a validated message" do
+    context 'with a validated message' do
 
       before do
         allow_any_instance_of(Aws::SNS::MessageVerifier).to receive(:authentic?).and_return(true)
       end
 
-      context "message is a failed push notification" do
+      context 'message is a failed push notification' do
         let!(:subscription) {
           create(:device_subscription, :gcm, platform_device_identifier: '123')
         }
@@ -71,7 +71,7 @@ describe Callbacks::AwsController, type: :request do
 
         let(:body) {{ delivery: { token: '123' }, status: 'FAILURE'}}
 
-        it "deletes the device subscription" do
+        it 'deletes the device subscription' do
           expect(DeviceSubscription.find(subscription.id)).to be_truthy
           post '/callbacks/aws/push_failed', body.to_json, headers
           expect(response.status).to be(200)
@@ -79,7 +79,7 @@ describe Callbacks::AwsController, type: :request do
         end
       end
 
-      context "message is NOT a failed push notification" do
+      context 'message is NOT a failed push notification' do
 
         let!(:subscription) {
           create(:device_subscription, :gcm, platform_device_identifier: '123')
@@ -94,7 +94,7 @@ describe Callbacks::AwsController, type: :request do
 
         let(:body) {{ deliver: { token: '123' }, status: 'NOT FAILURE'}}
 
-        it "does not delete a device subscription" do
+        it 'does not delete a device subscription' do
           expect(DeviceSubscription.find(subscription.id)).to be_truthy
           post '/callbacks/aws/push_failed', body.to_json, headers
           expect(response.status).to be(200)
@@ -103,7 +103,7 @@ describe Callbacks::AwsController, type: :request do
       end
     end
 
-    context "with an unvalidated message" do
+    context 'with an unvalidated message' do
 
       let!(:subscription) {
         create(:device_subscription, :gcm, platform_device_identifier: '123')
@@ -121,7 +121,7 @@ describe Callbacks::AwsController, type: :request do
         allow_any_instance_of(Aws::SNS::MessageVerifier).to receive(:authentic?).and_return(false)
       end
 
-      it "does not delete a device subscription" do
+      it 'does not delete a device subscription' do
         expect(DeviceSubscription.find(subscription.id)).to be_truthy
         post '/callbacks/aws/push_failed', body.to_json, headers
         expect(response.status).to be(406)
