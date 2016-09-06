@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   post '/notifications/create' => 'notifications#create', as: :create_notification
 
-  post '/aws/push_failed' => 'aws#push_failed'
+  post '/callbacks/aws/push_failed' => 'callbacks/aws#push_failed'
 
   get '/health_check' => 'status#health_check'
 end
