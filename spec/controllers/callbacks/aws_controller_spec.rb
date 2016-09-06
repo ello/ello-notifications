@@ -8,29 +8,26 @@ describe Callbacks::AwsController, type: :request do
   end
 
   let(:headers) { {} }
-  let(:body) { '' }
 
   describe 'POST #push_failed' do
-
     context 'when verifying subscription' do
-
       before do
         allow_any_instance_of(Aws::SNS::Client).to receive(:confirm_subscription).and_return(confirmation_response)
       end
 
-      let(:body) {{ Token: '123', TopicArn: '456'}}
+      let(:body) { { Token: '123', TopicArn: '456' } }
       let(:headers) do
         {
           'x-amz-sns-message-type' => 'SubscriptionConfirmation',
           'Content-Type' => 'application/json',
-          'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin','admin')
+          'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
         }
       end
 
       context 'when the verification is successful' do
-        let(:confirmation_response) {
+        let(:confirmation_response) do
           instance_double('Seahorse::Client::Response', successful?: true)
-        }
+        end
 
         it 'returns a 200' do
           post '/callbacks/aws/push_failed', body.to_json, headers
@@ -39,9 +36,9 @@ describe Callbacks::AwsController, type: :request do
       end
 
       context 'when the verification is unsuccessful' do
-        let(:confirmation_response) {
+        let(:confirmation_response) do
           instance_double('Seahorse::Client::Response', successful?: false)
-        }
+        end
 
         it 'returns a 406' do
           post '/callbacks/aws/push_failed', body.to_json, headers
@@ -51,25 +48,24 @@ describe Callbacks::AwsController, type: :request do
     end
 
     context 'with a validated message' do
-
       before do
         allow_any_instance_of(Aws::SNS::MessageVerifier).to receive(:authentic?).and_return(true)
       end
 
       context 'message is a failed push notification' do
-        let!(:subscription) {
+        let!(:subscription) do
           create(:device_subscription, :gcm, platform_device_identifier: '123')
-        }
+        end
 
         let(:headers) do
           {
             'x-amz-sns-message-type' => 'Notification',
             'Content-Type' => 'application/json',
-            'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin','admin')
+            'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
           }
         end
 
-        let(:body) {{ delivery: { token: '123' }, status: 'FAILURE'}}
+        let(:body) { { delivery: { token: '123' }, status: 'FAILURE' } }
 
         it 'deletes the device subscription' do
           expect(DeviceSubscription.find(subscription.id)).to be_truthy
@@ -80,19 +76,18 @@ describe Callbacks::AwsController, type: :request do
       end
 
       context 'message is NOT a failed push notification' do
-
-        let!(:subscription) {
+        let!(:subscription) do
           create(:device_subscription, :gcm, platform_device_identifier: '123')
-        }
+        end
 
         let(:headers) do
           {
-           'Content-Type' => 'application/json',
-           'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin','admin')
+            'Content-Type' => 'application/json',
+            'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
           }
         end
 
-        let(:body) {{ deliver: { token: '123' }, status: 'NOT FAILURE'}}
+        let(:body) { { deliver: { token: '123' }, status: 'NOT FAILURE' } }
 
         it 'does not delete a device subscription' do
           expect(DeviceSubscription.find(subscription.id)).to be_truthy
@@ -104,16 +99,15 @@ describe Callbacks::AwsController, type: :request do
     end
 
     context 'with an unvalidated message' do
-
-      let!(:subscription) {
+      let!(:subscription) do
         create(:device_subscription, :gcm, platform_device_identifier: '123')
-      }
+      end
 
       let(:headers) do
         {
           'x-amz-sns-message-type' => 'Notification',
           'Content-Type' => 'application/json',
-          'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin','admin')
+          'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
         }
       end
 
