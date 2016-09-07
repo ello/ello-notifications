@@ -6,7 +6,7 @@ class Callbacks::AwsController < ApplicationController
 
   before_action :log_incoming_message, :confirm_subscription, :verify_message_authenticity
   skip_before_filter :require_binary_request
-  before_filter :require_json_request
+  # before_filter :require_json_request
 
   def push_failed
     if !is_failure_notification?
