@@ -7,6 +7,7 @@ addons:
 rvm: 2.2.2
 before_script:
 - cp .env.example .env
+- cp config/database.travis.yml config/database.yml
 script:
 - bundle exec rake db:drop:all db:create:all db:schema:load
 - bundle exec rake

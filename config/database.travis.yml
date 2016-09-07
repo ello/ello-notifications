@@ -10,14 +10,8 @@ development:
   database: ello-notifications_development
 
 test:
-  adapter: postgresql
-  encoding: utf8
-  reconnect: false
+  <<: *default
   database: ello-notifications_test
-  pool: 5
-  host: 192.168.99.100
-  min_messages: error
-  username: postgres
 
 production:
   url:  <%= ENV["DATABASE_URL"] %>
