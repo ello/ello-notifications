@@ -76,29 +76,50 @@ class CreateNotification
       context[:request].user
     when *love_related_types
       context[:request].love
+    when *watch_related_types
+      context[:request].watch
     end
   end
 
   def post_related_types
-    [ ElloProtobufs::NotificationType::REPOST, ElloProtobufs::NotificationType::POST_MENTION ]
+    [
+      ElloProtobufs::NotificationType::REPOST,
+      ElloProtobufs::NotificationType::POST_MENTION
+    ]
   end
 
   def comment_related_types
-    [ ElloProtobufs::NotificationType::POST_COMMENT, ElloProtobufs::NotificationType::COMMENT_MENTION,
+    [
+      ElloProtobufs::NotificationType::POST_COMMENT,
+      ElloProtobufs::NotificationType::COMMENT_MENTION,
       ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR,
-      ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR
+      ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR,
+      ElloProtobufs::NotificationType::POST_COMMENT_TO_WATCHER
     ]
   end
 
   def love_related_types
-    [ ElloProtobufs::NotificationType::POST_LOVE, ElloProtobufs::NotificationType::POST_LOVE,
+    [
+      ElloProtobufs::NotificationType::POST_LOVE,
+      ElloProtobufs::NotificationType::POST_LOVE,
       ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR,
       ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR
     ]
   end
 
   def user_related_types
-    [ ElloProtobufs::NotificationType::FOLLOWER, ElloProtobufs::NotificationType::INVITE_REDEMPTION ]
+    [
+      ElloProtobufs::NotificationType::FOLLOWER,
+      ElloProtobufs::NotificationType::INVITE_REDEMPTION
+    ]
+  end
+
+  def watch_related_types
+    [
+      ElloProtobufs::NotificationType::POST_WATCH,
+      ElloProtobufs::NotificationType::REPOST_WATCH_TO_REPOST_AUTHOR,
+      ElloProtobufs::NotificationType::REPOST_WATCH_TO_ORIGINAL_AUTHOR
+    ]
   end
 
 end

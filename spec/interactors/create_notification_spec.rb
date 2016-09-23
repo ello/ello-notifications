@@ -72,7 +72,8 @@ describe CreateNotification do
       before { create(:device_subscription, :apns, logged_in_user_id: destination_user.id) }
 
       describe 'protobuf decoding' do
-        ['REPOST', 'POST_MENTION'].each do |post_related_type|
+        [ 'REPOST',
+          'POST_MENTION' ].each do |post_related_type|
           context "when the notification is a #{post_related_type}" do
             let(:notification_type) { Object.const_get("NotificationType::#{post_related_type}") }
             let(:post) { create(:protobuf_post) }
@@ -87,8 +88,13 @@ describe CreateNotification do
           end
         end
 
-        ['POST_COMMENT', 'COMMENT_MENTION', 'REPOST_COMMENT_TO_REPOST_AUTHOR',
-         'REPOST_COMMENT_TO_ORIGINAL_AUTHOR'].each do |comment_related_type|
+        [
+          'POST_COMMENT',
+          'COMMENT_MENTION',
+          'REPOST_COMMENT_TO_REPOST_AUTHOR',
+          'REPOST_COMMENT_TO_ORIGINAL_AUTHOR',
+          'POST_COMMENT_TO_WATCHER'
+        ].each do |comment_related_type|
           context "when the notification is a #{comment_related_type}" do
             let(:notification_type) { Object.const_get("NotificationType::#{comment_related_type}") }
             let(:comment) { create(:protobuf_comment) }
@@ -115,9 +121,27 @@ describe CreateNotification do
                 .with(notification_type, destination_user, user)
               call_interactor
             end
-
           end
         end
+
+        [
+          'POST_WATCH',
+          'REPOST_WATCH_TO_REPOST_AUTHOR',
+          'REPOST_WATCH_TO_ORIGINAL_AUTHOR' ].each do |watch_related_type|
+          context "when the notification is a #{watch_related_type}" do
+            let(:notification_type) { Object.const_get("NotificationType::#{watch_related_type}") }
+            let(:watch) { create(:protobuf_watch) }
+
+            before { request.watch = watch }
+
+            it 'plucks the watch from the request and passes it into the notification factory' do
+              expect(Notification::Factory).to receive(:build)
+                .with(notification_type, destination_user, watch)
+              call_interactor
+            end
+          end
+        end
+
       end
 
       context 'notification count handling' do
