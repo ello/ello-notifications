@@ -1,6 +1,7 @@
 class DeviceSubscriptionsController < ApplicationController
   def create
     protobuf_request = ElloProtobufs::NotificationService::CreateDeviceSubscriptionRequest.decode_from(request.body)
+    Honeybadger.context(protobuf_request: protobuf_request)
     result = CreateDeviceSubscription.call(request: protobuf_request)
 
     resp = service_response(result)
@@ -9,6 +10,7 @@ class DeviceSubscriptionsController < ApplicationController
 
   def destroy
     protobuf_request = ElloProtobufs::NotificationService::DeleteDeviceSubscriptionRequest.decode_from(request.body)
+    Honeybadger.context(protobuf_request: protobuf_request)
     result = DeleteDeviceSubscription.call(request: protobuf_request)
 
     resp = service_response(result)
