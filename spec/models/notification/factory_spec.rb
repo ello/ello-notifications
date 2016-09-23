@@ -8,8 +8,8 @@ describe Notification::Factory do
       it 'clones the decorator before using it to decorate the notification' do
         comment = create(:protobuf_comment)
         cloned_decorator = instance_spy(Notification::Factory::TypeDecorator)
-        allow_any_instance_of(Notification::Factory::TypeDecorator).to receive(:clone).
-          and_return(cloned_decorator)
+        allow_any_instance_of(Notification::Factory::TypeDecorator).to receive(:clone)
+          .and_return(cloned_decorator)
 
         described_class.build(ElloProtobufs::NotificationType::POST_COMMENT, destination_user, comment)
 
@@ -54,7 +54,9 @@ describe Notification::Factory do
     let(:repost) { create(:protobuf_post, :repost) }
     let(:comment) { create(:protobuf_comment, parent_post: repost) }
 
-    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR, destination_user, comment) }
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR, destination_user, comment)
+    end
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -71,14 +73,20 @@ describe Notification::Factory do
     let(:repost) { create(:protobuf_post, :repost) }
     let(:comment) { create(:protobuf_comment, parent_post: repost) }
 
-    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR, destination_user, comment) }
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR,
+                            destination_user,
+                            comment)
+    end
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost_comment_to_original_author' }
       let(:include_alert) { true }
       let(:title) { 'New Comment on a Repost of Your Post' }
-      let(:body) { "#{comment.author.username} commented on #{comment.parent_post.author.username}'s repost of your post" }
+      let(:body) do
+        "#{comment.author.username} commented on #{comment.parent_post.author.username}'s repost of your post"
+      end
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
       let(:web_url) { repost.href }
     end
@@ -104,7 +112,11 @@ describe Notification::Factory do
     let(:repost) { create(:protobuf_post, :repost) }
     let(:love) { create(:protobuf_love, post: repost) }
 
-    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR, destination_user, love) }
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR,
+                            destination_user,
+                            love)
+    end
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -121,7 +133,11 @@ describe Notification::Factory do
     let(:repost) { create(:protobuf_post, :repost) }
     let(:love) { create(:protobuf_love, post: repost) }
 
-    subject { described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR, destination_user, love) }
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR,
+                            destination_user,
+                            love)
+    end
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -212,7 +228,89 @@ describe Notification::Factory do
     end
   end
 
-  def post_target(id, full_target=true)
+  describe 'building a post_watch notification' do
+    let(:watch) { create(:protobuf_watch) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::POST_WATCH,
+                            destination_user,
+                            watch)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'post_watch' }
+      let(:include_alert) { true }
+      let(:title) { 'New Watcher on Post' }
+      let(:body) { "#{watch.user.username} is watching your post" }
+      let(:application_target) { post_target(watch.post.id) }
+      let(:web_url) { watch.post.href }
+    end
+  end
+
+  describe 'building a post_comment_to_watcher notification' do
+    let(:comment) { create(:protobuf_comment) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::POST_COMMENT_TO_WATCHER,
+                            destination_user,
+                            comment)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'post_comment_to_watcher' }
+      let(:include_alert) { true }
+      let(:title) { 'New Comment on a Watched Post' }
+      let(:body) { "#{comment.author.username} commented on a post you're watching" }
+      let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
+      let(:web_url) { comment.parent_post.href }
+    end
+  end
+
+  describe 'building a repost_watch_to_repost_author notification' do
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:watch) { create(:protobuf_watch, post: repost) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::REPOST_WATCH_TO_REPOST_AUTHOR,
+                            destination_user,
+                            watch)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'repost_watch_to_repost_author' }
+      let(:include_alert) { true }
+      let(:title) { 'New Watcher on a Repost' }
+      let(:body) { "#{watch.user.username} is watching your repost" }
+      let(:application_target) { post_target(watch.post.id) }
+      let(:web_url) { watch.post.href }
+    end
+  end
+
+  describe 'building a repost_watch_to_original_author notification' do
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:watch) { create(:protobuf_watch, post: repost) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::REPOST_WATCH_TO_ORIGINAL_AUTHOR,
+                            destination_user,
+                            watch)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'repost_watch_to_original_author' }
+      let(:include_alert) { true }
+      let(:title) { 'New Watcher on a Reposted Post' }
+      let(:body) { "#{watch.user.username} is watching #{watch.post.author.username}'s repost of your post" }
+      let(:application_target) { post_target(watch.post.id) }
+      let(:web_url) { watch.post.href }
+    end
+  end
+
+  def post_target(id, _full_target = true)
     "notifications/posts/#{id}"
   end
 
