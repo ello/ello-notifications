@@ -9,7 +9,7 @@ class Notification::Factory
   end
 
   def self.register_type(type, readable_type, &evaluator)
-    self.type_decorators << TypeDecorator.new(type, readable_type, evaluator)
+    type_decorators << TypeDecorator.new(type, readable_type, evaluator)
   end
 
   register_type ElloProtobufs::NotificationType::REPOST, 'repost' do |related_object|
@@ -26,14 +26,18 @@ class Notification::Factory
     web_url { related_object.parent_post.href }
   end
 
-  register_type ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR, 'repost_comment_to_repost_author' do |related_object|
+  register_type ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR,
+                'repost_comment_to_repost_author' do |related_object|
     title { I18n.t('notification_factory.repost_comment_to_repost_author.title') }
-    body { I18n.t('notification_factory.repost_comment_to_repost_author.body', username: related_object.author.username) }
+    body do
+      I18n.t('notification_factory.repost_comment_to_repost_author.body', username: related_object.author.username)
+    end
     application_target { "notifications/posts/#{related_object.parent_post.id}/comments/#{related_object.id}" }
     web_url { related_object.parent_post.href }
   end
 
-  register_type ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR, 'repost_comment_to_original_author' do |related_object|
+  register_type(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR,
+                'repost_comment_to_original_author') do |related_object|
     title { I18n.t('notification_factory.repost_comment_to_original_author.title') }
     body do
       I18n.t('notification_factory.repost_comment_to_original_author.body',
@@ -51,14 +55,16 @@ class Notification::Factory
     web_url { related_object.post.href }
   end
 
-  register_type ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR, 'repost_love_to_repost_author' do |related_object|
+  register_type(ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR,
+                'repost_love_to_repost_author') do |related_object|
     title { I18n.t('notification_factory.repost_love_to_repost_author.title') }
     body { I18n.t('notification_factory.repost_love_to_repost_author.body', username: related_object.user.username) }
     application_target { "notifications/posts/#{related_object.post.id}" }
     web_url { related_object.post.href }
   end
 
-  register_type ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR, 'repost_love_to_original_author' do |related_object|
+  register_type ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR,
+                'repost_love_to_original_author' do |related_object|
     title { I18n.t('notification_factory.repost_love_to_original_author.title') }
     body do
       I18n.t('notification_factory.repost_love_to_original_author.body',
@@ -101,8 +107,44 @@ class Notification::Factory
     include_alert false
   end
 
-  def initialize(type, destination_user, related_object=nil)
-    @type, @destination_user, @related_object = type, destination_user, related_object
+  register_type ElloProtobufs::NotificationType::POST_WATCH, 'post_watch' do |related_object|
+    title { I18n.t('notification_factory.post_watch.title') }
+    body { I18n.t('notification_factory.post_watch.body', username: related_object.user.username) }
+    application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
+  end
+
+  register_type ElloProtobufs::NotificationType::POST_COMMENT_TO_WATCHER, 'post_comment_to_watcher' do |related_object|
+    title { I18n.t('notification_factory.post_comment_to_watcher.title') }
+    body { I18n.t('notification_factory.post_comment_to_watcher.body', username: related_object.author.username) }
+    application_target { "notifications/posts/#{related_object.parent_post.id}/comments/#{related_object.id}" }
+    web_url { related_object.parent_post.href }
+  end
+
+  register_type ElloProtobufs::NotificationType::REPOST_WATCH_TO_REPOST_AUTHOR,
+                'repost_watch_to_repost_author' do |related_object|
+    title { I18n.t('notification_factory.repost_watch_to_repost_author.title') }
+    body { I18n.t('notification_factory.repost_watch_to_repost_author.body', username: related_object.user.username) }
+    application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
+  end
+
+  register_type ElloProtobufs::NotificationType::REPOST_WATCH_TO_ORIGINAL_AUTHOR,
+                'repost_watch_to_original_author' do |related_object|
+    title { I18n.t('notification_factory.repost_watch_to_original_author.title') }
+    body do
+      I18n.t('notification_factory.repost_watch_to_original_author.body',
+             username: related_object.user.username,
+             reposter_username: related_object.post.author.username)
+    end
+    application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
+  end
+
+  def initialize(type, destination_user, related_object = nil)
+    @type = type
+    @destination_user = destination_user
+    @related_object = related_object
   end
 
   def build
@@ -118,7 +160,7 @@ class Notification::Factory
   private
 
   def decorator_for_type(desired_type)
-    self.class.type_decorators.find{ |decorator| decorator.type == desired_type }
+    self.class.type_decorators.find { |decorator| decorator.type == desired_type }
   end
 
   def common_metadata
