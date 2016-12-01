@@ -78,6 +78,8 @@ class CreateNotification
       context[:request].love
     when *watch_related_types
       context[:request].watch
+    when *announcement_related_types
+      context[:request].announcement
     end
   end
 
@@ -119,6 +121,12 @@ class CreateNotification
       ElloProtobufs::NotificationType::POST_WATCH,
       ElloProtobufs::NotificationType::REPOST_WATCH_TO_REPOST_AUTHOR,
       ElloProtobufs::NotificationType::REPOST_WATCH_TO_ORIGINAL_AUTHOR
+    ]
+  end
+
+  def announcement_related_types
+    [
+      ElloProtobufs::NotificationType::ANNOUNCEMENT
     ]
   end
 
