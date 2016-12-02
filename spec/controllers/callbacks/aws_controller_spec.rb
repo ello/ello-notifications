@@ -5,6 +5,7 @@ describe Callbacks::AwsController, type: :request do
 
   before do
     allow_any_instance_of(Aws::SNS::Client).to receive(:confirm_subscription)
+    allow(SnsService).to receive(:unsubscribe_from_topic)
   end
 
   let(:headers) { {} }
@@ -54,7 +55,10 @@ describe Callbacks::AwsController, type: :request do
 
       context 'message is a failed push notification' do
         let!(:subscription) do
-          create(:device_subscription, :gcm, platform_device_identifier: '123')
+          create(:device_subscription, :gcm,
+                 platform_device_identifier: '123',
+                 announcement_subscription_arn: 'arn:sns:abc123'
+                )
         end
 
         let(:headers) do
@@ -69,6 +73,14 @@ describe Callbacks::AwsController, type: :request do
 
         it 'deletes the device subscription' do
           expect(DeviceSubscription.find(subscription.id)).to be_truthy
+          post '/callbacks/aws/push_failed', body.to_json, headers
+          expect(response.status).to be(200)
+          expect(DeviceSubscription.find_by(id: subscription.id)).to be_nil
+        end
+
+        it 'removes the announcement topic subscription' do
+          expect(DeviceSubscription.find(subscription.id)).to be_truthy
+          expect(SnsService).to receive(:unsubscribe_from_topic).with('arn:sns:abc123')
           post '/callbacks/aws/push_failed', body.to_json, headers
           expect(response.status).to be(200)
           expect(DeviceSubscription.find_by(id: subscription.id)).to be_nil

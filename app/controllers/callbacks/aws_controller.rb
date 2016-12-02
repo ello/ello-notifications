@@ -15,7 +15,7 @@ class Callbacks::AwsController < ApplicationController
     end
 
     if subscription = DeviceSubscription.where({platform_device_identifier: token}).first
-      subscription.destroy
+      subscription.destroy_and_unsubscribe
     end
 
     render json: {}
