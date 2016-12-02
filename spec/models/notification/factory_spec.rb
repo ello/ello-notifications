@@ -325,7 +325,7 @@ describe Notification::Factory do
       let(:include_alert) { true }
       let(:title) { 'Header' }
       let(:body) { 'Body' }
-      let(:application_target) {}
+      let(:application_target) { 'http://asdf.com' }
       let(:web_url) { 'http://asdf.com' }
     end
   end
