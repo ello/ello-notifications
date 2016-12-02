@@ -310,6 +310,26 @@ describe Notification::Factory do
     end
   end
 
+  describe 'building an announcement notification' do
+    let(:announcement) { create(:protobuf_announcement, header: 'Header', body: 'Body', cta_href: 'http://asdf.com') }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::ANNOUNCEMENT,
+                            destination_user,
+                            announcement)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'announcement' }
+      let(:include_alert) { true }
+      let(:title) { 'Header' }
+      let(:body) { 'Body' }
+      let(:application_target) { 'http://asdf.com' }
+      let(:web_url) { 'http://asdf.com' }
+    end
+  end
+
   def post_target(id, _full_target = true)
     "notifications/posts/#{id}"
   end

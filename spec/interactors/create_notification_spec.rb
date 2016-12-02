@@ -138,9 +138,24 @@ describe CreateNotification do
               expect(Notification::Factory).to receive(:build)
                 .with(notification_type, destination_user, watch)
               call_interactor
+              end
+            end
+
+            [ 'ANNOUNCEMENT' ].each do |announcement_related_type|
+              context "when the notification is a #{announcement_related_type}" do
+                let(:notification_type) { Object.const_get("NotificationType::#{announcement_related_type}") }
+                let(:announcement) { create(:protobuf_announcement) }
+
+                before { request.announcement = announcement }
+
+                it 'plucks the announcement from the request and passes it into the notification factory' do
+                  expect(Notification::Factory).to receive(:build)
+                    .with(notification_type, destination_user, announcement)
+                  call_interactor
+                end
+              end
             end
           end
-        end
 
       end
 

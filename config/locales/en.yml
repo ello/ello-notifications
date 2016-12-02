@@ -49,3 +49,6 @@ en:
     repost_watch_to_original_author:
       title: 'New Watcher on a Reposted Post'
       body: "%{username} is watching %{reposter_username}'s repost of your post"
+    announcement:
+      title: "%{header}"
+      body: "%{body}"
