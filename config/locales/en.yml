@@ -5,50 +5,34 @@ en:
         logged_in_user_id: "Logged in user id"
   notification_factory:
     repost:
-      title: 'New Repost'
       body: "%{username} has reposted one of your posts"
     post_comment:
-      title: 'New Comment'
       body: "%{username} commented on your post"
     repost_comment_to_repost_author:
-      title: 'New Comment on Your Repost'
       body: "%{username} commented on your repost"
     repost_comment_to_original_author:
-      title: 'New Comment on a Repost of Your Post'
       body: "%{username} commented on %{reposter_username}'s repost of your post"
     post_love:
-      title: 'New Love'
       body: "%{username} loved your post"
     repost_love_to_repost_author:
-      title: 'New Love on Your Repost'
       body: "%{username} loved your repost"
     repost_love_to_original_author:
-      title: 'New Love on a Repost of Your Post'
       body: "%{username} loved %{reposter_username}'s repost of your post"
     post_mention:
-      title: 'New Post Mention'
       body: "%{username} mentioned you in a post"
     comment_mention:
-      title: 'New Comment Mention'
       body: "%{username} mentioned you in a comment"
     follower:
-      title: 'New Follower'
       body: "%{username} is now following you"
     invite_redemption:
-      title: 'New Friends on Ello'
       body: "%{username} has accepted your invitation to join Ello"
     post_watch:
-      title: 'New Watcher on Post'
       body: "%{username} is watching your post"
     post_comment_to_watcher:
-      title: 'New Comment on a Watched Post'
       body: "%{username} commented on a post you're watching"
     repost_watch_to_repost_author:
-      title: 'New Watcher on a Repost'
       body: "%{username} is watching your repost"
     repost_watch_to_original_author:
-      title: 'New Watcher on a Reposted Post'
       body: "%{username} is watching %{reposter_username}'s repost of your post"
     announcement:
-      title: "%{header}"
-      body: "%{body}"
+      body: "%{header}"
