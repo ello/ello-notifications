@@ -308,8 +308,8 @@ describe Notification::Factory do
       let(:type) { 'announcement' }
       let(:include_alert) { true }
       let(:body) { announcement.header }
-      let(:application_target) { 'notifications/' }
-      let(:web_url) { 'notifications/' }
+      let(:application_target) { 'notifications/all' }
+      let(:web_url) { 'notifications/all' }
     end
   end
 
