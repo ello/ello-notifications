@@ -27,7 +27,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost' }
       let(:include_alert) { true }
-      let(:title) { 'New Repost' }
       let(:body) { "#{repost.author.username} has reposted one of your posts" }
       let(:application_target) { post_target(repost.id) }
       let(:web_url) { repost.href }
@@ -43,7 +42,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'post_comment' }
       let(:include_alert) { true }
-      let(:title) { 'New Comment' }
       let(:body) { "#{comment.author.username} commented on your post" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
       let(:web_url) { comment.parent_post.href }
@@ -62,7 +60,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost_comment_to_repost_author' }
       let(:include_alert) { true }
-      let(:title) { 'New Comment on Your Repost' }
       let(:body) { "#{comment.author.username} commented on your repost" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
       let(:web_url) { repost.href }
@@ -83,7 +80,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost_comment_to_original_author' }
       let(:include_alert) { true }
-      let(:title) { 'New Comment on a Repost of Your Post' }
       let(:body) do
         "#{comment.author.username} commented on #{comment.parent_post.author.username}'s repost of your post"
       end
@@ -101,7 +97,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'post_love' }
       let(:include_alert) { true }
-      let(:title) { 'New Love' }
       let(:body) { "#{love.user.username} loved your post" }
       let(:application_target) { post_target(love.post.id) }
       let(:web_url) { love.post.href }
@@ -122,7 +117,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost_love_to_repost_author' }
       let(:include_alert) { true }
-      let(:title) { 'New Love on Your Repost' }
       let(:body) { "#{love.user.username} loved your repost" }
       let(:application_target) { post_target(love.post.id) }
       let(:web_url) { love.post.href }
@@ -143,7 +137,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost_love_to_original_author' }
       let(:include_alert) { true }
-      let(:title) { 'New Love on a Repost of Your Post' }
       let(:body) { "#{love.user.username} loved #{love.post.author.username}'s repost of your post" }
       let(:application_target) { post_target(love.post.id) }
       let(:web_url) { love.post.href }
@@ -159,7 +152,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'post_mention' }
       let(:include_alert) { true }
-      let(:title) { 'New Post Mention' }
       let(:body) { "#{post.author.username} mentioned you in a post" }
       let(:application_target) { post_target(post.id) }
       let(:web_url) { post.href }
@@ -175,7 +167,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'comment_mention' }
       let(:include_alert) { true }
-      let(:title) { 'New Comment Mention' }
       let(:body) { "#{comment.author.username} mentioned you in a comment" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
       let(:web_url) { comment.parent_post.href }
@@ -191,7 +182,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'follower' }
       let(:include_alert) { true }
-      let(:title) { 'New Follower' }
       let(:body) { "#{user.username} is now following you" }
       let(:application_target) { user_target(user.id) }
       let(:web_url) { user.href }
@@ -207,7 +197,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'invite_redemption' }
       let(:include_alert) { true }
-      let(:title) { 'New Friends on Ello' }
       let(:body) { "#{user.username} has accepted your invitation to join Ello" }
       let(:application_target) { user_target(user.id) }
       let(:web_url) { user.href }
@@ -221,7 +210,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'reset_badge_count' }
       let(:include_alert) { false }
-      let(:title) { nil }
       let(:body) { nil }
       let(:application_target) { nil }
       let(:web_url) { nil }
@@ -241,7 +229,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'post_watch' }
       let(:include_alert) { true }
-      let(:title) { 'New Watcher on Post' }
       let(:body) { "#{watch.user.username} is watching your post" }
       let(:application_target) { post_target(watch.post.id) }
       let(:web_url) { watch.post.href }
@@ -261,7 +248,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'post_comment_to_watcher' }
       let(:include_alert) { true }
-      let(:title) { 'New Comment on a Watched Post' }
       let(:body) { "#{comment.author.username} commented on a post you're watching" }
       let(:application_target) { comment_target(comment.parent_post.id, comment.id) }
       let(:web_url) { comment.parent_post.href }
@@ -282,7 +268,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost_watch_to_repost_author' }
       let(:include_alert) { true }
-      let(:title) { 'New Watcher on a Repost' }
       let(:body) { "#{watch.user.username} is watching your repost" }
       let(:application_target) { post_target(watch.post.id) }
       let(:web_url) { watch.post.href }
@@ -303,7 +288,6 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'repost_watch_to_original_author' }
       let(:include_alert) { true }
-      let(:title) { 'New Watcher on a Reposted Post' }
       let(:body) { "#{watch.user.username} is watching #{watch.post.author.username}'s repost of your post" }
       let(:application_target) { post_target(watch.post.id) }
       let(:web_url) { watch.post.href }
@@ -323,10 +307,9 @@ describe Notification::Factory do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'announcement' }
       let(:include_alert) { true }
-      let(:title) { 'Header' }
-      let(:body) { 'Body' }
-      let(:application_target) { 'http://asdf.com' }
-      let(:web_url) { 'http://asdf.com' }
+      let(:body) { announcement.header }
+      let(:application_target) { 'notifications/' }
+      let(:web_url) { 'notifications/' }
     end
   end
 

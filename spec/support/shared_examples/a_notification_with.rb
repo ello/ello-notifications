@@ -4,10 +4,6 @@ RSpec.shared_examples 'a notification with' do
   # shared example expects that a number of params are defined as lets
   # in the calling spec -  e.g. `let(:title) { 'expected title' }`
 
-  it 'has the correct title' do
-    expect(subject.title).to eq(title)
-  end
-
   it 'sets the correct body' do
     expect(subject.body).to eq(body)
   end
