@@ -8,6 +8,8 @@ class SnsService
   end
 
   class << self
+    ANNOUNCEMENT_TOPIC_ARN = ENV['ANNOUNCEMENT_TOPIC_ARN']
+
     def create_subscription_endpoint(subscription)
       if subscription.creatable_on_sns?
         sns = Aws::SNS::Client.new
@@ -53,6 +55,35 @@ class SnsService
       })
     rescue Aws::Errors::ServiceError => e
       raise ServiceError.new(e.message, e)
+    end
+
+    def publish_announcement(message)
+      announcement_topic.publish(
+        message_structure: 'json',
+        message: message.to_json
+      )
+    end
+
+    def subscribe_to_announcements(arn)
+      announcement_topic.subscribe(
+        protocol: 'application',
+        endpoint: arn
+      )
+    end
+
+    def unsubscribe_from_topic(subscription_arn)
+      sns = Aws::SNS::Client.new
+      sns.unsubscribe(subscription_arn: subscription_arn)
+    end
+
+    private
+
+    def announcement_topic
+      raise 'please set ANNOUNCEMENT_TOPIC_ARN env variable' unless ANNOUNCEMENT_TOPIC_ARN
+      @announcements_topic ||= begin
+        sns = Aws::SNS::Client.new
+        Aws::SNS::Topic.new(ANNOUNCEMENT_TOPIC_ARN, client: sns)
+      end
     end
   end
 end

@@ -27,6 +27,8 @@ class CreateDeviceSubscription
       build_version: request.build_version
     })
 
+    subscribe_to_announcements(result.subscription) unless result.failure?
+
     context.fail!(message: result.message, failure_reason: result.failure_reason) if result.failure?
   end
 
@@ -39,11 +41,21 @@ class CreateDeviceSubscription
       build_version: request.build_version
     })
 
+    subscribe_to_announcements(result.subscription) unless result.failure?
+
     context.fail!(message: result.message, failure_reason: result.failure_reason) if result.failure?
   end
 
   def fail_as_unknown
     reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_PLATFORM
     context.fail!(failure_reason: reason)
+  end
+
+  def subscribe_to_announcements(device_sub)
+    user = User.where(id: device_sub.logged_in_user_id).first_or_create
+    if user.notify_of_announcements
+      sub = SnsService.subscribe_to_announcements(device_sub.endpoint_arn)
+      device_sub.update(announcement_subscription_arn: sub.arn)
+    end
   end
 end

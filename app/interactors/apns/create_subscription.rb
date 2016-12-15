@@ -9,6 +9,7 @@ class APNS::CreateSubscription
         update_logged_in_user(subscription) if logged_in_user_has_changed?(subscription)
         update_app_versions(subscription) if app_versions_have_changed?(subscription)
         enable_subscription(subscription) if subscription.disabled?
+        context[:subscription] = subscription
         ApnsSubscriptionMetric.track_creation_success('reused')
       else
         subscription = build_subscription_from_context

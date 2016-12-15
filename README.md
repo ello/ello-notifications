@@ -17,6 +17,7 @@
 
 - Ruby 2.2.2 -- specified using `.ruby-version`
 - Postgresql -- `brew install postgresql`
+- Redis -- `brew install redis-server`
 - Protobuf -- reference installation requirements in `ElloProtobufs` gem
 
 ## Setup
