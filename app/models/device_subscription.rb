@@ -32,11 +32,17 @@ class DeviceSubscription < ActiveRecord::Base
   end
 
   def disable
+    unsubscribe_from_announcments
     update_attribute(:enabled, false)
   end
 
   def enable
     update_attribute(:enabled, true)
+  end
+
+  def destroy_and_unsubscribe
+    unsubscribe_from_announcments
+    destroy
   end
 
   def creatable_on_sns?
@@ -54,4 +60,9 @@ class DeviceSubscription < ActiveRecord::Base
     self.enabled = true if self.enabled.nil?
   end
 
+  def unsubscribe_from_announcments
+    if announcement_subscription_arn
+      SnsService.unsubscribe_from_topic(announcement_subscription_arn)
+    end
+  end
 end

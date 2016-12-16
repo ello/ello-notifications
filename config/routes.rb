@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   end
 
   post '/notifications/create' => 'notifications#create', as: :create_notification
+  post '/topic_notifications/create' => 'topic_notifications#create', as: :create_topic_notification
 
   post '/callbacks/aws/push_failed' => 'callbacks/aws#push_failed'
 

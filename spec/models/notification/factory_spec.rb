@@ -325,8 +325,8 @@ describe Notification::Factory do
       let(:include_alert) { true }
       let(:title) { 'New Announcement' }
       let(:body) { announcement.header }
-      let(:application_target) { 'notifications/all' }
-      let(:web_url) { 'notifications/all' }
+      let(:application_target) { announcement.cta_href }
+      let(:web_url) { announcement.cta_href }
     end
   end
 

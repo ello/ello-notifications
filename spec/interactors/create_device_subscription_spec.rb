@@ -12,9 +12,14 @@ describe CreateDeviceSubscription do
     })
   end
 
+  let(:user) { create(:user) }
+  let(:subscription) do
+    build(:device_subscription, :apns, logged_in_user_id: user.id, endpoint_arn: 'abc123')
+  end
+
   context 'when the device subscription is for APNS' do
     it 'dispatches to the appropriate interactor' do
-      mock_result = double('Result', success?: true, failure?: false)
+      mock_result = double('Result', success?: true, failure?: false, subscription: subscription)
       expect(APNS::CreateSubscription).to receive(:call).with({
         platform_device_identifier: request.platform_device_identifier,
         bundle_identifier: request.bundle_identifier,
@@ -22,6 +27,8 @@ describe CreateDeviceSubscription do
         marketing_version: request.marketing_version,
         build_version: request.build_version
       }).and_return(mock_result)
+
+      expect(SnsService).to receive(:subscribe_to_announcements).with('abc123') { double(:resp, arn: "arn:sns:123") }
 
       result = described_class.call(request: request)
 

@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 describe CreateNotification do
+  before do
+    # short-hand aliases for test readability purposes
+    stub_const('ServiceFailureReason', ElloProtobufs::NotificationService::ServiceFailureReason)
+    stub_const('CreateNotificationRequest', ElloProtobufs::NotificationService::CreateNotificationRequest)
+    stub_const('NotificationType', ElloProtobufs::NotificationType)
+  end
 
   context 'when called with the required parameters' do
-    before do
-      # short-hand aliases for test readability purposes
-      stub_const('ServiceFailureReason', ElloProtobufs::NotificationService::ServiceFailureReason)
-      stub_const('CreateNotificationRequest', ElloProtobufs::NotificationService::CreateNotificationRequest)
-      stub_const('NotificationType', ElloProtobufs::NotificationType)
-    end
 
     before { allow(APNS::DeliverNotification).to receive(:call) }
 
@@ -291,4 +291,20 @@ describe CreateNotification do
 
   end
 
+  context 'Announcements when the user has no devices' do
+    let(:destination_user) { create(:user) }
+    let(:request) do
+      CreateNotificationRequest.new(
+        type: NotificationType::ANNOUNCEMENT,
+        announcement: create(:protobuf_announcement),
+        destination_user_id: destination_user.id
+      )
+    end
+
+    it 'should not deliver individual annoucements' do
+      expect(APNS::DeliverNotification).not_to receive(:call)
+      expect(GCM::DeliverNotification).not_to receive(:call)
+      described_class.call(request: request)
+    end
+  end
 end

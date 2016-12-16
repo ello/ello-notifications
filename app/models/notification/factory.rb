@@ -144,8 +144,8 @@ class Notification::Factory
   register_type ElloProtobufs::NotificationType::ANNOUNCEMENT, 'announcement' do |related_object|
     title { I18n.t('notification_factory.announcement.title') }
     body { I18n.t('notification_factory.announcement.body', header: related_object.header) }
-    application_target { 'notifications/all' }
-    web_url { 'notifications/all' }
+    application_target { related_object.cta_href }
+    web_url { related_object.cta_href }
   end
 
   def initialize(type, destination_user, related_object = nil)
