@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/ello/ello_protobufs.git
-  revision: 5b8aed053bbfe623e983df7492a947b808e894a4
-  ref: 5b8aed0
+  revision: c47adddb6552e3baac77c9e0e9e8cdd83d99b26e
+  ref: c47addd
   specs:
     ello_protobufs (0.1.0)
       protobuf (~> 3.5.0)
@@ -237,7 +237,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    thor (0.19.1)
+    thor (0.19.4)
     thread_safe (0.3.5)
     timers (4.0.1)
       hitimes

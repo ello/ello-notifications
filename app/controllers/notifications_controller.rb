@@ -7,5 +7,4 @@ class NotificationsController < ApplicationController
     resp = service_response(result)
     render_protobuf_response(resp)
   end
-
 end

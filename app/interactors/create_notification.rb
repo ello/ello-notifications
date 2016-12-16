@@ -27,35 +27,6 @@ class CreateNotification
             end
           end
         end
-      elsif context[:request].type == ElloProtobufs::NotificationType::ANNOUNCEMENT && context[:request].destination_user_id == 0 #nil
-        title = I18n.t('notification_factory.announcement.title')
-        body = I18n.t('notification_factory.announcement.body', header: related_object.header)
-        apple_body = {
-          aps: {
-            alert: {
-              title: title,
-              body: body
-            }
-          },
-          application_target: related_object.cta_href
-        }
-
-        google_body = {
-          data: {
-            body: body,
-            web_url: related_object.cta_href,
-            title: title
-          }
-        }
-
-        # Message is a key/value pairs where values are json strings
-        message = {
-          'default'      => title,
-          'APNS'         => apple_body.to_json,
-          'APNS_SANDBOX' => apple_body.to_json,
-          'GCM'          => google_body.to_json
-        }
-        SnsService.publish_announcement(message)
       end
     else
       reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_TYPE
