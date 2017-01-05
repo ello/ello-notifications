@@ -9,7 +9,12 @@ describe APNS::DeleteSubscription do
 
     context 'when an APNS device subscription exists for the device token and bundle identifier' do
       let!(:sns_client) { Aws::SNS::Client.new }
-      let!(:existing_subscription) { create(:device_subscription, :apns, sns_application: registered_application) }
+      let!(:existing_subscription) do
+        create(:device_subscription, :apns,
+               sns_application: registered_application,
+               announcement_subscription_arn: 'aws::test::not-real'
+              )
+      end
 
       let(:call_interactor) do
         described_class.call({
@@ -28,6 +33,11 @@ describe APNS::DeleteSubscription do
           endpoint_arn: existing_subscription.endpoint_arn
         }).and_call_original
 
+        call_interactor
+      end
+
+      it 'removes the announcement topic subscription' do
+        expect(SnsService).to receive(:unsubscribe_from_topic).with('aws::test::not-real')
         call_interactor
       end
 
