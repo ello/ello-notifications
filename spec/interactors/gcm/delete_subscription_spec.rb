@@ -9,7 +9,12 @@ describe GCM::DeleteSubscription do
 
     context 'when a GCM device subscription exists for the device token and bundle identifier' do
       let!(:sns_client) { Aws::SNS::Client.new }
-      let!(:existing_subscription) { create(:device_subscription, :gcm, sns_application: registered_application) }
+      let!(:existing_subscription) do
+        create(:device_subscription, :gcm,
+               sns_application: registered_application,
+               announcement_subscription_arn: 'aws::test::bs'
+              )
+      end
 
       let(:call_interactor) do
         described_class.call({
@@ -28,6 +33,11 @@ describe GCM::DeleteSubscription do
           endpoint_arn: existing_subscription.endpoint_arn
         }).and_call_original
 
+        call_interactor
+      end
+
+      it 'removes the announcement topic subscription' do
+        expect(SnsService).to receive(:unsubscribe_from_topic).with('aws::test::bs')
         call_interactor
       end
 
