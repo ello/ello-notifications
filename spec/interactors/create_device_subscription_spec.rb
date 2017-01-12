@@ -14,7 +14,7 @@ describe CreateDeviceSubscription do
 
   let(:user) { create(:user) }
   let(:subscription) do
-    build(:device_subscription, :apns, logged_in_user_id: user.id, endpoint_arn: 'abc123')
+    build(:device_subscription, :apns, logged_in_user_id: user.id, endpoint_arn: 'abc123', build_version: 123456)
   end
 
   context 'when the device subscription is for APNS' do

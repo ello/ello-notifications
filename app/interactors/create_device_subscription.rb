@@ -53,7 +53,7 @@ class CreateDeviceSubscription
 
   def subscribe_to_announcements(device_sub)
     user = User.where(id: device_sub.logged_in_user_id).first_or_create
-    if user.notify_of_announcements
+    if user.notify_of_announcements && device_sub.supports_announcements?
       sub = SnsService.subscribe_to_announcements(device_sub.endpoint_arn)
       device_sub.update(announcement_subscription_arn: sub.arn)
     end

@@ -47,7 +47,7 @@ class HandleStreamEvent
 
   def subscribe_all_user_devices
     device_subscriptions.each do |device|
-      unless device.announcement_subscription_arn
+      if device.supports_announcements? && !device.announcement_subscription_arn
         sub = SnsService.subscribe_to_announcements(device.endpoint_arn)
         device.update(announcement_subscription_arn: sub.arn)
         Rails.logger.debug("Subscribed arn #{sub.arn} to announcements")

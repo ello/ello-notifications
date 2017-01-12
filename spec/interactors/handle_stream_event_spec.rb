@@ -83,12 +83,20 @@ describe HandleStreamEvent do
       let!(:sub1) do
         create(:device_subscription, :apns,
                logged_in_user_id: user.id,
-               announcement_subscription_arn: nil)
+               announcement_subscription_arn: nil,
+               build_version: 6000)
       end
       let!(:sub2) do
         create(:device_subscription, :apns,
                logged_in_user_id: user.id,
-               announcement_subscription_arn: nil)
+               announcement_subscription_arn: nil,
+               build_version: 6000)
+      end
+      let!(:sub3) do
+        create(:device_subscription, :apns,
+               logged_in_user_id: user.id,
+               announcement_subscription_arn: nil,
+               build_version: 1000) # does not support announcements
       end
       let(:record) do
         {
@@ -107,9 +115,11 @@ describe HandleStreamEvent do
       it 'subscribes each device to topic and updated the announcement arn' do
         expect(SnsService).to receive(:subscribe_to_announcements).with(sub1.endpoint_arn) { subscribe_response }
         expect(SnsService).to receive(:subscribe_to_announcements).with(sub2.endpoint_arn) { double(:subscribe_response, arn: 'arn:sns:baz') }
+        expect(SnsService).not_to receive(:subscribe_to_announcements).with(sub3.endpoint_arn)
         described_class.call(kind: 'user_changed_subscription_preferences', record: record)
         expect(sub1.reload.announcement_subscription_arn).to eq 'arn:sns:foo'
         expect(sub2.reload.announcement_subscription_arn).to eq 'arn:sns:baz'
+        expect(sub3.reload.announcement_subscription_arn).to eq nil
       end
 
     end
@@ -119,12 +129,14 @@ describe HandleStreamEvent do
       let!(:sub1) do
         create(:device_subscription, :apns,
                logged_in_user_id: user.id,
-               announcement_subscription_arn: 'abc123')
+               announcement_subscription_arn: 'abc123',
+               build_version: '6000')
       end
       let!(:sub2) do
         create(:device_subscription, :apns,
                logged_in_user_id: user.id,
-               announcement_subscription_arn: 'def345')
+               announcement_subscription_arn: 'def345',
+               build_version: '6000')
       end
       let(:record) do
         {
