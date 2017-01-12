@@ -1,4 +1,5 @@
 class DeviceSubscription < ActiveRecord::Base
+  IOS_1_19 = 5507
   belongs_to :sns_application
 
   scope :enabled, -> { where(enabled: true) }
@@ -17,6 +18,10 @@ class DeviceSubscription < ActiveRecord::Base
 
   def can_handle_blank_pushes?
     build_version.to_i >= 3216
+  end
+
+  def supports_announcements?
+    gcm? || (build_version && build_version.to_i > IOS_1_19)
   end
 
   def apns?
