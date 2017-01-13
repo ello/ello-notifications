@@ -4,7 +4,6 @@ cache:
 bundler_args: "--without staging,production"
 addons:
   postgresql: '9.3'
-rvm: 2.2.2
 before_script:
 - cp .env.example .env
 - cp config/database.travis.yml config/database.yml
