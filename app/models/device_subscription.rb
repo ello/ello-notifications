@@ -1,5 +1,5 @@
 class DeviceSubscription < ActiveRecord::Base
-  IOS_1_19 = 5507
+  IOS_1_20 = 5557
   belongs_to :sns_application
 
   scope :enabled, -> { where(enabled: true) }
@@ -21,7 +21,7 @@ class DeviceSubscription < ActiveRecord::Base
   end
 
   def supports_announcements?
-    gcm? || (build_version && build_version.to_i > IOS_1_19)
+    gcm? || (build_version && build_version.to_i >= IOS_1_20)
   end
 
   def apns?
