@@ -16,7 +16,7 @@ gem 'pg'
 gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2.2'
 gem 'ello_protobufs', github: 'ello/ello_protobufs', ref: 'c47addd'
-gem 'kinesis-stream-reader', require: 'stream_reader', github: 'ello/kinesis-stream-reader', ref: '6bcb5b5'
+gem 'kinesis-stream-reader', require: 'stream_reader', github: 'ello/kinesis-stream-reader', ref: 'bcab5da'
 gem 'retries'
 
 gem 'newrelic_rpm', '~> 3.12.0'
