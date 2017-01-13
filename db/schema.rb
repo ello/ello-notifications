@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161202220306) do
+ActiveRecord::Schema.define(version: 20170113225346) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,7 @@ ActiveRecord::Schema.define(version: 20161202220306) do
     t.string   "announcement_subscription_arn"
   end
 
+  add_index "device_subscriptions", ["logged_in_user_id"], name: "index_device_subscriptions_on_logged_in_user_id", using: :btree
   add_index "device_subscriptions", ["platform_device_identifier", "sns_application_id"], name: "index_device_subscriptions_on_unique_keys", unique: true, using: :btree
   add_index "device_subscriptions", ["sns_application_id"], name: "index_device_subscriptions_on_sns_application_id", using: :btree
 
@@ -44,7 +45,7 @@ ActiveRecord::Schema.define(version: 20161202220306) do
     t.integer  "notification_count",      default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "notify_of_announcements", default: true
+    t.boolean  "notify_of_announcements", default: true, null: false
   end
 
 end
