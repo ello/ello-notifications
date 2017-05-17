@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'sucker_punch/testing/inline'
 
 describe Callbacks::AwsController, type: :request do
   Basic = ActionController::HttpAuthentication::Basic

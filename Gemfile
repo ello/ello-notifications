@@ -22,6 +22,7 @@ gem 'retries'
 gem 'newrelic_rpm', '~> 3.12.0'
 gem 'librato-rails', '~> 0.11.1'
 gem 'honeybadger', '~> 2.1'
+gem 'sucker_punch', '~> 2.0'
 
 group :production do
   gem 'rails_12factor'
