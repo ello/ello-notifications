@@ -14,9 +14,7 @@ class Callbacks::AwsController < ApplicationController
       return render json: {}
     end
 
-    if subscription = DeviceSubscription.where({platform_device_identifier: token}).first
-      subscription.destroy_and_unsubscribe
-    end
+    HandlePushFailure.perform_async(token)
 
     render json: {}
   end
