@@ -37,7 +37,7 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rspec', require: false
   gem 'json_spec'
-  gem 'rspec-rails', '~> 3.0'
+  gem 'rspec-rails', '~> 3.6'
 end
 
 group :test do
