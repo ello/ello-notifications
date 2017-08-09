@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/ello/ello_protobufs.git
-  revision: c47adddb6552e3baac77c9e0e9e8cdd83d99b26e
-  ref: c47addd
+  revision: 4657e8266dd864217d0105a0d482307be055cde7
+  ref: 4657e82
   specs:
     ello_protobufs (0.1.0)
       protobuf (~> 3.5.0)
@@ -273,4 +273,4 @@ RUBY VERSION
    ruby 2.3.1p112
 
 BUNDLED WITH
-   1.14.4
+   1.15.3

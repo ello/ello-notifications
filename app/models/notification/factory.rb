@@ -148,6 +148,13 @@ class Notification::Factory
     web_url { related_object.cta_href }
   end
 
+  register_type ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED, 'artist_invite_submission_approved' do |related_object|
+    title { I18n.t('notification_factory.artist_invite_submission_approved.title') }
+    body { I18n.t('notification_factory.artist_invite_submission_approved.body', header: related_object.header) }
+    application_target { related_object.href }
+    web_url { related_object.href }
+  end
+
   def initialize(type, destination_user, related_object = nil)
     @type = type
     @destination_user = destination_user
