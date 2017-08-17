@@ -52,3 +52,6 @@ en:
     announcement:
       title: "New Announcement"
       body: "%{header}"
+    artist_invite_submission_approved:
+      title: "Artist Invite Submission Accepted"
+      body: "Your submission to the %{artist_invite_title} Artist Invite has been accepted ✌️ "

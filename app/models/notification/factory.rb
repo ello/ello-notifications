@@ -150,7 +150,7 @@ class Notification::Factory
 
   register_type ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED, 'artist_invite_submission_approved' do |related_object|
     title { I18n.t('notification_factory.artist_invite_submission_approved.title') }
-    body { I18n.t('notification_factory.artist_invite_submission_approved.body', header: related_object.header) }
+    body { I18n.t('notification_factory.artist_invite_submission_approved.body', artist_invite_title: related_object.title) }
     application_target { related_object.href }
     web_url { related_object.href }
   end
