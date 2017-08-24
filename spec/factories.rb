@@ -51,7 +51,10 @@ FactoryGirl.define do
     body { Faker::Lorem.sentence }
     badge_count { Random.rand(10) }
     metadata {
-      { custom_key: '1' }
+      {
+        custom_key: '1',
+        type: 'repost',
+      }
     }
 
     trait :badge_count_only do

@@ -27,10 +27,34 @@ class APNS::DeliverNotification
 
   def aps_options
     { badge: context[:notification].badge_count }.tap do |opts|
-      opts[:alert] = {
-        title: context[:notification].title,
-        body: context[:notification].body
-      } if context[:notification].include_alert?
+      if context[:notification].include_alert?
+        opts[:content_mutable] = true
+        opts[:category] = aps_category
+        opts[:alert] = {
+          title: context[:notification].title,
+          body: context[:notification].body
+        }
+      end
+    end
+  end
+
+  def aps_category
+    case context[:notification].metadata[:type]
+    when 'comment_mention', 'repost', 'post_mention'
+      'co.ello.COMMENT_CATEGORY'
+    when 'post_comment', 'post_comment_to_watcher',
+         'repost_comment_to_original_author', 'repost_comment_to_repost_author'
+      'co.ello.POST_CATEGORY'
+    when 'follower', 'post_watch', 'post_love',
+         'repost_watch_to_original_author', 'repost_watch_to_repost_author',
+         'repost_love_to_original_author', 'repost_love_to_repost_author'
+      'co.ello.USER_CATEGORY'
+    when 'invite_redemption'
+      'co.ello.USER_MESSAGE_CATEGORY'
+    when 'artist_invite_submission_approved'
+      'co.ello.ARTIST_INVITE_SUBMISSION_CATEGORY'
+    else
+      ''
     end
   end
 
