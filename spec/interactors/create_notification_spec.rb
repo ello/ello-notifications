@@ -157,6 +157,21 @@ describe CreateNotification do
             end
           end
 
+          [ 'ARTIST_INVITE_SUBMISSION_APPROVED' ].each do |submission_related_type|
+            context "when the notification is a #{submission_related_type}" do
+              let(:notification_type) { Object.const_get("NotificationType::#{submission_related_type}") }
+              let(:submission) { create(:protobuf_artist_invite_submission) }
+
+              before { request.artist_invite_submission = submission }
+
+              it 'plucks the artist invite submission from the request and passes it into the notification factory' do
+                expect(Notification::Factory).to receive(:build)
+                .with(notification_type, destination_user, submission)
+                call_interactor
+              end
+            end
+          end
+
       end
 
       context 'notification count handling' do

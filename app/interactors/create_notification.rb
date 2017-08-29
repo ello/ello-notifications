@@ -80,6 +80,8 @@ class CreateNotification
       context[:request].watch
     when *announcement_related_types
       context[:request].announcement
+    when *submission_related_types
+      context[:request].artist_invite_submission
     end
   end
 
@@ -127,6 +129,12 @@ class CreateNotification
   def announcement_related_types
     [
       ElloProtobufs::NotificationType::ANNOUNCEMENT
+    ]
+  end
+
+  def submission_related_types
+    [
+      ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED
     ]
   end
 
