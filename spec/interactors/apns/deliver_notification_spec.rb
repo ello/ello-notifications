@@ -22,7 +22,7 @@ describe APNS::DeliverNotification do
   context 'when called with required arguments' do
     let(:sns_client) { Aws::SNS::Client.new }
 
-    let(:notification) { build(:notification, metadata: { some_key: 'value' }) }
+    let(:notification) { build(:notification, metadata: { some_key: 'value', type: 'repost' }) }
 
     before { allow(Aws::SNS::Client).to receive(:new).and_return(sns_client) }
 
@@ -37,7 +37,7 @@ describe APNS::DeliverNotification do
 
     context 'when configured to use the sandbox' do
       let(:sandbox_endpoint_arn) { Faker::Ello.sns_apns_endpoint_arn(sandbox: true) }
-      let(:notification) { build(:notification, metadata: { some_key: 'value' }) }
+      let(:notification) { build(:notification, metadata: { some_key: 'value', type: 'repost' }) }
 
       let(:call_interactor) do
         described_class.call({
@@ -52,12 +52,15 @@ describe APNS::DeliverNotification do
           'APNS_SANDBOX' => {
             aps: {
               badge: notification.badge_count,
+              content_mutable: true,
+              category: 'co.ello.COMMENT_CATEGORY',
               alert: {
                 title: notification.title,
                 body: notification.body
               }
             },
-            some_key: 'value'
+            some_key: 'value',
+            type: 'repost',
           }.to_json
         }
 
@@ -83,7 +86,7 @@ describe APNS::DeliverNotification do
 
     context 'when configured not to use the sandbox' do
       let(:production_endpoint_arn) { Faker::Ello.sns_apns_endpoint_arn(sandbox: false) }
-      let(:notification) { build(:notification, metadata: { some_key: 'value' }) }
+      let(:notification) { build(:notification, metadata: { some_key: 'value', type: 'repost' }) }
 
       let(:call_interactor) do
         described_class.call({
@@ -98,12 +101,15 @@ describe APNS::DeliverNotification do
           'APNS' => {
             aps: {
               badge: notification.badge_count,
+              content_mutable: true,
+              category: 'co.ello.COMMENT_CATEGORY',
               alert: {
                 title: notification.title,
-                body: notification.body
+                body: notification.body,
               }
             },
-            some_key: 'value'
+            some_key: 'value',
+            type: 'repost',
           }.to_json
         }
 
