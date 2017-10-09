@@ -28,7 +28,7 @@ class APNS::DeliverNotification
   def aps_options
     { badge: context[:notification].badge_count }.tap do |opts|
       if context[:notification].include_alert?
-        opts[:content_mutable] = true
+        opts[:'mutable-content'] = true
         opts[:category] = aps_category
         opts[:alert] = {
           title: context[:notification].title,
