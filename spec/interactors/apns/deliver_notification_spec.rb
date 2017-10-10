@@ -52,7 +52,7 @@ describe APNS::DeliverNotification do
           'APNS_SANDBOX' => {
             aps: {
               badge: notification.badge_count,
-              content_mutable: true,
+              'mutable-content' => true,
               category: 'co.ello.COMMENT_CATEGORY',
               alert: {
                 title: notification.title,
@@ -101,7 +101,7 @@ describe APNS::DeliverNotification do
           'APNS' => {
             aps: {
               badge: notification.badge_count,
-              content_mutable: true,
+              'mutable-content' => true,
               category: 'co.ello.COMMENT_CATEGORY',
               alert: {
                 title: notification.title,
