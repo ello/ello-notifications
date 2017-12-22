@@ -157,7 +157,7 @@ describe CreateNotification do
             end
           end
 
-          [ 'ARTIST_INVITE_SUBMISSION_APPROVED' ].each do |submission_related_type|
+          [ 'ARTIST_INVITE_SUBMISSION_APPROVED', 'APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS' ].each do |submission_related_type|
             context "when the notification is a #{submission_related_type}" do
               let(:notification_type) { Object.const_get("NotificationType::#{submission_related_type}") }
               let(:submission) { create(:protobuf_artist_invite_submission) }

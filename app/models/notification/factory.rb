@@ -155,6 +155,13 @@ class Notification::Factory
     web_url { related_object.href }
   end
 
+  register_type ElloProtobufs::NotificationType::APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS, 'approved_artist_invite_submission_for_followers' do |related_object|
+    title { I18n.t('notification_factory.approved_artist_invite_submission_for_followers.title') }
+    body { I18n.t('notification_factory.approved_artist_invite_submission_for_followers.body', author_username: related_object.author_username, artist_invite_title: related_object.title) }
+    application_target { related_object.href }
+    web_url { related_object.href }
+  end
+
   def initialize(type, destination_user, related_object = nil)
     @type = type
     @destination_user = destination_user

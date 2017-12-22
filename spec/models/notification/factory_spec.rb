@@ -350,6 +350,26 @@ describe Notification::Factory do
     end
   end
 
+  describe 'building an appoved artist invite submission for followers notification' do
+    let(:submission) { create(:protobuf_artist_invite_submission) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS,
+                            destination_user,
+                            submission)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'approved_artist_invite_submission_for_followers' }
+      let(:include_alert) { true }
+      let(:title) { 'Artist Invite Submission' }
+      let(:body) { "@#{submission.author_username}'s submission to #{submission.title} was accepted" }
+      let(:application_target) { submission.href }
+      let(:web_url) { submission.href }
+    end
+  end
+
   def post_target(id, _full_target = true)
     "notifications/posts/#{id}"
   end
