@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/ello/ello_protobufs.git
-  revision: 273d9e143393fc9d220fd07f50467958f762f7e7
-  ref: 273d9e1
+  revision: cab2a2a43351c277de3a97fa2a5c75e12541b116
+  ref: cab2a2a
   specs:
     ello_protobufs (0.1.0)
       protobuf (~> 3.5.0)
