@@ -365,7 +365,7 @@ describe Notification::Factory do
       let(:type) { 'approved_artist_invite_submission_for_followers' }
       let(:include_alert) { true }
       let(:title) { 'Artist Invite Submission' }
-      let(:body) { "@#{submission.post.author.username}'s submission to #{submission.title} was accepted" }
+      let(:body) { "#{submission.post.author.username}'s submission to #{submission.title} was accepted" }
       let(:application_target) { "notifications/posts/#{submission.post.id}" }
       let(:web_url) { submission.post.href }
     end

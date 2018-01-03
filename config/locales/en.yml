@@ -57,4 +57,4 @@ en:
       body: "Your submission to the %{artist_invite_title} Artist Invite has been accepted ✌️ "
     approved_artist_invite_submission_for_followers:
       title: "Artist Invite Submission"
-      body: "@%{author_username}'s submission to %{artist_invite_title} was accepted"
+      body: "%{author_username}'s submission to %{artist_invite_title} was accepted"
