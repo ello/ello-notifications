@@ -53,6 +53,8 @@ class APNS::DeliverNotification
       'co.ello.USER_MESSAGE_CATEGORY'
     when 'artist_invite_submission_approved'
       'co.ello.ARTIST_INVITE_SUBMISSION_CATEGORY'
+    when 'approved_artist_invite_submission_notification_for_followers'
+      'co.ello.POST_CATEGORY'
     else
       ''
     end
