@@ -134,7 +134,8 @@ class CreateNotification
 
   def submission_related_types
     [
-      ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED
+      ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED,
+      ElloProtobufs::NotificationType::APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS
     ]
   end
 
