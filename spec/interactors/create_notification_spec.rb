@@ -172,6 +172,21 @@ describe CreateNotification do
             end
           end
 
+          [ 'FEATURED_CATEGORY_POST', 'FEATURED_CATEGORY_REPOST', 'FEATURED_CATEGORY_POST_VIA_REPOST' ].each do |category_post_related_type|
+            context "when the notification is a #{category_post_related_type}" do
+              let(:notification_type) { Object.const_get("NotificationType::#{category_post_related_type}") }
+              let(:category_post) { create(:protobuf_category_post) }
+
+              before { request.category_post = category_post }
+
+              it 'plucks the category post from the request and passes it into the notification factory' do
+                expect(Notification::Factory).to receive(:build)
+                .with(notification_type, destination_user, category_post)
+                call_interactor
+              end
+            end
+          end
+
       end
 
       context 'notification count handling' do

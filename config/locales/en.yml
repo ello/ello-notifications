@@ -58,3 +58,12 @@ en:
     approved_artist_invite_submission_for_followers:
       title: "Artist Invite Submission"
       body: "%{author_username}'s submission to %{artist_invite_title} was accepted"
+    featured_category_post:
+      title: "Featured on Ello"
+      body: "%{featured_by_username} featured your post in %{category_name}."
+    featured_category_repost:
+      title: "Featured on Ello"
+      body: "%{featured_by_username} featured your repost in %{category_name}."
+    featured_category_post_via_repost:
+      title: "Featured on Ello"
+      body: "%{featured_by_username} featured a repost of your post in %{category_name}."

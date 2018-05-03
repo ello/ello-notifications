@@ -162,6 +162,36 @@ class Notification::Factory
     web_url { related_object.post.href }
   end
 
+  register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST, 'featured_category_post' do |related_object|
+    title { I18n.t('notification_factory.featured_category_post.title') }
+    body { I18n.t('notification_factory.featured_category_post.body', {
+      featured_by_username: related_object.featured_by.try(:username) || '@ello',
+      category_name: related_object.category.title,
+    }) }
+    application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
+  end
+
+  register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_REPOST, 'featured_category_repost' do |related_object|
+    title { I18n.t('notification_factory.featured_category_repost.title') }
+    body { I18n.t('notification_factory.featured_category_repost.body', {
+      featured_by_username: related_object.featured_by.try(:username) || '@ello',
+      category_name: related_object.category.title,
+    }) }
+    application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
+  end
+
+  register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST_VIA_REPOST, 'featured_category_post_via_repost' do |related_object|
+    title { I18n.t('notification_factory.featured_category_post_via_repost.title') }
+    body { I18n.t('notification_factory.featured_category_post_via_repost.body', {
+      featured_by_username: related_object.featured_by.try(:username) || '@ello',
+      category_name: related_object.category.title,
+    }) }
+    application_target { "notifications/posts/#{related_object.post.id}" }
+    web_url { related_object.post.href }
+  end
+
   def initialize(type, destination_user, related_object = nil)
     @type = type
     @destination_user = destination_user
