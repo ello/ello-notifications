@@ -371,6 +371,69 @@ describe Notification::Factory do
     end
   end
 
+  describe 'building an featured category post notification' do
+    let(:post) { create(:protobuf_post) }
+    let(:category_post) { create(:protobuf_category_post, post: post) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST,
+                            destination_user,
+                            category_post)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'featured_category_post' }
+      let(:include_alert) { true }
+      let(:title) { 'Featured on Ello' }
+      let(:body) { "#{category_post.featured_by.username} featured your post in #{category_post.category.title}." }
+      let(:application_target) { "notifications/posts/#{category_post.post.id}" }
+      let(:web_url) { category_post.post.href }
+    end
+  end
+
+  describe 'building an featured category repost notification' do
+    let(:post) { create(:protobuf_post) }
+    let(:category_post) { create(:protobuf_category_post, post: post) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::FEATURED_CATEGORY_REPOST,
+                            destination_user,
+                            category_post)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'featured_category_repost' }
+      let(:include_alert) { true }
+      let(:title) { 'Featured on Ello' }
+      let(:body) { "#{category_post.featured_by.username} featured your repost in #{category_post.category.title}." }
+      let(:application_target) { "notifications/posts/#{category_post.post.id}" }
+      let(:web_url) { category_post.post.href }
+    end
+  end
+
+  describe 'building an featured category post via repost notification' do
+    let(:post) { create(:protobuf_post) }
+    let(:category_post) { create(:protobuf_category_post, post: post) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST_VIA_REPOST,
+                            destination_user,
+                            category_post)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'featured_category_post_via_repost' }
+      let(:include_alert) { true }
+      let(:title) { 'Featured on Ello' }
+      let(:body) { "#{category_post.featured_by.username} featured a repost of your post in #{category_post.category.title}." }
+      let(:application_target) { "notifications/posts/#{category_post.post.id}" }
+      let(:web_url) { category_post.post.href }
+    end
+  end
+
   def post_target(id, _full_target = true)
     "notifications/posts/#{id}"
   end
