@@ -187,6 +187,21 @@ describe CreateNotification do
             end
           end
 
+          [ 'USER_ADDED_AS_FEATURED', 'USER_ADDED_AS_CURATOR', 'USER_ADDED_AS_MODERATOR' ].each do |category_user_related_type|
+            context "when the notification is a #{category_user_related_type}" do
+              let(:notification_type) { Object.const_get("NotificationType::#{category_user_related_type}") }
+              let(:category_user) { create(:protobuf_category_user) }
+
+              before { request.category_user = category_user }
+
+              it 'plucks the category user from the request and passes it into the notification factory' do
+                expect(Notification::Factory).to receive(:build)
+                .with(notification_type, destination_user, category_user)
+                call_interactor
+              end
+            end
+          end
+
       end
 
       context 'notification count handling' do

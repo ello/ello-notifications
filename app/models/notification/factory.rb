@@ -192,6 +192,36 @@ class Notification::Factory
     web_url { related_object.post.href }
   end
 
+  register_type ElloProtobufs::NotificationType::USER_ADDED_AS_FEATURED, 'user_added_as_featured' do |related_object|
+    title { I18n.t('notification_factory.user_added_as_featured.title') }
+    body { I18n.t('notification_factory.user_added_as_featured.body', {
+      featured_by_username: related_object.featured_by.try(:username) || '@ello',
+      category_name: related_object.category.title,
+    }) }
+    application_target { "notifications/categories/#{related_object.category.id}" }
+    web_url { "http://ello.co/discover/#{related_object.category.slug}" }
+  end
+
+  register_type ElloProtobufs::NotificationType::USER_ADDED_AS_CURATOR, 'user_added_as_curator' do |related_object|
+    title { I18n.t('notification_factory.user_added_as_curator.title') }
+    body { I18n.t('notification_factory.user_added_as_curator.body', {
+      curator_by_username: related_object.curator_by.try(:username) || '@ello',
+      category_name: related_object.category.title,
+    }) }
+    application_target { "notifications/categories/#{related_object.category.id}" }
+    web_url { "http://ello.co/discover/#{related_object.category.slug}" }
+  end
+
+  register_type ElloProtobufs::NotificationType::USER_ADDED_AS_MODERATOR, 'user_added_as_moderator' do |related_object|
+    title { I18n.t('notification_factory.user_added_as_moderator.title') }
+    body { I18n.t('notification_factory.user_added_as_moderator.body', {
+      moderator_by_username: related_object.moderator_by.try(:username) || '@ello',
+      category_name: related_object.category.title,
+    }) }
+    application_target { "notifications/categories/#{related_object.category.id}" }
+    web_url { "http://ello.co/discover/#{related_object.category.slug}" }
+  end
+
   def initialize(type, destination_user, related_object = nil)
     @type = type
     @destination_user = destination_user
