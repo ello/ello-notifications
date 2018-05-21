@@ -15,7 +15,7 @@ gem 'puma', '~> 3.4.0'
 gem 'pg'
 gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2.2'
-gem 'ello_protobufs', github: 'ello/ello_protobufs', ref: '03a35ae'
+gem 'ello_protobufs', github: 'ello/ello_protobufs', ref: 'a803399'
 gem 'kinesis-stream-reader', require: 'stream_reader', github: 'ello/kinesis-stream-reader'
 gem 'retries'
 
