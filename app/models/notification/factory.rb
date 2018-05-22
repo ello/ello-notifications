@@ -198,7 +198,7 @@ class Notification::Factory
       featured_by_username: related_object.featured_by.try(:username) || '@ello',
       category_name: related_object.category.title,
     }) }
-    application_target { "notifications/categories/#{related_object.category.id}" }
+    application_target { "notifications/categories/#{related_object.category.slug}" }
     web_url { "http://ello.co/discover/#{related_object.category.slug}" }
   end
 
@@ -208,7 +208,7 @@ class Notification::Factory
       curator_by_username: related_object.curator_by.try(:username) || '@ello',
       category_name: related_object.category.title,
     }) }
-    application_target { "notifications/categories/#{related_object.category.id}" }
+    application_target { "notifications/categories/#{related_object.category.slug}" }
     web_url { "http://ello.co/discover/#{related_object.category.slug}" }
   end
 
@@ -218,7 +218,7 @@ class Notification::Factory
       moderator_by_username: related_object.moderator_by.try(:username) || '@ello',
       category_name: related_object.category.title,
     }) }
-    application_target { "notifications/categories/#{related_object.category.id}" }
+    application_target { "notifications/categories/#{related_object.category.slug}" }
     web_url { "http://ello.co/discover/#{related_object.category.slug}" }
   end
 

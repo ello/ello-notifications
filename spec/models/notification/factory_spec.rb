@@ -449,7 +449,7 @@ describe Notification::Factory do
       let(:include_alert) { true }
       let(:title) { "Congrats!" }
       let(:body) { "You are now featured in #{category_user.category.title}." }
-      let(:application_target) { "notifications/categories/#{category_user.category.id}" }
+      let(:application_target) { "notifications/categories/#{category_user.category.slug}" }
       let(:web_url) { "http://ello.co/discover/#{category_user.category.slug}" }
     end
   end
@@ -469,7 +469,7 @@ describe Notification::Factory do
       let(:include_alert) { true }
       let(:title) { "Congrats!" }
       let(:body) { "#{category_user.curator_by.username} has invited you to help curate #{category_user.category.title}." }
-      let(:application_target) { "notifications/categories/#{category_user.category.id}" }
+      let(:application_target) { "notifications/categories/#{category_user.category.slug}" }
       let(:web_url) { "http://ello.co/discover/#{category_user.category.slug}" }
     end
   end
@@ -489,7 +489,7 @@ describe Notification::Factory do
       let(:include_alert) { true }
       let(:title) { "Congrats!" }
       let(:body) { "#{category_user.moderator_by.username} has invited you to help moderate #{category_user.category.title}." }
-      let(:application_target) { "notifications/categories/#{category_user.category.id}" }
+      let(:application_target) { "notifications/categories/#{category_user.category.slug}" }
       let(:web_url) { "http://ello.co/discover/#{category_user.category.slug}" }
     end
   end
