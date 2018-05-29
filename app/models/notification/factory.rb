@@ -198,8 +198,8 @@ class Notification::Factory
       featured_by_username: related_object.featured_by.try(:username) || '@ello',
       category_name: related_object.category.title,
     }) }
-    application_target { "notifications/categories/#{related_object.category.slug}" }
-    web_url { "http://ello.co/discover/#{related_object.category.slug}" }
+    application_target { "notifications/ello.co/wtf/support/featured-members/" }
+    web_url { "https://ello.co/wtf/support/featured-members/" }
   end
 
   register_type ElloProtobufs::NotificationType::USER_ADDED_AS_CURATOR, 'user_added_as_curator' do |related_object|
