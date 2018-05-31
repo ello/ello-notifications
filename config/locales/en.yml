@@ -67,3 +67,12 @@ en:
     featured_category_post_via_repost:
       title: "Featured on Ello"
       body: "%{featured_by_username} featured a repost of your post in %{category_name}."
+    user_added_as_featured:
+      title: "Congrats!"
+      body: "%{featured_by_username} has featured you in %{category_name}. Learn more here."
+    user_added_as_curator:
+      title: "Curate Ello"
+      body: "%{curator_by_username} has invited you to help curate %{category_name}."
+    user_added_as_moderator:
+      title: "Moderate Ello"
+      body: "%{moderator_by_username} has invited you to help moderate %{category_name}."

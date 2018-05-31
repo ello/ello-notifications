@@ -84,6 +84,8 @@ class CreateNotification
       context[:request].artist_invite_submission
     when *category_post_related_types
       context[:request].category_post
+    when *category_user_related_types
+      context[:request].category_user
     end
   end
 
@@ -145,7 +147,15 @@ class CreateNotification
     [
       ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST,
       ElloProtobufs::NotificationType::FEATURED_CATEGORY_REPOST,
-      ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST_VIA_REPOST,
+      ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST_VIA_REPOST
+    ]
+  end
+
+  def category_user_related_types
+    [
+      ElloProtobufs::NotificationType::USER_ADDED_AS_FEATURED,
+      ElloProtobufs::NotificationType::USER_ADDED_AS_CURATOR,
+      ElloProtobufs::NotificationType::USER_ADDED_AS_MODERATOR
     ]
   end
 

@@ -434,6 +434,66 @@ describe Notification::Factory do
     end
   end
 
+  describe 'building an category user via user added as featured' do
+    let(:category_user) { create(:protobuf_category_user) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::USER_ADDED_AS_FEATURED,
+                            destination_user,
+                            category_user)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'user_added_as_featured' }
+      let(:include_alert) { true }
+      let(:title) { "Congrats!" }
+      let(:body) { "#{category_user.featured_by.username} has featured you in #{category_user.category.title}. Learn more here." }
+      let(:application_target) { "notifications/ello.co/wtf/support/featured-members/" }
+      let(:web_url) { "https://ello.co/wtf/support/featured-members/" }
+    end
+  end
+
+  describe 'building an category user via user added as curator' do
+    let(:category_user) { create(:protobuf_category_user) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::USER_ADDED_AS_CURATOR,
+                            destination_user,
+                            category_user)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'user_added_as_curator' }
+      let(:include_alert) { true }
+      let(:title) { "Curate Ello" }
+      let(:body) { "#{category_user.curator_by.username} has invited you to help curate #{category_user.category.title}." }
+      let(:application_target) { "notifications/categories/#{category_user.category.slug}" }
+      let(:web_url) { "http://ello.co/discover/#{category_user.category.slug}" }
+    end
+  end
+
+  describe 'building an category user via user added as moderator' do
+    let(:category_user) { create(:protobuf_category_user) }
+
+    subject do
+      described_class.build(ElloProtobufs::NotificationType::USER_ADDED_AS_MODERATOR,
+                            destination_user,
+                            category_user)
+    end
+
+    it_behaves_like 'a notification with' do
+      let(:destination_user_id) { destination_user.id }
+      let(:type) { 'user_added_as_moderator' }
+      let(:include_alert) { true }
+      let(:title) { "Moderate Ello" }
+      let(:body) { "#{category_user.moderator_by.username} has invited you to help moderate #{category_user.category.title}." }
+      let(:application_target) { "notifications/categories/#{category_user.category.slug}" }
+      let(:web_url) { "http://ello.co/discover/#{category_user.category.slug}" }
+    end
+  end
+
   def post_target(id, _full_target = true)
     "notifications/posts/#{id}"
   end
