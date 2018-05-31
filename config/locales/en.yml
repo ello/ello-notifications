@@ -69,7 +69,7 @@ en:
       body: "%{featured_by_username} featured a repost of your post in %{category_name}."
     user_added_as_featured:
       title: "Congrats!"
-      body: "You are now featured in %{category_name}. Learn more here."
+      body: "%{featured_by_username} has featured you in %{category_name}. Learn more here."
     user_added_as_curator:
       title: "Curate Ello"
       body: "%{curator_by_username} has invited you to help curate %{category_name}."
