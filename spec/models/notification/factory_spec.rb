@@ -448,7 +448,7 @@ describe Notification::Factory do
       let(:type) { 'user_added_as_featured' }
       let(:include_alert) { true }
       let(:title) { "Congrats!" }
-      let(:body) { "#{category_user.featured_by.username} has featured you in #{category_user.category.title}. Learn more here." }
+      let(:body) { "#{category_user.featured_by.username} has featured you in #{category_user.category.title}. Tap to learn more." }
       let(:application_target) { "notifications/ello.co/wtf/support/featured-members/" }
       let(:web_url) { "https://ello.co/wtf/support/featured-members/" }
     end
