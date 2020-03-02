@@ -143,7 +143,7 @@ GEM
     nenv (0.2.0)
     newrelic_rpm (3.12.0.288)
     nio4r (2.5.2)
-    nokogiri (1.10.5)
+    nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     notiffany (0.0.6)
       nenv (~> 0.1)
