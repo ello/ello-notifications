@@ -10,7 +10,7 @@ group :development, :test do
 end
 
 gem 'rails-api'
-gem 'puma', '~> 4.3.3'
+gem 'puma', '~> 4.3.5'
 
 gem 'pg'
 gem 'interactor', '~> 3.0'
