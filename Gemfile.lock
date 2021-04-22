@@ -160,9 +160,9 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.4)
       pry (>= 0.9.10)
-    rack (1.6.13)
     puma (4.3.3)
       nio4r (~> 2.0)
+    rack (1.6.13)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.8)
@@ -274,7 +274,7 @@ DEPENDENCIES
   sucker_punch (~> 2.0)
 
 RUBY VERSION
-   ruby 2.3.1p112
+   ruby 2.6.7p197
 
 BUNDLED WITH
-   1.15.3
+   1.17.3

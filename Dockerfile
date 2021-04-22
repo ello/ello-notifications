@@ -1,4 +1,4 @@
-FROM ruby:2.2.2
+FROM ruby:2.6.7
 
 # Run updates
 RUN apt-get update -qq && apt-get install -y build-essential \
