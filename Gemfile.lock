@@ -104,6 +104,7 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    hetchy (1.0.0)
     hitimes (1.2.2)
     honeybadger (2.5.2)
     i18n (0.8.4)
@@ -116,11 +117,12 @@ GEM
       aggregate (~> 0.2.2)
       faraday (~> 0.7)
       multi_json
-    librato-rack (0.4.5)
-      librato-metrics (~> 1.1)
-    librato-rails (0.11.1)
+    librato-rack (1.1.1)
+      hetchy (~> 1.0)
+      librato-metrics (~> 1.6)
+    librato-rails (1.4.2)
       activesupport (>= 3.0)
-      librato-rack (~> 0.4.2)
+      librato-rack (~> 1.1.0)
       railties (>= 3.0)
     listen (2.10.0)
       celluloid (~> 0.16.0)
@@ -142,7 +144,7 @@ GEM
     multi_json (1.12.1)
     multipart-post (2.0.0)
     nenv (0.2.0)
-    newrelic_rpm (3.12.0.288)
+    newrelic_rpm (3.18.1.330)
     nio4r (2.5.2)
     nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
@@ -287,8 +289,8 @@ DEPENDENCIES
   interactor (~> 3.0)
   json_spec
   kinesis-stream-reader!
-  librato-rails (~> 0.11.1)
-  newrelic_rpm (~> 3.12.0)
+  librato-rails (~> 1.4.2)
+  newrelic_rpm (~> 3.18.0)
   pg
   pry-rails
   puma (~> 4.3.3)
