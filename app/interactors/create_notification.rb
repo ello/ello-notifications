@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ClassLength
 class CreateNotification
   include Interactor
 
@@ -19,12 +22,13 @@ class CreateNotification
                                                    user,
                                                    related_object)
         user_subscriptions.each do |sub|
-          if should_deliver_notification?(context[:request], notification, sub)
-            result = deliver_notification(notification, sub)
-            if result && result.failure?
-              sub.disable if result.message.match(/Endpoint is disabled/)
-              log_failure(result)
-            end
+          next unless should_deliver_notification?(context[:request], notification, sub)
+
+          result = deliver_notification(notification, sub)
+
+          if result&.failure?
+            sub.disable if result.message.match(/Endpoint is disabled/) # rubocop:disable Metrics/BlockNesting
+            log_failure(result)
           end
         end
       end
@@ -50,7 +54,7 @@ class CreateNotification
   end
 
   def user_subscriptions
-    @subs ||= DeviceSubscription.enabled.where(logged_in_user_id: context[:request].destination_user_id)
+    @user_subscriptions ||= DeviceSubscription.enabled.where(logged_in_user_id: context[:request].destination_user_id)
   end
 
   def deliver_notification(notification, subscription)
@@ -63,7 +67,7 @@ class CreateNotification
   end
 
   def log_failure(result)
-    Rails.logger.warn("Failed to send notification to ARN: #{result.endpoint_arn}.  Error received: #{result.message}.  Given request: #{context[:request]}")
+    Rails.logger.warn("Failed to send notification to ARN: #{result.endpoint_arn}. Error received: #{result.message}. Given request: #{context[:request]}")
   end
 
   def pluck_related_object
@@ -160,3 +164,4 @@ class CreateNotification
   end
 
 end
+# rubocop:enable Metrics/ClassLength

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GcmSubscriptionMetric < Metric
 
   namespace_all('ello-notifications.gcm.subscription')
@@ -22,4 +24,3 @@ class GcmSubscriptionMetric < Metric
   end
 
 end
-

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe APNS::DeleteSubscription do
@@ -12,16 +14,15 @@ describe APNS::DeleteSubscription do
       let!(:existing_subscription) do
         create(:device_subscription, :apns,
                sns_application: registered_application,
-               announcement_subscription_arn: 'aws::test::not-real'
-              )
+               announcement_subscription_arn: 'aws::test::not-real')
       end
 
       let(:call_interactor) do
         described_class.call({
-          current_user_id: 1,
-          bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: existing_subscription.platform_device_identifier
-        })
+                               current_user_id: 1,
+                               bundle_identifier: registered_bundle_identifier,
+                               platform_device_identifier: existing_subscription.platform_device_identifier
+                             })
       end
 
       before do
@@ -30,8 +31,8 @@ describe APNS::DeleteSubscription do
 
       it 'deletes the platform endpoint from SNS' do
         expect(sns_client).to receive(:delete_endpoint).with({
-          endpoint_arn: existing_subscription.endpoint_arn
-        }).and_call_original
+                                                               endpoint_arn: existing_subscription.endpoint_arn
+                                                             }).and_call_original
 
         call_interactor
       end
@@ -41,8 +42,9 @@ describe APNS::DeleteSubscription do
         call_interactor
       end
 
-      context 'and the SNS endpoint deletion fails' do
+      context 'when the SNS endpoint deletion fails' do
         let(:expected_error_message) { 'Original exception error message' }
+
         before do
           exception = Aws::SNS::Errors::InvalidParameterException.new(nil, expected_error_message)
           sns_client.stub_responses(:delete_endpoint, exception)
@@ -51,33 +53,33 @@ describe APNS::DeleteSubscription do
         it 'fails the interactor with the SNS error message' do
           result = call_interactor
 
-          expect(result).to_not be_success
+          expect(result).not_to be_success
           expect(result.message).to eq expected_error_message
         end
 
         it 'does not delete the device subscription' do
-          expect {
+          expect do
             call_interactor
-          }.to_not change { DeviceSubscription.count }
+          end.not_to change(DeviceSubscription, :count)
         end
 
         it 'tracks the failure' do
           expect(ApnsSubscriptionMetric).to receive(:track_deletion_failure)
-          expect(ApnsSubscriptionMetric).to_not receive(:track_deletion_success)
+          expect(ApnsSubscriptionMetric).not_to receive(:track_deletion_success)
           call_interactor
         end
       end
 
-      context 'and the SNS endpoint deletion succeeds' do
+      context 'when the SNS endpoint deletion succeeds' do
         it 'deletes the device subscription' do
-          expect {
+          expect do
             call_interactor
-          }.to change { DeviceSubscription.count }.by(-1)
+          end.to change(DeviceSubscription, :count).by(-1)
         end
 
         it 'tracks the success' do
           expect(ApnsSubscriptionMetric).to receive(:track_deletion_success)
-          expect(ApnsSubscriptionMetric).to_not receive(:track_deletion_failure)
+          expect(ApnsSubscriptionMetric).not_to receive(:track_deletion_failure)
           call_interactor
         end
       end
@@ -86,9 +88,9 @@ describe APNS::DeleteSubscription do
     context 'when an APNS device subscription does not exist for the device token and bundle identifier' do
       it 'succeeds with a not found message' do
         result = described_class.call({
-          bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: Faker::Ello.ios_device_token
-        })
+                                        bundle_identifier: registered_bundle_identifier,
+                                        platform_device_identifier: Faker::Ello.ios_device_token
+                                      })
 
         expect(result).to be_success
         expect(result.message).to eq 'Subscription could not be found with the input parameters'

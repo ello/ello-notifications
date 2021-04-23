@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Notification do
@@ -17,11 +19,11 @@ describe Notification do
 
   it 'accepts arguments via the constructor' do
     notification = described_class.new({
-      include_alert: false,
-      title: 'The Title',
-      body: 'Some Content',
-      metadata: { some_key: 'value' }
-    })
+                                         include_alert: false,
+                                         title: 'The Title',
+                                         body: 'Some Content',
+                                         metadata: { some_key: 'value' }
+                                       })
 
     expect(notification.include_alert).to eq(false)
     expect(notification.title).to eq('The Title')

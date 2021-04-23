@@ -1,17 +1,20 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CreateTopicNotification do
 
-  context 'Announcements' do
+  describe 'Announcements' do
     before { allow(SnsService).to receive(:publish_announcement) }
+
     let(:request) do
       ElloProtobufs::NotificationService::CreateTopicNotificationRequest.new(
         topic: ElloProtobufs::TopicType::ANNOUNCEMENT_TOPIC,
-        announcement: create(:protobuf_announcement),
+        announcement: create(:protobuf_announcement)
       )
     end
 
-    it 'should call SnsService.publish_announcement' do
+    it 'calls SnsService.publish_announcement' do
       expected = {
         'default' => 'New Announcement',
         'APNS' => {

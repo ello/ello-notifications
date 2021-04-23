@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module ContextBuilders
   extend ActiveSupport::Concern
 
   included do
-    def build_failed_context(opts={})
+    def build_failed_context(opts = {})
       defaults = {
         success?: false,
         failure?: true,
@@ -11,10 +13,10 @@ module ContextBuilders
       double('Context', defaults.merge(opts))
     end
 
-    def build_successful_context(opts={})
+    def build_successful_context(opts = {})
       defaults = {
         success?: true,
-        failure?: false,
+        failure?: false
       }
       double('Context', defaults.merge(opts))
     end

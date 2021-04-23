@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe User do
@@ -12,14 +14,14 @@ describe User do
     subject { create(:user) }
 
     it 'increases the notification count by 1' do
-      expect {
+      expect do
         subject.increment_notification_count
-      }.to change { subject.notification_count }.by(1)
+      end.to change(subject, :notification_count).by(1)
     end
 
     it 'persists the new value' do
       subject.increment_notification_count
-      expect(subject).to_not be_changed
+      expect(subject).not_to be_changed
     end
   end
 
@@ -27,14 +29,14 @@ describe User do
     subject { create(:user, notification_count: 10) }
 
     it 'resets the notification count to 0' do
-      expect {
+      expect do
         subject.reset_notification_count
-      }.to change { subject.notification_count }.to(0)
+      end.to change(subject, :notification_count).to(0)
     end
 
     it 'persists the new value' do
       subject.increment_notification_count
-      expect(subject).to_not be_changed
+      expect(subject).not_to be_changed
     end
   end
 end

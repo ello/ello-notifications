@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TopicNotificationsController < ApplicationController
   def create
     protobuf_request = ElloProtobufs::NotificationService::CreateTopicNotificationRequest.decode_from(request.body)

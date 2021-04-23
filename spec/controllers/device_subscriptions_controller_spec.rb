@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe DeviceSubscriptionsController, type: :request do
@@ -17,19 +19,18 @@ describe DeviceSubscriptionsController, type: :request do
       end
     end
 
-    context 'using binary content-type' do
+    context 'when using binary content-type' do
 
       let(:create_device_subscription_request) do
         ElloProtobufs::NotificationService::CreateDeviceSubscriptionRequest.new({
-          platform: ElloProtobufs::NotificationPlatform::APNS,
-          bundle_identifier: 'co.ello.ellodev',
-          platform_device_identifier: '12345',
-          logged_in_user_id: 1,
-          marketing_version: '6.6.6',
-          build_version: '1234567'
-        })
+                                                                                  platform: ElloProtobufs::NotificationPlatform::APNS,
+                                                                                  bundle_identifier: 'co.ello.ellodev',
+                                                                                  platform_device_identifier: '12345',
+                                                                                  logged_in_user_id: 1,
+                                                                                  marketing_version: '6.6.6',
+                                                                                  build_version: '1234567'
+                                                                                })
       end
-
 
       context 'when the creation succeeds' do
         before do
@@ -41,8 +42,8 @@ describe DeviceSubscriptionsController, type: :request do
 
         it 'passes the required params and request body to the interactor' do
           expect(CreateDeviceSubscription).to have_received(:call).with({
-            request: create_device_subscription_request
-          })
+                                                                          request: create_device_subscription_request
+                                                                        })
         end
 
         it 'succeeds with status code 200' do
@@ -56,7 +57,9 @@ describe DeviceSubscriptionsController, type: :request do
       end
 
       context 'when the creation fails' do
-        let(:expected_failure_reason) { ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_PLATFORM }
+        let(:expected_failure_reason) do
+          ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_PLATFORM
+        end
         let(:expected_failure_details) { 'some more detailed text error' }
 
         before do
@@ -89,19 +92,18 @@ describe DeviceSubscriptionsController, type: :request do
       end
     end
 
-    context 'using binary content-type' do
+    context 'when using binary content-type' do
 
       let(:delete_device_subscription_request) do
         ElloProtobufs::NotificationService::DeleteDeviceSubscriptionRequest.new({
-          platform: ElloProtobufs::NotificationPlatform::APNS,
-          bundle_identifier: 'co.ello.ellodev',
-          platform_device_identifier: '12345',
-          logged_in_user_id: 1,
-          marketing_version: '6.6.6',
-          build_version: '1234567'
-        })
+                                                                                  platform: ElloProtobufs::NotificationPlatform::APNS,
+                                                                                  bundle_identifier: 'co.ello.ellodev',
+                                                                                  platform_device_identifier: '12345',
+                                                                                  logged_in_user_id: 1,
+                                                                                  marketing_version: '6.6.6',
+                                                                                  build_version: '1234567'
+                                                                                })
       end
-
 
       context 'when the deletion succeeds' do
         before do
@@ -113,8 +115,8 @@ describe DeviceSubscriptionsController, type: :request do
 
         it 'passes the required params and request body to the interactor' do
           expect(DeleteDeviceSubscription).to have_received(:call).with({
-            request: delete_device_subscription_request
-          })
+                                                                          request: delete_device_subscription_request
+                                                                        })
         end
 
         it 'succeeds with status code 200' do
@@ -128,7 +130,9 @@ describe DeviceSubscriptionsController, type: :request do
       end
 
       context 'when the deletion fails' do
-        let(:expected_failure_reason) { ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_PLATFORM }
+        let(:expected_failure_reason) do
+          ElloProtobufs::NotificationService::ServiceFailureReason::UNKNOWN_NOTIFICATION_PLATFORM
+        end
         let(:expected_failure_details) { 'some more detailed text error' }
 
         before do

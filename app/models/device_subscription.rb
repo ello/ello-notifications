@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 class DeviceSubscription < ActiveRecord::Base
   IOS_1_20 = 5557
   belongs_to :sns_application
 
   scope :enabled, -> { where(enabled: true) }
 
-  validates_presence_of :logged_in_user_id,
-                        :platform_device_identifier,
-                        :sns_application
+  validates :logged_in_user_id,
+            :platform_device_identifier,
+            :sns_application, presence: true
 
-  validates_format_of :platform_device_identifier,
-                      with: /\A[a-f0-9]{64}\z/, message: 'not a valid device token',
-                      if: :apns?
+  validates :platform_device_identifier,
+            format: { with: /\A[a-f0-9]{64}\z/, message: 'not a valid device token',
+                      if: :apns? }
 
   after_initialize :default_to_enabled
 
@@ -62,12 +64,10 @@ class DeviceSubscription < ActiveRecord::Base
   private
 
   def default_to_enabled
-    self.enabled = true if self.enabled.nil?
+    self.enabled = true if enabled.nil?
   end
 
   def unsubscribe_from_announcments
-    if announcement_subscription_arn
-      SnsService.unsubscribe_from_topic(announcement_subscription_arn)
-    end
+    SnsService.unsubscribe_from_topic(announcement_subscription_arn) if announcement_subscription_arn
   end
 end

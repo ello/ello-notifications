@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe SnsApplication do
   describe 'validations' do
-    it { is_expected.to validate_inclusion_of(:platform).in_array(['APNS', 'GCM']) }
+    it { is_expected.to validate_inclusion_of(:platform).in_array(%w[APNS GCM]) }
     it { is_expected.to validate_uniqueness_of(:bundle_identifier).scoped_to(:platform) }
 
     it 'adds a validation error when the bundle_identifier is not formatted correctly' do

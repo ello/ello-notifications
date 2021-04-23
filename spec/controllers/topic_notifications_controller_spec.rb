@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe TopicNotificationsController, type: :request do
@@ -17,7 +19,7 @@ describe TopicNotificationsController, type: :request do
       end
     end
 
-    context 'using binary content-type' do
+    context 'when using binary content-type' do
       let(:create_topic_notification_request) do
         ElloProtobufs::NotificationService::CreateTopicNotificationRequest.new(
           topic: ElloProtobufs::TopicType::ANNOUNCEMENT_TOPIC,

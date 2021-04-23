@@ -1,34 +1,36 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CreateDeviceSubscription do
   let(:request) do
     ElloProtobufs::NotificationService::CreateDeviceSubscriptionRequest.new({
-      platform: ElloProtobufs::NotificationPlatform::APNS,
-      platform_device_identifier: '12345',
-      bundle_identifier: 'co.ello.ElloDev',
-      logged_in_user_id: 1,
-      marketing_version: '6.6.6',
-      build_version: '1234567'
-    })
+                                                                              platform: ElloProtobufs::NotificationPlatform::APNS,
+                                                                              platform_device_identifier: '12345',
+                                                                              bundle_identifier: 'co.ello.ElloDev',
+                                                                              logged_in_user_id: 1,
+                                                                              marketing_version: '6.6.6',
+                                                                              build_version: '1234567'
+                                                                            })
   end
 
   let(:user) { create(:user) }
   let(:subscription) do
-    build(:device_subscription, :apns, logged_in_user_id: user.id, endpoint_arn: 'abc123', build_version: 123456)
+    build(:device_subscription, :apns, logged_in_user_id: user.id, endpoint_arn: 'abc123', build_version: 123_456)
   end
 
   context 'when the device subscription is for APNS' do
     it 'dispatches to the appropriate interactor' do
       mock_result = double('Result', success?: true, failure?: false, subscription: subscription)
-      expect(APNS::CreateSubscription).to receive(:call).with({
-        platform_device_identifier: request.platform_device_identifier,
-        bundle_identifier: request.bundle_identifier,
-        logged_in_user_id: request.logged_in_user_id,
-        marketing_version: request.marketing_version,
-        build_version: request.build_version
-      }).and_return(mock_result)
+      allow(APNS::CreateSubscription).to receive(:call).with({
+                                                               platform_device_identifier: request.platform_device_identifier,
+                                                               bundle_identifier: request.bundle_identifier,
+                                                               logged_in_user_id: request.logged_in_user_id,
+                                                               marketing_version: request.marketing_version,
+                                                               build_version: request.build_version
+                                                             }).and_return(mock_result)
 
-      expect(SnsService).to receive(:subscribe_to_announcements).with('abc123') { double(:resp, arn: "arn:sns:123") }
+      allow(SnsService).to receive(:subscribe_to_announcements).with('abc123') { double(:resp, arn: 'arn:sns:123') }
 
       result = described_class.call(request: request)
 
@@ -40,11 +42,11 @@ describe CreateDeviceSubscription do
         failure_reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNSPECIFIED_REASON
         message = 'some message'
         mock_result = build_failed_context(failure_reason: failure_reason, message: message)
-        expect(APNS::CreateSubscription).to receive(:call).and_return(mock_result)
+        allow(APNS::CreateSubscription).to receive(:call).and_return(mock_result)
 
         result = described_class.call(request: request)
 
-        expect(result).to_not be_success
+        expect(result).not_to be_success
         expect(result.message).to eq mock_result.message
       end
     end
@@ -58,7 +60,7 @@ describe CreateDeviceSubscription do
 
       result = described_class.call(request: request)
 
-      expect(result).to_not be_success
+      expect(result).not_to be_success
       expect(result.failure_reason).to eq expected_reason
     end
   end

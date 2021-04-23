@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class APNS::DeleteSubscription
   include Interactor
   include Concerns::DeviceSubscriptionFocused
 
   def call
-    if subscription = find_subscription_from_context
+    if (subscription = find_subscription_from_context)
       begin
         SnsService.delete_subscription_endpoint(subscription)
         subscription.destroy_and_unsubscribe

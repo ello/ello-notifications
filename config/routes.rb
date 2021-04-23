@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   scope '/device_subscriptions' do
     post 'create' => 'device_subscriptions#create', as: :create_device_subscription

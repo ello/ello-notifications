@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   include ActionController::MimeResponds
   include ActionController::ImplicitRender
   include ActionController::HttpAuthentication::Basic::ControllerMethods
 
-  before_filter :require_binary_request
+  before_action :require_binary_request
 
   http_basic_authenticate_with name: ENV['BASIC_AUTH_USER'], password: ENV['BASIC_AUTH_PASSWORD'], if: :require_auth?
 
@@ -21,7 +23,10 @@ class ApplicationController < ActionController::API
   end
 
   def require_binary_request
-    render nothing: true, status: 406 unless request.content_type == 'application/octet-stream' || request.headers["Accept"] =~ /octet-stream/
+    return if request.content_type == 'application/octet-stream' || request.headers['Accept'] =~ /octet-stream/
+
+    render nothing: true,
+           status: :not_acceptable
   end
 
   def render_protobuf_response(resp)

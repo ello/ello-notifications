@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :announcments do
   desc 'Subscribes all unsubscribed enabled devices to announcment topic'
   task subscribe_all: :environment do

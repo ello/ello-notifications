@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Notification
   include ActiveModel::Model
 
@@ -7,14 +9,14 @@ class Notification
                 :badge_count,
                 :metadata
 
-  alias_method :include_alert?, :include_alert
+  alias include_alert? include_alert
 
-  def initialize(opts={})
-    opts[:include_alert] = true unless opts.has_key?(:include_alert)
+  def initialize(opts = {})
+    opts[:include_alert] = true unless opts.key?(:include_alert)
     super(opts)
   end
 
-  def metadata
+  def metadata # rubocop:disable Lint/DuplicateMethods
     @metadata ||= {}
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDeviceSubscription
   include Interactor
 
@@ -20,12 +22,12 @@ class CreateDeviceSubscription
 
   def create_apns_subscription
     result = APNS::CreateSubscription.call({
-      platform_device_identifier: request.platform_device_identifier,
-      bundle_identifier: request.bundle_identifier,
-      logged_in_user_id: request.logged_in_user_id,
-      marketing_version: request.marketing_version,
-      build_version: request.build_version
-    })
+                                             platform_device_identifier: request.platform_device_identifier,
+                                             bundle_identifier: request.bundle_identifier,
+                                             logged_in_user_id: request.logged_in_user_id,
+                                             marketing_version: request.marketing_version,
+                                             build_version: request.build_version
+                                           })
 
     subscribe_to_announcements(result.subscription) unless result.failure?
 
@@ -34,12 +36,12 @@ class CreateDeviceSubscription
 
   def create_gcm_subscription
     result = GCM::CreateSubscription.call({
-      platform_device_identifier: request.platform_device_identifier,
-      bundle_identifier: request.bundle_identifier,
-      logged_in_user_id: request.logged_in_user_id,
-      marketing_version: request.marketing_version,
-      build_version: request.build_version
-    })
+                                            platform_device_identifier: request.platform_device_identifier,
+                                            bundle_identifier: request.bundle_identifier,
+                                            logged_in_user_id: request.logged_in_user_id,
+                                            marketing_version: request.marketing_version,
+                                            build_version: request.build_version
+                                          })
 
     subscribe_to_announcements(result.subscription) unless result.failure?
 
@@ -53,9 +55,9 @@ class CreateDeviceSubscription
 
   def subscribe_to_announcements(device_sub)
     user = User.where(id: device_sub.logged_in_user_id).first_or_create
-    if user.notify_of_announcements && device_sub.supports_announcements?
-      sub = SnsService.subscribe_to_announcements(device_sub.endpoint_arn)
-      device_sub.update(announcement_subscription_arn: sub.arn)
-    end
+    return unless user.notify_of_announcements && device_sub.supports_announcements?
+
+    sub = SnsService.subscribe_to_announcements(device_sub.endpoint_arn)
+    device_sub.update(announcement_subscription_arn: sub.arn)
   end
 end

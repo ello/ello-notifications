@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Metrics/ClassLength
 class Notification::Factory
   @type_decorators = []
   class << self
@@ -148,76 +151,97 @@ class Notification::Factory
     web_url { related_object.cta_href }
   end
 
-  register_type ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED, 'artist_invite_submission_approved' do |related_object|
+  register_type ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED,
+                'artist_invite_submission_approved' do |related_object|
     title { I18n.t('notification_factory.artist_invite_submission_approved.title') }
-    body { I18n.t('notification_factory.artist_invite_submission_approved.body', artist_invite_title: related_object.title) }
+    body do
+      I18n.t('notification_factory.artist_invite_submission_approved.body', artist_invite_title: related_object.title)
+    end
     application_target { related_object.href }
     web_url { related_object.href }
   end
 
-  register_type ElloProtobufs::NotificationType::APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS, 'approved_artist_invite_submission_for_followers' do |related_object|
+  register_type ElloProtobufs::NotificationType::APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS,
+                'approved_artist_invite_submission_for_followers' do |related_object|
     title { I18n.t('notification_factory.approved_artist_invite_submission_for_followers.title') }
-    body { I18n.t('notification_factory.approved_artist_invite_submission_for_followers.body', author_username: related_object.post.author.username, artist_invite_title: related_object.title) }
+    body do
+      I18n.t('notification_factory.approved_artist_invite_submission_for_followers.body',
+             author_username: related_object.post.author.username, artist_invite_title: related_object.title)
+    end
     application_target { "notifications/posts/#{related_object.post.id}" }
     web_url { related_object.post.href }
   end
 
   register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST, 'featured_category_post' do |related_object|
     title { I18n.t('notification_factory.featured_category_post.title') }
-    body { I18n.t('notification_factory.featured_category_post.body', {
-      featured_by_username: related_object.featured_by.try(:username) || '@ello',
-      category_name: related_object.category.title,
-    }) }
+    body do
+      I18n.t('notification_factory.featured_category_post.body', {
+               featured_by_username: related_object.featured_by.try(:username) || '@ello',
+               category_name: related_object.category.title
+             })
+    end
     application_target { "notifications/posts/#{related_object.post.id}" }
     web_url { related_object.post.href }
   end
 
-  register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_REPOST, 'featured_category_repost' do |related_object|
+  register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_REPOST,
+                'featured_category_repost' do |related_object|
     title { I18n.t('notification_factory.featured_category_repost.title') }
-    body { I18n.t('notification_factory.featured_category_repost.body', {
-      featured_by_username: related_object.featured_by.try(:username) || '@ello',
-      category_name: related_object.category.title,
-    }) }
+    body do
+      I18n.t('notification_factory.featured_category_repost.body', {
+               featured_by_username: related_object.featured_by.try(:username) || '@ello',
+               category_name: related_object.category.title
+             })
+    end
     application_target { "notifications/posts/#{related_object.post.id}" }
     web_url { related_object.post.href }
   end
 
-  register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST_VIA_REPOST, 'featured_category_post_via_repost' do |related_object|
+  register_type ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST_VIA_REPOST,
+                'featured_category_post_via_repost' do |related_object|
     title { I18n.t('notification_factory.featured_category_post_via_repost.title') }
-    body { I18n.t('notification_factory.featured_category_post_via_repost.body', {
-      featured_by_username: related_object.featured_by.try(:username) || '@ello',
-      category_name: related_object.category.title,
-    }) }
+    body do
+      I18n.t('notification_factory.featured_category_post_via_repost.body', {
+               featured_by_username: related_object.featured_by.try(:username) || '@ello',
+               category_name: related_object.category.title
+             })
+    end
     application_target { "notifications/posts/#{related_object.post.id}" }
     web_url { related_object.post.href }
   end
 
   register_type ElloProtobufs::NotificationType::USER_ADDED_AS_FEATURED, 'user_added_as_featured' do |related_object|
     title { I18n.t('notification_factory.user_added_as_featured.title') }
-    body { I18n.t('notification_factory.user_added_as_featured.body', {
-      featured_by_username: related_object.featured_by.try(:username) || '@ello',
-      category_name: related_object.category.title,
-    }) }
-    application_target { "notifications/ello.co/wtf/support/featured-members/" }
-    web_url { "https://ello.co/wtf/support/featured-members/" }
+    body do
+      I18n.t('notification_factory.user_added_as_featured.body', {
+               featured_by_username: related_object.featured_by.try(:username) || '@ello',
+               category_name: related_object.category.title
+             })
+    end
+    application_target { 'notifications/ello.co/wtf/support/featured-members/' }
+    web_url { 'https://ello.co/wtf/support/featured-members/' }
   end
 
   register_type ElloProtobufs::NotificationType::USER_ADDED_AS_CURATOR, 'user_added_as_curator' do |related_object|
     title { I18n.t('notification_factory.user_added_as_curator.title') }
-    body { I18n.t('notification_factory.user_added_as_curator.body', {
-      curator_by_username: related_object.curator_by.try(:username) || '@ello',
-      category_name: related_object.category.title,
-    }) }
+    body do
+      I18n.t('notification_factory.user_added_as_curator.body', {
+               curator_by_username: related_object.curator_by.try(:username) || '@ello',
+               category_name: related_object.category.title
+             })
+    end
     application_target { "notifications/categories/#{related_object.category.slug}" }
     web_url { "http://ello.co/discover/#{related_object.category.slug}" }
   end
 
   register_type ElloProtobufs::NotificationType::USER_ADDED_AS_MODERATOR, 'user_added_as_moderator' do |related_object|
     title { I18n.t('notification_factory.user_added_as_moderator.title') }
-    body { I18n.t('notification_factory.user_added_as_moderator.body', {
-      moderator_by_username: related_object.moderator_by.try(:username) || '@ello',
-      category_name: related_object.category.title,
-    }) }
+    body do
+      I18n.t('notification_factory.user_added_as_moderator.body', {
+               moderator_by_username: related_object.moderator_by.try(:username) || '@ello',
+               category_name: related_object.category.title
+             })
+    end
     application_target { "notifications/categories/#{related_object.category.slug}" }
     web_url { "http://ello.co/discover/#{related_object.category.slug}" }
   end
@@ -248,3 +272,4 @@ class Notification::Factory
     { destination_user_id: @destination_user.id }
   end
 end
+# rubocop:enable Metrics/ClassLength

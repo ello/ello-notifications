@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module BasicAuthHelpers
   extend ActiveSupport::Concern
 
   included do
     def basic_auth_env
-      { 'HTTP_AUTHORIZATION' => "Basic " + Base64::encode64("#{ENV['BASIC_AUTH_USER']}:#{ENV['BASIC_AUTH_PASSWORD']}") }
+      { 'HTTP_AUTHORIZATION' => "Basic #{Base64.encode64("#{ENV['BASIC_AUTH_USER']}:#{ENV['BASIC_AUTH_PASSWORD']}")}" }
     end
   end
 end

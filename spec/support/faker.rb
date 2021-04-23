@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Faker::Ello
   # 64 hexadecimal characters
   def self.ios_device_token
@@ -11,7 +13,7 @@ class Faker::Ello
     163.times.map { chars.sample }.join
   end
 
-  def self.sns_apns_endpoint_arn(sandbox:false)
+  def self.sns_apns_endpoint_arn(sandbox: false)
     platform_key = sandbox ? 'APNS_SANDBOX' : 'APNS'
     app_ref_id = FactoryGirl.generate(:unique_id)
     subscription_ref_id = FactoryGirl.generate(:unique_id)

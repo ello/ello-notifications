@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # a workaround to avoid MonitorMixin double-initialize error
 # https://github.com/rails/rails/issues/34790#issuecomment-681034561
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.6.0')
@@ -15,6 +17,6 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.6.0')
       end
     end
   else
-    $stderr.puts "Monkeypatch for ActionController::TestResponse is no longer needed"
+    warn 'Monkeypatch for ActionController::TestResponse is no longer needed'
   end
 end

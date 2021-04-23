@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe DeviceSubscription do
@@ -19,7 +21,7 @@ describe DeviceSubscription do
     end
 
     it 'does not override a false value' do
-      expect(described_class.new({enabled: false})).to_not be_enabled
+      expect(described_class.new({ enabled: false })).not_to be_enabled
     end
   end
 
@@ -63,7 +65,7 @@ describe DeviceSubscription do
       ['GCM', 'SMS', nil].each do |platform|
         subject.sns_application = build(:sns_application, platform: platform)
 
-        expect(subject).to_not be_apns
+        expect(subject).not_to be_apns
       end
     end
   end
@@ -79,18 +81,18 @@ describe DeviceSubscription do
       ['APNS', 'SMS', nil].each do |platform|
         subject.sns_application = build(:sns_application, platform: platform)
 
-        expect(subject).to_not be_gcm
+        expect(subject).not_to be_gcm
       end
     end
   end
 
   describe '#platform' do
-    it 'returns the platform identifier for the linked application' do
+    it 'returns the platform identifier (APNS) for the linked application' do
       apns = build_stubbed(:device_subscription, :apns)
       expect(apns.platform).to eq(SnsApplication::PLATFORM_APNS)
     end
 
-    it 'returns the platform identifier for the linked application' do
+    it 'returns the platform identifier (GCM) for the linked application' do
       gcm = build_stubbed(:device_subscription, :gcm)
       expect(gcm.platform).to eq(SnsApplication::PLATFORM_GCM)
     end
@@ -100,14 +102,14 @@ describe DeviceSubscription do
     subject { build(:device_subscription, :apns) }
 
     it 'returns false and adds an error message if the subscription already has an endpoint arn' do
-      expect(subject).to_not be_creatable_on_sns
+      expect(subject).not_to be_creatable_on_sns
       expect(subject.errors[:endpoint_arn]).to include 'SNS endpoint has already been created'
     end
 
     it 'returns false if the subscription is invalid' do
       subject.endpoint_arn = nil
       subject.logged_in_user_id = nil
-      expect(subject).to_not be_creatable_on_sns
+      expect(subject).not_to be_creatable_on_sns
     end
 
     it 'returns true if the subscription is valid' do
@@ -122,43 +124,43 @@ describe DeviceSubscription do
     end
 
     it 'returns false when enabled is true' do
-      expect(described_class.new(enabled: true)).to_not be_disabled
+      expect(described_class.new(enabled: true)).not_to be_disabled
     end
   end
 
   describe '#disable' do
     it 'sets the enabled flag to false' do
       record = create(:device_subscription, :apns)
-      expect {
+      expect do
         record.disable
-      }.to change { record.enabled }.to(false)
+      end.to change { record.enabled }.to(false)
     end
   end
 
   describe '#enable' do
     it 'sets the enabled flag to true' do
       record = create(:device_subscription, :apns, :disabled)
-      expect {
+      expect do
         record.enable
-      }.to change { record.enabled }.to(true)
+      end.to change { record.enabled }.to(true)
     end
   end
 
   describe '#can_handle_blank_pushes?' do
     it 'returns true when build_version is >= 3216' do
-      expect(described_class.new(build_version: '3216').can_handle_blank_pushes?).to be_truthy
+      expect(described_class.new(build_version: '3216')).to be_can_handle_blank_pushes
     end
 
     it 'returns false when build_version is before 3216' do
-      expect(described_class.new(build_version: '3200').can_handle_blank_pushes?).to be_falsy
+      expect(described_class.new(build_version: '3200')).not_to be_can_handle_blank_pushes
     end
 
     it 'returns false when build_version is blank' do
-      expect(described_class.new(build_version: '').can_handle_blank_pushes?).to be_falsy
+      expect(described_class.new(build_version: '')).not_to be_can_handle_blank_pushes
     end
 
     it 'returns false when build_version is nil' do
-      expect(described_class.new(build_version: nil).can_handle_blank_pushes?).to be_falsy
+      expect(described_class.new(build_version: nil)).not_to be_can_handle_blank_pushes
     end
   end
 

@@ -1,27 +1,29 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe DeleteDeviceSubscription do
   let(:request) do
-    request = ElloProtobufs::NotificationService::DeleteDeviceSubscriptionRequest.new({
-      platform: ElloProtobufs::NotificationPlatform::APNS,
-      platform_device_identifier: '12345',
-      bundle_identifier: 'co.ello.elloDev',
-      logged_in_user_id: 1,
-      marketing_version: '6.6.6',
-      build_version: '1234567'
-    })
+    ElloProtobufs::NotificationService::DeleteDeviceSubscriptionRequest.new({
+                                                                              platform: ElloProtobufs::NotificationPlatform::APNS,
+                                                                              platform_device_identifier: '12345',
+                                                                              bundle_identifier: 'co.ello.elloDev',
+                                                                              logged_in_user_id: 1,
+                                                                              marketing_version: '6.6.6',
+                                                                              build_version: '1234567'
+                                                                            })
   end
 
   context 'when the device subscription is for APNS' do
     it 'dispatches to the appropriate interactor' do
       mock_result = double('Result', success?: true, failure?: false)
-      expect(APNS::DeleteSubscription).to receive(:call).with({
-        platform_device_identifier: request.platform_device_identifier,
-        bundle_identifier: request.bundle_identifier,
-        logged_in_user_id: request.logged_in_user_id,
-        marketing_version: request.marketing_version,
-        build_version: request.build_version
-      }).and_return(mock_result)
+      allow(APNS::DeleteSubscription).to receive(:call).with({
+                                                               platform_device_identifier: request.platform_device_identifier,
+                                                               bundle_identifier: request.bundle_identifier,
+                                                               logged_in_user_id: request.logged_in_user_id,
+                                                               marketing_version: request.marketing_version,
+                                                               build_version: request.build_version
+                                                             }).and_return(mock_result)
 
       result = described_class.call(request: request)
 
@@ -33,11 +35,11 @@ describe DeleteDeviceSubscription do
         failure_reason = ElloProtobufs::NotificationService::ServiceFailureReason::UNSPECIFIED_REASON
         message = 'some message'
         mock_result = build_failed_context(failure_reason: failure_reason, message: message)
-        expect(APNS::DeleteSubscription).to receive(:call).and_return(mock_result)
+        allow(APNS::DeleteSubscription).to receive(:call).and_return(mock_result)
 
         result = described_class.call(request: request)
 
-        expect(result).to_not be_success
+        expect(result).not_to be_success
         expect(result.failure_reason).to eq mock_result.failure_reason
       end
     end
@@ -51,7 +53,7 @@ describe DeleteDeviceSubscription do
 
       result = described_class.call(request: request)
 
-      expect(result).to_not be_success
+      expect(result).not_to be_success
       expect(result.failure_reason).to eq expected_reason
     end
   end

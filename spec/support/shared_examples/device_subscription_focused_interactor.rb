@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.shared_examples 'a device subscription focused interactor' do |platform|
@@ -5,7 +7,7 @@ RSpec.shared_examples 'a device subscription focused interactor' do |platform|
     it 'fails the result with an error message' do
       result = described_class.call(bundle_identifier: 'com.some.id')
 
-      expect(result).to_not be_success
+      expect(result).not_to be_success
       expect(result.message).to eq 'Unknown bundle_identifier: com.some.id'
     end
   end
@@ -16,7 +18,7 @@ RSpec.shared_examples 'a device subscription focused interactor' do |platform|
       create(:sns_application, platform_trait, bundle_identifier: 'come.some.id')
       result = described_class.call(bundle_identifier: 'com.some.id')
 
-      expect(result).to_not be_success
+      expect(result).not_to be_success
       expect(result.message).to eq 'Unknown bundle_identifier: com.some.id'
     end
   end
