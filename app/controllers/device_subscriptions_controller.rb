@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeviceSubscriptionsController < ApplicationController
   def create
     protobuf_request = ElloProtobufs::NotificationService::CreateDeviceSubscriptionRequest.decode_from(request.body)

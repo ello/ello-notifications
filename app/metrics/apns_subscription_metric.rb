@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApnsSubscriptionMetric < Metric
 
   namespace_all('ello-notifications.apns.subscription')
@@ -22,4 +24,3 @@ class ApnsSubscriptionMetric < Metric
   end
 
 end
-

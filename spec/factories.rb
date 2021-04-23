@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 FactoryGirl.define do
   sequence(:unique_id)
 
   factory :user do
-    notification_count 0
+    notification_count { 0 }
   end
 
   factory :sns_application do
@@ -22,11 +24,11 @@ FactoryGirl.define do
     sns_application
     endpoint_arn { Faker::Ello.sns_apns_endpoint_arn }
     sequence(:logged_in_user_id)
-    enabled true
-    platform_device_identifier 'someident'
+    enabled { true }
+    platform_device_identifier { 'someident' }
 
     trait :creatable_on_sns do
-      endpoint_arn nil
+      endpoint_arn { nil }
     end
 
     trait :apns do
@@ -42,7 +44,7 @@ FactoryGirl.define do
     end
 
     trait :disabled do
-      enabled false
+      enabled { false }
     end
   end
 
@@ -50,15 +52,15 @@ FactoryGirl.define do
     title { Faker::Lorem.words(2).join(' ') }
     body { Faker::Lorem.sentence }
     badge_count { Random.rand(10) }
-    metadata {
+    metadata do
       {
         custom_key: '1',
-        type: 'repost',
+        type: 'repost'
       }
-    }
+    end
 
     trait :badge_count_only do
-      include_alert false
+      include_alert { false }
       metadata { {} }
     end
   end

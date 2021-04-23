@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.shared_examples 'a notification with' do
@@ -32,4 +34,3 @@ RSpec.shared_examples 'a notification with' do
     expect(subject.metadata[:web_url]).to eq(web_url)
   end
 end
-

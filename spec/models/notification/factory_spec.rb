@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe Notification::Factory do
@@ -19,9 +21,9 @@ describe Notification::Factory do
   end
 
   describe 'building a repost notification' do
-    let(:repost) { create(:protobuf_post, :repost) }
-
     subject { described_class.build(ElloProtobufs::NotificationType::REPOST, destination_user, repost) }
+
+    let(:repost) { create(:protobuf_post, :repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -35,9 +37,9 @@ describe Notification::Factory do
   end
 
   describe 'building a post_comment notification' do
-    let(:comment) { create(:protobuf_comment) }
-
     subject { described_class.build(ElloProtobufs::NotificationType::POST_COMMENT, destination_user, comment) }
+
+    let(:comment) { create(:protobuf_comment) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -51,12 +53,12 @@ describe Notification::Factory do
   end
 
   describe 'building a repost_comment_to_repost_author notification' do
-    let(:repost) { create(:protobuf_post, :repost) }
-    let(:comment) { create(:protobuf_comment, parent_post: repost) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_REPOST_AUTHOR, destination_user, comment)
     end
+
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:comment) { create(:protobuf_comment, parent_post: repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -70,14 +72,14 @@ describe Notification::Factory do
   end
 
   describe 'building a repost_comment_to_original_author notification' do
-    let(:repost) { create(:protobuf_post, :repost) }
-    let(:comment) { create(:protobuf_comment, parent_post: repost) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::REPOST_COMMENT_TO_ORIGINAL_AUTHOR,
                             destination_user,
                             comment)
     end
+
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:comment) { create(:protobuf_comment, parent_post: repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -93,9 +95,9 @@ describe Notification::Factory do
   end
 
   describe 'building a post_love notification' do
-    let(:love) { create(:protobuf_love) }
-
     subject { described_class.build(ElloProtobufs::NotificationType::POST_LOVE, destination_user, love) }
+
+    let(:love) { create(:protobuf_love) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -109,14 +111,14 @@ describe Notification::Factory do
   end
 
   describe 'building a repost_love_to_repost_author notification' do
-    let(:repost) { create(:protobuf_post, :repost) }
-    let(:love) { create(:protobuf_love, post: repost) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_REPOST_AUTHOR,
                             destination_user,
                             love)
     end
+
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:love) { create(:protobuf_love, post: repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -130,14 +132,14 @@ describe Notification::Factory do
   end
 
   describe 'building a repost_love_to_original_author notification' do
-    let(:repost) { create(:protobuf_post, :repost) }
-    let(:love) { create(:protobuf_love, post: repost) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::REPOST_LOVE_TO_ORIGINAL_AUTHOR,
                             destination_user,
                             love)
     end
+
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:love) { create(:protobuf_love, post: repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -151,9 +153,9 @@ describe Notification::Factory do
   end
 
   describe 'building a post_mention notification' do
-    let(:post) { create(:protobuf_post) }
-
     subject { described_class.build(ElloProtobufs::NotificationType::POST_MENTION, destination_user, post) }
+
+    let(:post) { create(:protobuf_post) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -167,9 +169,9 @@ describe Notification::Factory do
   end
 
   describe 'building a comment_mention notification' do
-    let(:comment) { create(:protobuf_comment) }
-
     subject { described_class.build(ElloProtobufs::NotificationType::COMMENT_MENTION, destination_user, comment) }
+
+    let(:comment) { create(:protobuf_comment) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -183,9 +185,9 @@ describe Notification::Factory do
   end
 
   describe 'building a follower notification' do
-    let(:user) { create(:protobuf_user) }
-
     subject { described_class.build(ElloProtobufs::NotificationType::FOLLOWER, destination_user, user) }
+
+    let(:user) { create(:protobuf_user) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -199,9 +201,9 @@ describe Notification::Factory do
   end
 
   describe 'building an invite redemption notification' do
-    let(:user) { create(:protobuf_user) }
-
     subject { described_class.build(ElloProtobufs::NotificationType::INVITE_REDEMPTION, destination_user, user) }
+
+    let(:user) { create(:protobuf_user) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -229,13 +231,13 @@ describe Notification::Factory do
   end
 
   describe 'building a post_watch notification' do
-    let(:watch) { create(:protobuf_watch) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::POST_WATCH,
                             destination_user,
                             watch)
     end
+
+    let(:watch) { create(:protobuf_watch) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -249,13 +251,13 @@ describe Notification::Factory do
   end
 
   describe 'building a post_comment_to_watcher notification' do
-    let(:comment) { create(:protobuf_comment) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::POST_COMMENT_TO_WATCHER,
                             destination_user,
                             comment)
     end
+
+    let(:comment) { create(:protobuf_comment) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -269,14 +271,14 @@ describe Notification::Factory do
   end
 
   describe 'building a repost_watch_to_repost_author notification' do
-    let(:repost) { create(:protobuf_post, :repost) }
-    let(:watch) { create(:protobuf_watch, post: repost) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::REPOST_WATCH_TO_REPOST_AUTHOR,
                             destination_user,
                             watch)
     end
+
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:watch) { create(:protobuf_watch, post: repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -290,14 +292,14 @@ describe Notification::Factory do
   end
 
   describe 'building a repost_watch_to_original_author notification' do
-    let(:repost) { create(:protobuf_post, :repost) }
-    let(:watch) { create(:protobuf_watch, post: repost) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::REPOST_WATCH_TO_ORIGINAL_AUTHOR,
                             destination_user,
                             watch)
     end
+
+    let(:repost) { create(:protobuf_post, :repost) }
+    let(:watch) { create(:protobuf_watch, post: repost) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -311,13 +313,13 @@ describe Notification::Factory do
   end
 
   describe 'building an announcement notification' do
-    let(:announcement) { create(:protobuf_announcement, header: 'Header', body: 'Body', cta_href: 'http://asdf.com') }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::ANNOUNCEMENT,
                             destination_user,
                             announcement)
     end
+
+    let(:announcement) { create(:protobuf_announcement, header: 'Header', body: 'Body', cta_href: 'http://asdf.com') }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -331,34 +333,34 @@ describe Notification::Factory do
   end
 
   describe 'building an appoved artist invite submission notification' do
-    let(:submission) { create(:protobuf_artist_invite_submission) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::ARTIST_INVITE_SUBMISSION_APPROVED,
                             destination_user,
                             submission)
     end
 
+    let(:submission) { create(:protobuf_artist_invite_submission) }
+
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'artist_invite_submission_approved' }
       let(:include_alert) { true }
       let(:title) { 'Artist Invite Submission Accepted' }
-      let(:body) { "Your submission to the Artist Invite Title Artist Invite has been accepted ✌️ " }
+      let(:body) { 'Your submission to the Artist Invite Title Artist Invite has been accepted ✌️ ' }
       let(:application_target) { submission.href }
       let(:web_url) { submission.href }
     end
   end
 
   describe 'building an appoved artist invite submission for followers notification' do
-    let(:post) { create(:protobuf_post) }
-    let(:submission) { create(:protobuf_artist_invite_submission, post: post) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS,
                             destination_user,
                             submission)
     end
+
+    let(:post) { create(:protobuf_post) }
+    let(:submission) { create(:protobuf_artist_invite_submission, post: post) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -372,14 +374,14 @@ describe Notification::Factory do
   end
 
   describe 'building an featured category post notification' do
-    let(:post) { create(:protobuf_post) }
-    let(:category_post) { create(:protobuf_category_post, post: post) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST,
                             destination_user,
                             category_post)
     end
+
+    let(:post) { create(:protobuf_post) }
+    let(:category_post) { create(:protobuf_category_post, post: post) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -393,14 +395,14 @@ describe Notification::Factory do
   end
 
   describe 'building an featured category repost notification' do
-    let(:post) { create(:protobuf_post) }
-    let(:category_post) { create(:protobuf_category_post, post: post) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::FEATURED_CATEGORY_REPOST,
                             destination_user,
                             category_post)
     end
+
+    let(:post) { create(:protobuf_post) }
+    let(:category_post) { create(:protobuf_category_post, post: post) }
 
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
@@ -414,87 +416,95 @@ describe Notification::Factory do
   end
 
   describe 'building an featured category post via repost notification' do
-    let(:post) { create(:protobuf_post) }
-    let(:category_post) { create(:protobuf_category_post, post: post) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::FEATURED_CATEGORY_POST_VIA_REPOST,
                             destination_user,
                             category_post)
     end
 
+    let(:post) { create(:protobuf_post) }
+    let(:category_post) { create(:protobuf_category_post, post: post) }
+
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'featured_category_post_via_repost' }
       let(:include_alert) { true }
       let(:title) { 'Featured on Ello' }
-      let(:body) { "#{category_post.featured_by.username} featured a repost of your post in #{category_post.category.title}." }
+      let(:body) do
+        "#{category_post.featured_by.username} featured a repost of your post in #{category_post.category.title}."
+      end
       let(:application_target) { "notifications/posts/#{category_post.post.id}" }
       let(:web_url) { category_post.post.href }
     end
   end
 
   describe 'building an category user via user added as featured' do
-    let(:category_user) { create(:protobuf_category_user) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::USER_ADDED_AS_FEATURED,
                             destination_user,
                             category_user)
     end
 
+    let(:category_user) { create(:protobuf_category_user) }
+
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'user_added_as_featured' }
       let(:include_alert) { true }
-      let(:title) { "Congrats!" }
-      let(:body) { "#{category_user.featured_by.username} has featured you in #{category_user.category.title}. Tap to learn more." }
-      let(:application_target) { "notifications/ello.co/wtf/support/featured-members/" }
-      let(:web_url) { "https://ello.co/wtf/support/featured-members/" }
+      let(:title) { 'Congrats!' }
+      let(:body) do
+        "#{category_user.featured_by.username} has featured you in #{category_user.category.title}. Tap to learn more."
+      end
+      let(:application_target) { 'notifications/ello.co/wtf/support/featured-members/' }
+      let(:web_url) { 'https://ello.co/wtf/support/featured-members/' }
     end
   end
 
   describe 'building an category user via user added as curator' do
-    let(:category_user) { create(:protobuf_category_user) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::USER_ADDED_AS_CURATOR,
                             destination_user,
                             category_user)
     end
 
+    let(:category_user) { create(:protobuf_category_user) }
+
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'user_added_as_curator' }
       let(:include_alert) { true }
-      let(:title) { "Curate Ello" }
-      let(:body) { "#{category_user.curator_by.username} has invited you to help curate #{category_user.category.title}." }
+      let(:title) { 'Curate Ello' }
+      let(:body) do
+        "#{category_user.curator_by.username} has invited you to help curate #{category_user.category.title}."
+      end
       let(:application_target) { "notifications/categories/#{category_user.category.slug}" }
       let(:web_url) { "http://ello.co/discover/#{category_user.category.slug}" }
     end
   end
 
   describe 'building an category user via user added as moderator' do
-    let(:category_user) { create(:protobuf_category_user) }
-
     subject do
       described_class.build(ElloProtobufs::NotificationType::USER_ADDED_AS_MODERATOR,
                             destination_user,
                             category_user)
     end
 
+    let(:category_user) { create(:protobuf_category_user) }
+
     it_behaves_like 'a notification with' do
       let(:destination_user_id) { destination_user.id }
       let(:type) { 'user_added_as_moderator' }
       let(:include_alert) { true }
-      let(:title) { "Moderate Ello" }
-      let(:body) { "#{category_user.moderator_by.username} has invited you to help moderate #{category_user.category.title}." }
+      let(:title) { 'Moderate Ello' }
+      let(:body) do
+        "#{category_user.moderator_by.username} has invited you to help moderate #{category_user.category.title}."
+      end
       let(:application_target) { "notifications/categories/#{category_user.category.slug}" }
       let(:web_url) { "http://ello.co/discover/#{category_user.category.slug}" }
     end
   end
 
-  def post_target(id, _full_target = true)
+  def post_target(id, _full_target = true) # rubocop:disable Style/OptionalBooleanParameter
     "notifications/posts/#{id}"
   end
 

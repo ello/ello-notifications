@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class Notification::Factory::TypeDecorator
 
   module DSL
-    def include_alert(value=nil)
+    def include_alert(value = nil)
       # allowing for block or direct value since this is a boolean
-      @include_alert = ( block_given? ? yield : value )
+      @include_alert = (block_given? ? yield : value)
     end
 
     def title
@@ -24,7 +26,9 @@ class Notification::Factory::TypeDecorator
   end
 
   def initialize(type, human_readable_type, dsl_block)
-    @type, @human_readable_type, @dsl_block = type, human_readable_type, dsl_block
+    @type = type
+    @human_readable_type = human_readable_type
+    @dsl_block = dsl_block
   end
 
   attr_reader :type

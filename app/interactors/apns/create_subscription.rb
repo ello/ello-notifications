@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class APNS::CreateSubscription
 
   include Interactor
@@ -5,7 +7,7 @@ class APNS::CreateSubscription
 
   def call
     with_retries(max_tries: 5, rescue: ActiveRecord::RecordNotUnique) do
-      if subscription = find_subscription_from_context
+      if (subscription = find_subscription_from_context)
         update_logged_in_user(subscription) if logged_in_user_has_changed?(subscription)
         update_app_versions(subscription) if app_versions_have_changed?(subscription)
         enable_subscription(subscription) if subscription.disabled?
@@ -44,8 +46,8 @@ class APNS::CreateSubscription
   end
 
   def update_app_versions(subscription)
-    subscription.update_attributes(build_version: context[:build_version],
-                                   marketing_version: context[:marketing_version])
+    subscription.update(build_version: context[:build_version],
+                        marketing_version: context[:marketing_version])
   end
 
   def enable_subscription(subscription)

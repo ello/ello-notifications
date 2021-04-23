@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class SnsService
   class ServiceError < StandardError
     attr_reader :original_exception
-    def initialize(message, original_exception=nil)
+
+    def initialize(message, original_exception = nil)
       @original_exception = original_exception
       super(message)
     end
@@ -20,8 +23,8 @@ class SnsService
         )
         resp.endpoint_arn
       else
-        message = "Cannot create device subscription: " + subscription.errors.full_messages.first
-        raise ServiceError.new(message)
+        message = "Cannot create device subscription: #{subscription.errors.full_messages.first}"
+        raise ServiceError, message
       end
     rescue Aws::Errors::ServiceError => e
       raise ServiceError.new(e.message, e)
@@ -49,10 +52,10 @@ class SnsService
     def deliver_notification(target_arn, message)
       sns = Aws::SNS::Client.new
       sns.publish({
-        target_arn: target_arn,
-        message_structure: 'json',
-        message: message.to_json
-      })
+                    target_arn: target_arn,
+                    message_structure: 'json',
+                    message: message.to_json
+                  })
     rescue Aws::Errors::ServiceError => e
       raise ServiceError.new(e.message, e)
     end
@@ -80,7 +83,8 @@ class SnsService
 
     def announcement_topic
       raise 'please set ANNOUNCEMENT_TOPIC_ARN env variable' unless ANNOUNCEMENT_TOPIC_ARN
-      @announcements_topic ||= begin
+
+      @announcement_topic ||= begin
         sns = Aws::SNS::Client.new
         Aws::SNS::Topic.new(ANNOUNCEMENT_TOPIC_ARN, client: sns)
       end

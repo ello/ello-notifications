@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'sucker_punch/testing/inline'
 
 describe Callbacks::AwsController, type: :request do
-  Basic = ActionController::HttpAuthentication::Basic
-
   before do
     allow_any_instance_of(Aws::SNS::Client).to receive(:confirm_subscription)
     allow(SnsService).to receive(:unsubscribe_from_topic)
@@ -22,7 +22,7 @@ describe Callbacks::AwsController, type: :request do
         {
           'x-amz-sns-message-type' => 'SubscriptionConfirmation',
           'Content-Type' => 'application/json',
-          'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
+          'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials('admin', 'admin')
         }
       end
 
@@ -54,19 +54,18 @@ describe Callbacks::AwsController, type: :request do
         allow_any_instance_of(Aws::SNS::MessageVerifier).to receive(:authentic?).and_return(true)
       end
 
-      context 'message is a failed push notification' do
+      context 'when message is a failed push notification' do
         let!(:subscription) do
           create(:device_subscription, :gcm,
                  platform_device_identifier: '123',
-                 announcement_subscription_arn: 'arn:sns:abc123'
-                )
+                 announcement_subscription_arn: 'arn:sns:abc123')
         end
 
         let(:headers) do
           {
             'x-amz-sns-message-type' => 'Notification',
             'Content-Type' => 'application/json',
-            'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
+            'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials('admin', 'admin')
           }
         end
 
@@ -88,7 +87,7 @@ describe Callbacks::AwsController, type: :request do
         end
       end
 
-      context 'message is NOT a failed push notification' do
+      context 'when message is NOT a failed push notification' do
         let!(:subscription) do
           create(:device_subscription, :gcm, platform_device_identifier: '123')
         end
@@ -96,7 +95,7 @@ describe Callbacks::AwsController, type: :request do
         let(:headers) do
           {
             'Content-Type' => 'application/json',
-            'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
+            'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials('admin', 'admin')
           }
         end
 
@@ -120,7 +119,7 @@ describe Callbacks::AwsController, type: :request do
         {
           'x-amz-sns-message-type' => 'Notification',
           'Content-Type' => 'application/json',
-          'HTTP_AUTHORIZATION' => Basic.encode_credentials('admin', 'admin')
+          'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials('admin', 'admin')
         }
       end
 

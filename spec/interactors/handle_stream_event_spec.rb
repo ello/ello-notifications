@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe HandleStreamEvent do
@@ -21,7 +23,7 @@ describe HandleStreamEvent do
       }
     end
 
-    it 'should create a user with notify_of_announcements as true' do
+    it 'creates a user with notify_of_announcements as true' do
       described_class.call(kind: 'user_was_created', record: record)
       expect(User.last.id).to eq(999_999_999)
       expect(User.last.notify_of_announcements).to eq true
@@ -42,18 +44,18 @@ describe HandleStreamEvent do
              announcement_subscription_arn: 'def345')
     end
 
-    it 'should delete the existing user' do
+    it 'deletes the existing user' do
       described_class.call(kind: 'user_was_deleted', record: record)
       expect(User.where(id: user.id)).to be_empty
     end
 
-    it 'should unsubscribe all the user devices from the announcement topic' do
+    it 'unsubscribes all the user devices from the announcement topic' do
       expect(SnsService).to receive(:unsubscribe_from_topic).with('abc123')
       expect(SnsService).to receive(:unsubscribe_from_topic).with('def345')
       described_class.call(kind: 'user_was_deleted', record: record)
     end
 
-    it 'should remove the topic subscription from the device subscription' do
+    it 'removes the topic subscription from the device subscription' do
       described_class.call(kind: 'user_was_deleted', record: record)
       expect(sub1.reload.announcement_subscription_arn).to be nil
       expect(sub2.reload.announcement_subscription_arn).to be nil
@@ -61,7 +63,7 @@ describe HandleStreamEvent do
   end
 
   describe 'user_changed_subscription_preferences' do
-    context 'new user(to system) - no subscriptions - wants announcements' do
+    describe 'new user(to system) - no subscriptions - wants announcements' do
       let(:record) do
         {
           'id' => 999_999_997,
@@ -78,7 +80,7 @@ describe HandleStreamEvent do
       end
     end
 
-    context 'existing user - has devices - wants announcements' do
+    describe 'existing user - has devices - wants announcements' do
       let!(:user) { create(:user, notify_of_announcements: false) }
       let!(:sub1) do
         create(:device_subscription, :apns,
@@ -113,8 +115,10 @@ describe HandleStreamEvent do
       end
 
       it 'subscribes each device to topic and updated the announcement arn' do
-        expect(SnsService).to receive(:subscribe_to_announcements).with(sub1.endpoint_arn) { subscribe_response }
-        expect(SnsService).to receive(:subscribe_to_announcements).with(sub2.endpoint_arn) { double(:subscribe_response, arn: 'arn:sns:baz') }
+        allow(SnsService).to receive(:subscribe_to_announcements).with(sub1.endpoint_arn) { subscribe_response }
+        allow(SnsService).to receive(:subscribe_to_announcements).with(sub2.endpoint_arn) {
+                               double(:subscribe_response, arn: 'arn:sns:baz')
+                             }
         expect(SnsService).not_to receive(:subscribe_to_announcements).with(sub3.endpoint_arn)
         described_class.call(kind: 'user_changed_subscription_preferences', record: record)
         expect(sub1.reload.announcement_subscription_arn).to eq 'arn:sns:foo'
@@ -124,7 +128,7 @@ describe HandleStreamEvent do
 
     end
 
-    context 'existing user - has devices - has subscription - no announcements' do
+    context 'when existing user - has devices - has subscription - no announcements' do
       let!(:user) { create(:user, notify_of_announcements: false) }
       let!(:sub1) do
         create(:device_subscription, :apns,
@@ -152,14 +156,13 @@ describe HandleStreamEvent do
         expect(user.reload.notify_of_announcements).to eq false
       end
 
-
-      it 'should unsubscribe all the user devices from the announcement topic' do
+      it 'unsubscribes all the user devices from the announcement topic' do
         expect(SnsService).to receive(:unsubscribe_from_topic).with('abc123')
         expect(SnsService).to receive(:unsubscribe_from_topic).with('def345')
         described_class.call(kind: 'user_was_deleted', record: record)
       end
 
-      it 'should remove the topic subscription from the device subscription' do
+      it 'removes the topic subscription from the device subscription' do
         described_class.call(kind: 'user_was_deleted', record: record)
         expect(sub1.reload.announcement_subscription_arn).to be nil
         expect(sub2.reload.announcement_subscription_arn).to be nil

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe APNS::CreateSubscription do
@@ -14,63 +16,64 @@ describe APNS::CreateSubscription do
 
       let(:call_interactor) do
         described_class.call({
-          logged_in_user_id: existing_subscription.logged_in_user_id,
-          bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: existing_subscription.platform_device_identifier,
-          marketing_version: marketing_version,
-          build_version: build_version
-        })
+                               logged_in_user_id: existing_subscription.logged_in_user_id,
+                               bundle_identifier: registered_bundle_identifier,
+                               platform_device_identifier: existing_subscription.platform_device_identifier,
+                               marketing_version: marketing_version,
+                               build_version: build_version
+                             })
       end
 
       it 'does not create a new subscription' do
-        expect {
+        expect do
           call_interactor
-        }.to_not change { DeviceSubscription.count }
+        end.not_to change(DeviceSubscription, :count)
       end
 
       it 'does not create a new platform endpoint on SNS' do
-        expect(SnsService).to_not receive(:create_subscription_endpoint)
+        expect(SnsService).not_to receive(:create_subscription_endpoint)
 
         call_interactor
       end
 
       it 'updates the marketing version field to the supplied value' do
-        expect {
+        expect do
           call_interactor
-        }.to change { existing_subscription.reload.marketing_version }.to(marketing_version)
+        end.to change { existing_subscription.reload.marketing_version }.to(marketing_version)
       end
 
       it 'updates the build version field to the supplied value' do
-        expect {
+        expect do
           call_interactor
-        }.to change { existing_subscription.reload.build_version }.to(build_version)
+        end.to change { existing_subscription.reload.build_version }.to(build_version)
       end
 
-      context 'and the currently logged in user has changed' do
+      context 'when the currently logged in user has changed' do
         it 'links the subscription to the new logged in user' do
           new_user_id = 2000
-          expect {
+          expect do
             described_class.call({
-              logged_in_user_id: new_user_id,
-              bundle_identifier: registered_bundle_identifier,
-              platform_device_identifier: existing_subscription.platform_device_identifier
-            })
-          }.to change { existing_subscription.reload.logged_in_user_id }.to(new_user_id)
+                                   logged_in_user_id: new_user_id,
+                                   bundle_identifier: registered_bundle_identifier,
+                                   platform_device_identifier: existing_subscription.platform_device_identifier
+                                 })
+          end.to change { existing_subscription.reload.logged_in_user_id }.to(new_user_id)
         end
       end
 
-      context 'and the subscription is currently disabled' do
+      context 'when the subscription is currently disabled' do
         before { existing_subscription.update_attribute(:enabled, false) }
 
         it 're-enables the subscription via SNS' do
-          expect(SnsService).to receive(:enable_subscription_endpoint).with(existing_subscription).
-            and_call_original
+          expect(SnsService).to receive(:enable_subscription_endpoint).with(existing_subscription)
+                                                                      .and_call_original
 
           call_interactor
         end
 
         context 'when the SNS re-enable fails' do
           let(:expected_error_message) { 'Original exception error message' }
+
           before do
             exception = SnsService::ServiceError.new(expected_error_message)
             allow(SnsService).to receive(:enable_subscription_endpoint).and_raise(exception)
@@ -79,33 +82,33 @@ describe APNS::CreateSubscription do
           it 'fails the interactor with the error message' do
             result = call_interactor
 
-            expect(result).to_not be_success
+            expect(result).not_to be_success
             expect(result.message).to eq expected_error_message
           end
 
           it 'does not re-enable the subscription locally' do
-            expect {
+            expect do
               call_interactor
-            }.to_not change { existing_subscription.reload.enabled }
+            end.not_to(change { existing_subscription.reload.enabled })
           end
 
           it 'tracks the failure' do
             expect(ApnsSubscriptionMetric).to receive(:track_creation_failure)
-            expect(ApnsSubscriptionMetric).to_not receive(:track_creation_success)
+            expect(ApnsSubscriptionMetric).not_to receive(:track_creation_success)
             call_interactor
           end
         end
 
         context 'when the SNS re-enable succeeds' do
           it 're-enables the subscription locally' do
-            expect {
+            expect do
               call_interactor
-            }.to change { existing_subscription.reload.enabled }.to(true)
+            end.to change { existing_subscription.reload.enabled }.to(true)
           end
 
           it 'tracks the success' do
             expect(ApnsSubscriptionMetric).to receive(:track_creation_success).with('reused')
-            expect(ApnsSubscriptionMetric).to_not receive(:track_creation_failure)
+            expect(ApnsSubscriptionMetric).not_to receive(:track_creation_failure)
             call_interactor
           end
         end
@@ -117,23 +120,24 @@ describe APNS::CreateSubscription do
       let(:device_token) { Faker::Ello.ios_device_token }
       let(:call_interactor) do
         described_class.call({
-          logged_in_user_id: user_id,
-          bundle_identifier: registered_bundle_identifier,
-          platform_device_identifier: device_token,
-          marketing_version: marketing_version,
-          build_version: build_version
-        })
+                               logged_in_user_id: user_id,
+                               bundle_identifier: registered_bundle_identifier,
+                               platform_device_identifier: device_token,
+                               marketing_version: marketing_version,
+                               build_version: build_version
+                             })
       end
 
       it 'creates a new platform endpoint with SNS' do
-        expect(SnsService).to receive(:create_subscription_endpoint).with(kind_of(DeviceSubscription)).
-          and_call_original
+        expect(SnsService).to receive(:create_subscription_endpoint).with(kind_of(DeviceSubscription))
+                                                                    .and_call_original
 
         call_interactor
       end
 
-      context 'and the SNS platform endpoint creation fails' do
+      context 'when the SNS platform endpoint creation fails' do
         let(:expected_error_message) { 'Original exception error message' }
+
         before do
           exception = SnsService::ServiceError.new(expected_error_message)
           allow(SnsService).to receive(:create_subscription_endpoint).and_raise(exception)
@@ -142,33 +146,34 @@ describe APNS::CreateSubscription do
         it 'fails the interactor with the error message' do
           result = call_interactor
 
-          expect(result).to_not be_success
+          expect(result).not_to be_success
           expect(result.message).to eq expected_error_message
         end
 
         it 'does not create a new device subscription' do
-          expect {
+          expect do
             call_interactor
-          }.to_not change { DeviceSubscription.count }
+          end.not_to change(DeviceSubscription, :count)
         end
 
         it 'tracks the failure' do
           expect(ApnsSubscriptionMetric).to receive(:track_creation_failure)
-          expect(ApnsSubscriptionMetric).to_not receive(:track_creation_success)
+          expect(ApnsSubscriptionMetric).not_to receive(:track_creation_success)
           call_interactor
         end
       end
 
-      context 'and the SNS platform endpoint creation succeeds' do
+      context 'when the SNS platform endpoint creation succeeds' do
         let(:newly_created_endpoint_arn) { 'arn.from.create' }
+
         before do
           allow(SnsService).to receive(:create_subscription_endpoint).and_return(newly_created_endpoint_arn)
         end
 
         it 'creates a new device subscription' do
-          expect {
+          expect do
             call_interactor
-          }.to change { DeviceSubscription.count }.by(1)
+          end.to change(DeviceSubscription, :count).by(1)
         end
 
         it 'exposes the new device subscription on the result' do
@@ -191,7 +196,7 @@ describe APNS::CreateSubscription do
 
         it 'tracks the success' do
           expect(ApnsSubscriptionMetric).to receive(:track_creation_success).with('new')
-          expect(ApnsSubscriptionMetric).to_not receive(:track_creation_failure)
+          expect(ApnsSubscriptionMetric).not_to receive(:track_creation_failure)
           call_interactor
         end
       end

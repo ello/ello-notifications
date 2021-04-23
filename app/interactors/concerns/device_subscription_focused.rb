@@ -1,12 +1,12 @@
+# frozen_string_literal: true
+
 module Concerns::DeviceSubscriptionFocused
 
   extend ActiveSupport::Concern
 
   included do
     before do
-      unless bundle_identifier_registered?
-        context.fail!(message: "Unknown bundle_identifier: #{context[:bundle_identifier]}")
-      end
+      context.fail!(message: "Unknown bundle_identifier: #{context[:bundle_identifier]}") unless bundle_identifier_registered?
     end
   end
 
@@ -18,9 +18,9 @@ module Concerns::DeviceSubscriptionFocused
 
   def sns_application
     SnsApplication.where({
-      platform: platform,
-      bundle_identifier: context[:bundle_identifier]
-    }).first
+                           platform: platform,
+                           bundle_identifier: context[:bundle_identifier]
+                         }).first
   end
 
   def platform
@@ -44,7 +44,7 @@ module Concerns::DeviceSubscriptionFocused
   def lookup_params
     {
       sns_application: sns_application,
-      platform_device_identifier: context[:platform_device_identifier],
+      platform_device_identifier: context[:platform_device_identifier]
     }
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateTopicNotification
   include Interactor
 
@@ -15,10 +17,10 @@ class CreateTopicNotification
   def send_announcement
     # Message is a key/value pairs where values are json strings
     message = {
-      'default'      => announcement_title,
-      'APNS'         => announcement_apple_body.to_json,
+      'default' => announcement_title,
+      'APNS' => announcement_apple_body.to_json,
       'APNS_SANDBOX' => announcement_apple_body.to_json,
-      'GCM'          => announcement_google_body.to_json
+      'GCM' => announcement_google_body.to_json
     }
 
     SnsService.publish_announcement(message)

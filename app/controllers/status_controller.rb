@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class StatusController < ApplicationController
 
-  skip_before_filter :require_binary_request
+  skip_before_action :require_binary_request
 
   def health_check
     render text: 'Service Up'

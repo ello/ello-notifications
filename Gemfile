@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 ruby '2.6.7'
 
@@ -9,19 +11,19 @@ group :development, :test do
   gem 'pry-rails'
 end
 
-gem 'rails-api'
 gem 'puma', '~> 4.3.3'
+gem 'rails-api'
 
-gem 'pg'
-gem 'interactor', '~> 3.0'
 gem 'aws-sdk', '~> 2.2'
 gem 'ello_protobufs', github: 'ello/ello_protobufs', ref: '73bfe15'
+gem 'interactor', '~> 3.0'
 gem 'kinesis-stream-reader', require: 'stream_reader', github: 'ello/kinesis-stream-reader'
+gem 'pg'
 gem 'retries'
 
-gem 'newrelic_rpm', '~> 3.12.0'
-gem 'librato-rails', '~> 0.11.1'
 gem 'honeybadger', '~> 2.1'
+gem 'librato-rails', '~> 0.11.1'
+gem 'newrelic_rpm', '~> 3.12.0'
 gem 'sucker_punch', '~> 2.0'
 
 group :production do

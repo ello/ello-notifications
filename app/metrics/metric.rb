@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'librato-rails'
 
 class Metric
@@ -10,21 +12,22 @@ class Metric
     def measure(*args, &block)
       new.measure(*args, &block)
     end
-    alias :timing :measure
+    alias timing measure
 
     def namespace(namespace)
       yield new(namespace)
     end
 
     attr_reader :global_namespace
+
     def namespace_all(namespace)
       @global_namespace = namespace
     end
 
     def time
-      start = Time.now
+      start = Time.zone.now
       yield
-      ((Time.now - start) * 1000.0).to_i
+      ((Time.zone.now - start) * 1000.0).to_i
     end
   end
 
@@ -41,7 +44,7 @@ class Metric
     Librato.measure(build_key(name), value, options, &block)
     trace_metric 'measure', name, value, options
   end
-  alias :timing :measure
+  alias timing measure
 
   private
 

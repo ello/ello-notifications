@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 # heavily influenced by the approach used in
@@ -5,12 +7,12 @@ require 'json'
 class Callbacks::AwsController < ApplicationController
 
   before_action :log_incoming_message, :confirm_subscription, :verify_message_authenticity
-  skip_before_filter :require_binary_request
+  skip_before_action :require_binary_request
   # before_filter :require_json_request
 
   def push_failed
-    if !is_failure_notification?
-      Rails.logger.info "Not a Failure Notification - exiting"
+    unless failure_notification?
+      Rails.logger.info 'Not a Failure Notification - exiting'
       return render json: {}
     end
 
@@ -22,36 +24,38 @@ class Callbacks::AwsController < ApplicationController
   private
 
   def require_json_request
-    render nothing: true, status: 406 unless request.content_type == 'application/json' || request.headers["Accept"] =~ /json/
+    return if request.content_type == 'application/json' || request.headers['Accept'] =~ /json/
+
+    render nothing: true,
+           status: :not_acceptable
   end
 
   def confirm_subscription
-    if type == 'SubscriptionConfirmation'
-      client = Aws::SNS::Client.new
-      resp = client.confirm_subscription({
-        topic_arn: topic_arn, # required
-        token: confirmation_token, # required
-      })
-      if resp.successful?
-        head :ok
-      else
-        head :not_acceptable
-      end
+    return unless type == 'SubscriptionConfirmation'
+
+    client = Aws::SNS::Client.new
+    resp = client.confirm_subscription({
+                                         topic_arn: topic_arn, # required
+                                         token: confirmation_token # required
+                                       })
+    if resp.successful?
+      head :ok
+    else
+      head :not_acceptable
     end
   end
 
   def verify_message_authenticity
     verifier = Aws::SNS::MessageVerifier.new
-    if !verifier.authentic?(request.raw_post)
-      Rails.logger.info "Not an authentic SNS message - exiting"
-      head :not_acceptable
-    end
+    return if verifier.authentic?(request.raw_post)
+
+    Rails.logger.info 'Not an authentic SNS message - exiting'
+    head :not_acceptable
   end
 
-  def is_failure_notification?
+  def failure_notification?
     type == 'Notification' && status == 'FAILURE'
   end
-
 
   def log_incoming_message
     Rails.logger.info request.raw_post
@@ -80,9 +84,4 @@ class Callbacks::AwsController < ApplicationController
   def type
     request.headers['x-amz-sns-message-type']
   end
-
-  def log_incoming_message
-    Rails.logger.info request.raw_post
-  end
-
 end

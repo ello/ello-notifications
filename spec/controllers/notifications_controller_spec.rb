@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe NotificationsController, type: :request do
@@ -17,7 +19,7 @@ describe NotificationsController, type: :request do
       end
     end
 
-    context 'using binary content-type' do
+    context 'when using binary content-type' do
       before do
         # short-hand aliases for test readability purposes
         stub_const('ServiceFailureReason', ElloProtobufs::NotificationService::ServiceFailureReason)
@@ -28,10 +30,10 @@ describe NotificationsController, type: :request do
 
       let(:create_notification_request) do
         CreateNotificationRequest.new({
-          type: ElloProtobufs::NotificationType::FOLLOWER,
-          destination_user_id: 2,
-          user: create(:protobuf_user)
-        })
+                                        type: ElloProtobufs::NotificationType::FOLLOWER,
+                                        destination_user_id: 2,
+                                        user: create(:protobuf_user)
+                                      })
       end
 
       context 'when the creation succeeds' do
@@ -44,8 +46,8 @@ describe NotificationsController, type: :request do
 
         it 'passes the required params and request body to the interactor' do
           expect(CreateNotification).to have_received(:call).with({
-            request: create_notification_request
-          })
+                                                                    request: create_notification_request
+                                                                  })
         end
 
         it 'succeeds with status code 200' do

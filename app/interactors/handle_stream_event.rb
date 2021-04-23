@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HandleStreamEvent
   include Interactor
   include ::NewRelic::Agent::Instrumentation::ControllerInstrumentation
@@ -33,7 +35,7 @@ class HandleStreamEvent
   end
 
   def device_subscriptions
-    @subs ||= DeviceSubscription.enabled.where(logged_in_user_id: user_id)
+    @device_subscriptions ||= DeviceSubscription.enabled.where(logged_in_user_id: user_id)
   end
 
   def create_or_update_user
@@ -47,11 +49,11 @@ class HandleStreamEvent
 
   def subscribe_all_user_devices
     device_subscriptions.each do |device|
-      if device.supports_announcements? && !device.announcement_subscription_arn
-        sub = SnsService.subscribe_to_announcements(device.endpoint_arn)
-        device.update(announcement_subscription_arn: sub.arn)
-        Rails.logger.debug("Subscribed arn #{sub.arn} to announcements")
-      end
+      next unless device.supports_announcements? && !device.announcement_subscription_arn
+
+      sub = SnsService.subscribe_to_announcements(device.endpoint_arn)
+      device.update(announcement_subscription_arn: sub.arn)
+      Rails.logger.debug("Subscribed arn #{sub.arn} to announcements")
     end
   end
 

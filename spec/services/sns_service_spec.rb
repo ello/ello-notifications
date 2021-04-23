@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe SnsService do
   let!(:sns_client) { Aws::SNS::Client.new }
+
   before { allow(Aws::SNS::Client).to receive(:new).and_return(sns_client) }
 
   describe '.create_subscription_endpoint' do
@@ -12,10 +15,10 @@ describe SnsService do
       expected_application_arn = new_subscription.sns_application.application_arn
 
       expect(sns_client).to receive(:create_platform_endpoint).with({
-        platform_application_arn: expected_application_arn,
-        token: expected_device_token,
-        attributes: { 'Enabled' => 'true' }
-      }).and_call_original
+                                                                      platform_application_arn: expected_application_arn,
+                                                                      token: expected_device_token,
+                                                                      attributes: { 'Enabled' => 'true' }
+                                                                    }).and_call_original
 
       described_class.create_subscription_endpoint(new_subscription)
     end
@@ -25,21 +28,21 @@ describe SnsService do
 
       it 'raises a service error with the relevant validation error' do
         uncreatable_subscription.valid? # necessary to create errors on model
-        message = "Cannot create device subscription: " + uncreatable_subscription.errors.full_messages.first
+        message = "Cannot create device subscription: #{uncreatable_subscription.errors.full_messages.first}"
 
-        expect {
+        expect do
           described_class.create_subscription_endpoint(uncreatable_subscription)
-        }.to raise_error { |error|
+        end.to(raise_error do |error|
           expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq message
-        }
+        end)
       end
 
       it 'does not attempt to create the subscripton on SNS' do
-        expect(sns_client).to_not receive(:create_platform_endpoint)
+        expect(sns_client).not_to receive(:create_platform_endpoint)
         begin
           described_class.create_subscription_endpoint(uncreatable_subscription)
-        rescue SnsService::ServiceError => _
+        rescue SnsService::ServiceError => _e
           # noop
         end
       end
@@ -52,13 +55,13 @@ describe SnsService do
 
         sns_client.stub_responses(:create_platform_endpoint, original_exception)
 
-        expect {
+        expect do
           described_class.create_subscription_endpoint(new_subscription)
-        }.to raise_error { |error|
+        end.to(raise_error do |error|
           expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq original_error_message
           expect(error.original_exception).to eq original_exception
-        }
+        end)
       end
     end
 
@@ -78,9 +81,9 @@ describe SnsService do
 
     it 'updates the attributes of the platform endpoint on SNS' do
       expect(sns_client).to receive(:set_endpoint_attributes).with({
-        endpoint_arn: existing_subscription.endpoint_arn,
-        attributes: { 'Enabled' => 'true' }
-      }).and_call_original
+                                                                     endpoint_arn: existing_subscription.endpoint_arn,
+                                                                     attributes: { 'Enabled' => 'true' }
+                                                                   }).and_call_original
 
       described_class.enable_subscription_endpoint(existing_subscription)
     end
@@ -92,13 +95,13 @@ describe SnsService do
 
         sns_client.stub_responses(:set_endpoint_attributes, original_exception)
 
-        expect {
+        expect do
           described_class.enable_subscription_endpoint(existing_subscription)
-        }.to raise_error { |error|
+        end.to(raise_error do |error|
           expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq original_error_message
           expect(error.original_exception).to eq original_exception
-        }
+        end)
       end
     end
   end
@@ -108,8 +111,8 @@ describe SnsService do
 
     it 'deletes the platform endpoint from SNS' do
       expect(sns_client).to receive(:delete_endpoint).with({
-        endpoint_arn: existing_subscription.endpoint_arn
-      }).and_call_original
+                                                             endpoint_arn: existing_subscription.endpoint_arn
+                                                           }).and_call_original
 
       described_class.delete_subscription_endpoint(existing_subscription)
     end
@@ -121,13 +124,13 @@ describe SnsService do
 
         sns_client.stub_responses(:delete_endpoint, original_exception)
 
-        expect {
+        expect do
           described_class.delete_subscription_endpoint(existing_subscription)
-        }.to raise_error { |error|
+        end.to(raise_error do |error|
           expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq original_error_message
           expect(error.original_exception).to eq original_exception
-        }
+        end)
       end
     end
   end
@@ -138,10 +141,10 @@ describe SnsService do
       notification = { foo: 'bar' }
 
       expect(sns_client).to receive(:publish).with({
-        target_arn: endpoint_arn,
-        message_structure: 'json',
-        message: notification.to_json
-      }).and_call_original
+                                                     target_arn: endpoint_arn,
+                                                     message_structure: 'json',
+                                                     message: notification.to_json
+                                                   }).and_call_original
 
       described_class.deliver_notification(endpoint_arn, notification)
     end
@@ -153,13 +156,13 @@ describe SnsService do
 
         sns_client.stub_responses(:publish, original_exception)
 
-        expect {
+        expect do
           described_class.deliver_notification('endpoint', {})
-        }.to raise_error { |error|
+        end.to(raise_error do |error|
           expect(error).to be_a(SnsService::ServiceError)
           expect(error.message).to eq original_error_message
           expect(error.original_exception).to eq original_exception
-        }
+        end)
       end
     end
   end

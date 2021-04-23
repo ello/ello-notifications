@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 describe CreateNotification do
@@ -30,7 +32,7 @@ describe CreateNotification do
 
       it 'fails the context with an error reason' do
         result = call_interactor
-        expect(result).to_not be_success
+        expect(result).not_to be_success
         expect(result.failure_reason).to eq(ServiceFailureReason::UNKNOWN_NOTIFICATION_TYPE)
       end
     end
@@ -41,7 +43,7 @@ describe CreateNotification do
         create(:device_subscription, :apns, logged_in_user_id: some_other_user_id)
 
         result = call_interactor
-        expect(APNS::DeliverNotification).to_not have_received(:call)
+        expect(APNS::DeliverNotification).not_to have_received(:call)
         expect(result).to be_success
       end
     end
@@ -63,7 +65,7 @@ describe CreateNotification do
         create(:device_subscription, :apns, :disabled, logged_in_user_id: destination_user.id)
 
         result = call_interactor
-        expect(APNS::DeliverNotification).to_not have_received(:call)
+        expect(APNS::DeliverNotification).not_to have_received(:call)
         expect(result).to be_success
       end
     end
@@ -72,8 +74,8 @@ describe CreateNotification do
       before { create(:device_subscription, :apns, logged_in_user_id: destination_user.id) }
 
       describe 'protobuf decoding' do
-        [ 'REPOST',
-          'POST_MENTION' ].each do |post_related_type|
+        %w[REPOST
+           POST_MENTION].each do |post_related_type|
           context "when the notification is a #{post_related_type}" do
             let(:notification_type) { Object.const_get("NotificationType::#{post_related_type}") }
             let(:post) { create(:protobuf_post) }
@@ -88,12 +90,12 @@ describe CreateNotification do
           end
         end
 
-        [
-          'POST_COMMENT',
-          'COMMENT_MENTION',
-          'REPOST_COMMENT_TO_REPOST_AUTHOR',
-          'REPOST_COMMENT_TO_ORIGINAL_AUTHOR',
-          'POST_COMMENT_TO_WATCHER'
+        %w[
+          POST_COMMENT
+          COMMENT_MENTION
+          REPOST_COMMENT_TO_REPOST_AUTHOR
+          REPOST_COMMENT_TO_ORIGINAL_AUTHOR
+          POST_COMMENT_TO_WATCHER
         ].each do |comment_related_type|
           context "when the notification is a #{comment_related_type}" do
             let(:notification_type) { Object.const_get("NotificationType::#{comment_related_type}") }
@@ -109,7 +111,7 @@ describe CreateNotification do
           end
         end
 
-        ['FOLLOWER', 'INVITE_REDEMPTION'].each do |user_related_type|
+        %w[FOLLOWER INVITE_REDEMPTION].each do |user_related_type|
           context "when the notification is a #{user_related_type}" do
             let(:notification_type) { Object.const_get("NotificationType::#{user_related_type}") }
             let(:user) { create(:protobuf_user) }
@@ -124,10 +126,11 @@ describe CreateNotification do
           end
         end
 
-        [
-          'POST_WATCH',
-          'REPOST_WATCH_TO_REPOST_AUTHOR',
-          'REPOST_WATCH_TO_ORIGINAL_AUTHOR' ].each do |watch_related_type|
+        %w[
+          POST_WATCH
+          REPOST_WATCH_TO_REPOST_AUTHOR
+          REPOST_WATCH_TO_ORIGINAL_AUTHOR
+        ].each do |watch_related_type|
           context "when the notification is a #{watch_related_type}" do
             let(:notification_type) { Object.const_get("NotificationType::#{watch_related_type}") }
             let(:watch) { create(:protobuf_watch) }
@@ -138,76 +141,79 @@ describe CreateNotification do
               expect(Notification::Factory).to receive(:build)
                 .with(notification_type, destination_user, watch)
               call_interactor
-              end
-            end
-
-            [ 'ANNOUNCEMENT' ].each do |announcement_related_type|
-              context "when the notification is a #{announcement_related_type}" do
-                let(:notification_type) { Object.const_get("NotificationType::#{announcement_related_type}") }
-                let(:announcement) { create(:protobuf_announcement) }
-
-                before { request.announcement = announcement }
-
-                it 'plucks the announcement from the request and passes it into the notification factory' do
-                  expect(Notification::Factory).to receive(:build)
-                    .with(notification_type, destination_user, announcement)
-                  call_interactor
-                end
-              end
             end
           end
 
-          [ 'ARTIST_INVITE_SUBMISSION_APPROVED', 'APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS' ].each do |submission_related_type|
-            context "when the notification is a #{submission_related_type}" do
-              let(:notification_type) { Object.const_get("NotificationType::#{submission_related_type}") }
-              let(:submission) { create(:protobuf_artist_invite_submission) }
+          ['ANNOUNCEMENT'].each do |announcement_related_type|
+            context "when the notification is a #{announcement_related_type}" do
+              let(:notification_type) { Object.const_get("NotificationType::#{announcement_related_type}") }
+              let(:announcement) { create(:protobuf_announcement) }
 
-              before { request.artist_invite_submission = submission }
+              before { request.announcement = announcement }
 
-              it 'plucks the artist invite submission from the request and passes it into the notification factory' do
+              it 'plucks the announcement from the request and passes it into the notification factory' do
                 expect(Notification::Factory).to receive(:build)
+                  .with(notification_type, destination_user, announcement)
+                call_interactor
+              end
+            end
+          end
+        end
+
+        %w[ARTIST_INVITE_SUBMISSION_APPROVED
+           APPROVED_ARTIST_INVITE_SUBMISSION_FOR_FOLLOWERS].each do |submission_related_type|
+          context "when the notification is a #{submission_related_type}" do
+            let(:notification_type) { Object.const_get("NotificationType::#{submission_related_type}") }
+            let(:submission) { create(:protobuf_artist_invite_submission) }
+
+            before { request.artist_invite_submission = submission }
+
+            it 'plucks the artist invite submission from the request and passes it into the notification factory' do
+              expect(Notification::Factory).to receive(:build)
                 .with(notification_type, destination_user, submission)
-                call_interactor
-              end
+              call_interactor
             end
           end
+        end
 
-          [ 'FEATURED_CATEGORY_POST', 'FEATURED_CATEGORY_REPOST', 'FEATURED_CATEGORY_POST_VIA_REPOST' ].each do |category_post_related_type|
-            context "when the notification is a #{category_post_related_type}" do
-              let(:notification_type) { Object.const_get("NotificationType::#{category_post_related_type}") }
-              let(:category_post) { create(:protobuf_category_post) }
+        %w[FEATURED_CATEGORY_POST FEATURED_CATEGORY_REPOST
+           FEATURED_CATEGORY_POST_VIA_REPOST].each do |category_post_related_type|
+          context "when the notification is a #{category_post_related_type}" do
+            let(:notification_type) { Object.const_get("NotificationType::#{category_post_related_type}") }
+            let(:category_post) { create(:protobuf_category_post) }
 
-              before { request.category_post = category_post }
+            before { request.category_post = category_post }
 
-              it 'plucks the category post from the request and passes it into the notification factory' do
-                expect(Notification::Factory).to receive(:build)
+            it 'plucks the category post from the request and passes it into the notification factory' do
+              expect(Notification::Factory).to receive(:build)
                 .with(notification_type, destination_user, category_post)
-                call_interactor
-              end
+              call_interactor
             end
           end
+        end
 
-          [ 'USER_ADDED_AS_FEATURED', 'USER_ADDED_AS_CURATOR', 'USER_ADDED_AS_MODERATOR' ].each do |category_user_related_type|
-            context "when the notification is a #{category_user_related_type}" do
-              let(:notification_type) { Object.const_get("NotificationType::#{category_user_related_type}") }
-              let(:category_user) { create(:protobuf_category_user) }
+        %w[USER_ADDED_AS_FEATURED USER_ADDED_AS_CURATOR
+           USER_ADDED_AS_MODERATOR].each do |category_user_related_type|
+          context "when the notification is a #{category_user_related_type}" do
+            let(:notification_type) { Object.const_get("NotificationType::#{category_user_related_type}") }
+            let(:category_user) { create(:protobuf_category_user) }
 
-              before { request.category_user = category_user }
+            before { request.category_user = category_user }
 
-              it 'plucks the category user from the request and passes it into the notification factory' do
-                expect(Notification::Factory).to receive(:build)
+            it 'plucks the category user from the request and passes it into the notification factory' do
+              expect(Notification::Factory).to receive(:build)
                 .with(notification_type, destination_user, category_user)
-                call_interactor
-              end
+              call_interactor
             end
           end
+        end
 
       end
 
-      context 'notification count handling' do
+      context 'with notification count handling' do
         before do
-          allow(User).to receive_message_chain(:where, :first_or_create).
-            and_return(destination_user)
+          allow(User).to receive_message_chain(:where, :first_or_create)
+            .and_return(destination_user)
         end
 
         context 'when the notification is a reset badge count notification' do
@@ -221,6 +227,7 @@ describe CreateNotification do
 
         context 'when the notification is not a reset badge count notification' do
           let(:notification_type) { NotificationType::POST_MENTION }
+
           before { request.post = create(:protobuf_post) }
 
           it "increments the user's notification count" do
@@ -236,14 +243,14 @@ describe CreateNotification do
 
         call_interactor
         expect(APNS::DeliverNotification).to have_received(:call).with({
-          notification: notification,
-          endpoint_arn: DeviceSubscription.last.endpoint_arn
-        })
+                                                                         notification: notification,
+                                                                         endpoint_arn: DeviceSubscription.last.endpoint_arn
+                                                                       })
       end
     end
 
     context "when the user's subscription does not handle blank pushes" do
-      let!(:subscription) do
+      let(:subscription) do
         create(:device_subscription,
                :apns,
                logged_in_user_id: destination_user.id,
@@ -251,7 +258,7 @@ describe CreateNotification do
                build_version: '')
       end
 
-      context 'and the notification type is RESET_BADGE_COUNT' do
+      context 'when the notification type is RESET_BADGE_COUNT' do
         let(:notification_type) { NotificationType::RESET_BADGE_COUNT }
 
         it 'does not deliver the notification to the subscription' do
@@ -266,20 +273,21 @@ describe CreateNotification do
 
     context 'when the destination user has multiple enabled subscriptions' do
       let!(:user_subscriptions) { create_list(:device_subscription, 2, :apns, logged_in_user_id: destination_user.id) }
+
       before { request.post = create(:protobuf_post, :repost) }
 
       it 'delivers the notification to all subscriptions' do
         call_interactor
         user_subscriptions.each do |sub|
-          expect(APNS::DeliverNotification).to have_received(:call).
-            with(hash_including(endpoint_arn: sub.endpoint_arn))
+          expect(APNS::DeliverNotification).to have_received(:call)
+            .with(hash_including(endpoint_arn: sub.endpoint_arn))
         end
       end
 
       it "only increments the user's notification count by one" do
-        expect {
+        expect do
           call_interactor
-        }.to change { destination_user.reload.notification_count }.by(1)
+        end.to change { destination_user.reload.notification_count }.by(1)
       end
 
       context 'when the first subscription delivery fails' do
@@ -292,32 +300,33 @@ describe CreateNotification do
         end
 
         before do
-          allow(APNS::DeliverNotification).to receive(:call).
-            and_return(failed_context, build_successful_context)
+          allow(APNS::DeliverNotification).to receive(:call)
+            .and_return(failed_context, build_successful_context)
         end
 
         it 'logs the failure' do
-          error_message = "Failed to send notification to ARN: #{failed_context.endpoint_arn}.  Error received: #{failed_context.message}.  Given request: #{request}"
+          error_message = "Failed to send notification to ARN: #{failed_context.endpoint_arn}. " \
+                          "Error received: #{failed_context.message}. Given request: #{request}"
           expect(Rails.logger).to receive(:warn).with(error_message)
 
           call_interactor
         end
 
-        context 'and the failure reason is that the SNS endpoint is disabled' do
+        context 'when the failure reason is that the SNS endpoint is disabled' do
           let(:error_message) { 'Endpoint is disabled' }
 
           it 'disables the subscription locally' do
-            expect {
+            expect do
               call_interactor
-            }.to change { failing_subscription.reload.enabled }.to(false)
+            end.to change { failing_subscription.reload.enabled }.to(false)
           end
         end
 
-        context 'and the failure reason is anything else' do
+        context 'when the failure reason is anything else' do
           it 'does not disable the subscription locally' do
-            expect {
+            expect do
               call_interactor
-            }.to_not change { failing_subscription.reload.enabled }
+            end.not_to(change { failing_subscription.reload.enabled })
           end
         end
 
@@ -336,7 +345,7 @@ describe CreateNotification do
 
   end
 
-  context 'Announcements when the user has no devices' do
+  describe 'Announcements when the user has no devices' do
     let(:destination_user) { create(:user) }
     let(:request) do
       CreateNotificationRequest.new(
@@ -346,7 +355,7 @@ describe CreateNotification do
       )
     end
 
-    it 'should not deliver individual annoucements' do
+    it 'does not deliver individual annoucements' do
       expect(APNS::DeliverNotification).not_to receive(:call)
       expect(GCM::DeliverNotification).not_to receive(:call)
       described_class.call(request: request)
