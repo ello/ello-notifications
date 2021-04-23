@@ -1,16 +1,22 @@
 language: ruby
+
 cache:
-- bundler
+  - bundler
+
 bundler_args: "--without staging,production"
+
 addons:
-  postgresql: '9.3'
+  postgresql: "9.3"
+
 before_script:
-- cp .env.example .env
-- cp config/database.travis.yml config/database.yml
+  - cp .env.test .env
+  - cp config/database.travis.yml config/database.yml
+
 script:
-- gem install danger --no-ri --no-rdoc && danger
-- bundle exec rake db:drop:all db:create:all db:schema:load
-- bundle exec rake
+  - gem install danger --no-document && danger
+  - bundle exec rake db:drop:all db:create:all db:schema:load
+  - bundle exec rake
+
 notifications:
   email: false
   slack:
