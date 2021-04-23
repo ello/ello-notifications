@@ -30,6 +30,12 @@ end
 
 # gem 'spring', :group => :development
 
+group :development do
+  gem 'rubocop'
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
+end
+
 group :development, :test do
   gem 'database_cleaner'
   gem 'factory_girl_rails', '~> 4.0'

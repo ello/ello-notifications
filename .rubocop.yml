@@ -1,54 +1,114 @@
-ClassAndModuleChildren:
-  Include:
-    - lib/**/*.rb
-Documentation:
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  Exclude:
+    - bin/*
+    - db/migrate/*
+    - db/schema.rb
+  NewCops: enable
+
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
-EmptyLinesAroundBlockBody:
+
+Layout/EmptyLinesAroundClassBody:
   Enabled: false
-EmptyLinesAroundClassBody:
+
+Layout/EmptyLinesAroundModuleBody:
   Enabled: false
-EmptyLinesAroundModuleBody:
+
+Layout/ExtraSpacing:
   Enabled: false
-ExtraSpacing:
-  Enabled: false
-LineLength:
-  # Default is that lines should be 80, but that's somewhat noisy. We want a softer limit.
-  Description: Limit lines to 120 characters.
-  Max: 120
+
+Layout/LineLength:
+  Max: 160
   Exclude:
     - config/routes.rb
-Lint/EndAlignment:
-  # The value `keyword` means that `end` should be aligned with the matching
-  # keyword (if, while, etc.).
-  # The value `variable` means that in assignments, `end` should be aligned
-  # with the start of the variable on the left hand side of `=`. In all other
-  # situations, `end` should still be aligned with the keyword.
-  AlignWith: variable
-  SupportedStyles:
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+  SupportedStylesAlignWith:
     - keyword
     - variable
+
 Lint/UnusedMethodArgument:
   Exclude:
     - app/interactors/**/*.rb
+
+Lint/EmptyFile:
+  Exclude:
+    - Dangerfile
+    - db/seeds.rb
+
 Lint/UselessAccessModifier:
   Enabled: false
-SingleSpaceBeforeFirstArg:
+
+Layout/SpaceBeforeFirstArg:
   Enabled: false
-SpaceInsideBrackets:
+
+Metrics/BlockLength:
   Enabled: false
-StringLiterals:
+
+Metrics/MethodLength:
+  Max: 30
+
+Metrics/AbcSize:
+  Max: 50
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Metrics/PerceivedComplexity:
+  Max: 15
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 10
+
+RSpec/ExampleLength:
+  Max: 30
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+RSpec/MessageChain:
+  Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 10
+
+Style/StringLiterals:
   EnforcedStyle: single_quotes
   Enabled: true
-Style/Blocks:
-  Enabled: false
+
 Style/CollectionMethods:
   PreferredMethods:
-    find: 'detect'
-Style/BracesAroundHashParameters:
-  EnforcedStyle: context_dependent
-  SupportedStyles:
-    - braces
-    - no_braces
-    - context_dependent
-Style/IndentHash:
+    find: "detect"
+
+Style/ClassAndModuleChildren:
+  Include:
+    - lib/**/*.rb
+
+Style/Documentation:
   Enabled: false
