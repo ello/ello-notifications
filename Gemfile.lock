@@ -145,7 +145,7 @@ GEM
     multipart-post (2.0.0)
     nenv (0.2.0)
     newrelic_rpm (3.18.1.330)
-    nio4r (2.5.2)
+    nio4r (2.5.7)
     nokogiri (1.10.8)
       mini_portile2 (~> 2.4.0)
     notiffany (0.0.6)
@@ -166,7 +166,7 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.4)
       pry (>= 0.9.10)
-    puma (4.3.3)
+    puma (5.2.2)
       nio4r (~> 2.0)
     rack (1.6.13)
     rack-test (0.6.3)
@@ -293,7 +293,7 @@ DEPENDENCIES
   newrelic_rpm (~> 3.18.0)
   pg
   pry-rails
-  puma (~> 4.3.3)
+  puma (~> 5.2.2)
   rails (~> 4.2.5)
   rails-api
   rails_12factor

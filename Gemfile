@@ -11,7 +11,7 @@ group :development, :test do
   gem 'pry-rails'
 end
 
-gem 'puma', '~> 4.3.3'
+gem 'puma', '~> 5.2.2'
 gem 'rails-api'
 
 gem 'aws-sdk', '~> 2.2'
