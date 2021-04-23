@@ -22,8 +22,8 @@ gem 'pg'
 gem 'retries'
 
 gem 'honeybadger', '~> 2.1'
-gem 'librato-rails', '~> 0.11.1'
-gem 'newrelic_rpm', '~> 3.12.0'
+gem 'librato-rails', '~> 1.4.2'
+gem 'newrelic_rpm', '~> 3.18.0'
 gem 'sucker_punch', '~> 2.0'
 
 group :production do
